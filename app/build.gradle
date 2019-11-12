@@ -1,0 +1,101 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.zhkj.backstage"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            //根据需要 自行选择添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64'
+
+            // 还可以添加
+
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //指定jdk版本
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    maven { url 'http://repo1.maven.org/maven2' }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.squareup.okio:okio:1.5.0'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
+    //注解
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    //侧滑返回
+
+    //上拉加载下拉刷新
+
+    //1.0.5 当1.1.0出现问题可以回退到1.0.5.1
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-19'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-19'
+
+    //没有使用特殊Header，可以不加这行
+
+    //如果使用了特殊的Header
+    implementation 'com.google.android.material:material:1.1.0-alpha01'
+
+    //万能适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.43-alpha1'
+
+    //rxjava
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    //gson
+
+    //    compile 'com.google.code.gson:gson:2.8.2'
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.blankj:utilcode:1.22.1'
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
+    implementation 'com.qmuiteam:qmui:1.1.3'
+
+    //Zloading加载动画
+    implementation 'com.zyao89:zloading:1.2.0'
+    implementation project(path: ':magicindicator')
+    implementation project(path: ':SwipeBackLayout')
+    implementation project(path: ':ImmersionBar')
+
+}
