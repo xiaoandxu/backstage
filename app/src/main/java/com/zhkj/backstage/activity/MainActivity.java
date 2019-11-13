@@ -86,10 +86,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     protected void initData() {
         mFragments = new ArrayList<>();
         mFragments.add(HomeFragment.newInstance("", ""));
-        mFragments.add(HomeFragment.newInstance("", ""));
-        mFragments.add(HomeFragment.newInstance("", ""));
-        mFragments.add(HomeFragment.newInstance("", ""));
-        mFragments.add(HomeFragment.newInstance("", ""));
+//        mFragments.add(HomeFragment.newInstance("", ""));
+//        mFragments.add(HomeFragment.newInstance("", ""));
+//        mFragments.add(HomeFragment.newInstance("", ""));
+//        mFragments.add(HomeFragment.newInstance("", ""));
     }
 
     @Override

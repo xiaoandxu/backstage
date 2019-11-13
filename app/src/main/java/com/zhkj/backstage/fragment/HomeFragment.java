@@ -133,7 +133,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     protected void initView() {
         //loading
         dialog = new ZLoadingDialog(mActivity);
-//        showLoading();
+        showLoading();
         mPresenter.SalesToday();
 
 
@@ -154,7 +154,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     public void SalesToday(BaseResult<Data<SalesToday>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-//                cancleLoading();
+
                 mTvVendorSettled.setText(baseResult.getData().getItem2().getFactoryExamineCount() + "");
                 mTvMasterSettled.setText(baseResult.getData().getItem2().getMasterWorkerCount() + "");
                 mTvPendingService.setText(baseResult.getData().getItem2().getInServiceOreder() + "");
@@ -173,7 +173,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
-
+                cancleLoading();
                 break;
         }
     }
@@ -181,7 +181,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     public void showLoading(){
         dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
-                .setHintText("登陆中请稍后...")
+                .setHintText("请稍后...")
                 .setHintTextSize(14) // 设置字体大小 dp
                 .setHintTextColor(Color.BLACK)  // 设置字体颜色
                 .setDurationTime(0.5) // 设置动画时间百分比 - 0.5倍

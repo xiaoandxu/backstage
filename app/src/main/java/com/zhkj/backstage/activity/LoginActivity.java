@@ -1,6 +1,7 @@
 package com.zhkj.backstage.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import com.zhkj.backstage.contract.LoginContract;
 import com.zhkj.backstage.model.LoginModel;
 import com.zhkj.backstage.presenter.LoginPresenter;
 import com.zhkj.backstage.weight.ClearEditText;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +38,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     private String userName;
     private String passWord;
     private boolean isLogin;
+    private ZLoadingDialog dialog;
 
     @Override
     protected int setLayoutId() {
@@ -48,6 +52,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
 
     @Override
     protected void initView() {
+        //loading
+        dialog = new ZLoadingDialog(mActivity);
         spUtils = SPUtils.getInstance("token");
         userName = spUtils.getString("userName");
         passWord = spUtils.getString("passWord");
@@ -76,6 +82,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
+                showLoading();
                 userName = mEtUsername.getText().toString();
                 passWord = mEtPassword.getText().toString();
                 if ("".equals(userName)) {
@@ -119,6 +126,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                 }else{
                     ToastUtils.showShort(data.getItem2());
                 }
+                cancleLoading();
                 break;
         }
     }
@@ -126,5 +134,20 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     @Override
     public void GetUserInfo(BaseResult<String> baseResult) {
 
+    }
+
+    public void showLoading(){
+        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("登陆中请稍后...")
+                .setHintTextSize(14) // 设置字体大小 dp
+                .setHintTextColor(Color.BLACK)  // 设置字体颜色
+                .setDurationTime(0.5) // 设置动画时间百分比 - 0.5倍
+                .setCanceledOnTouchOutside(false)//点击外部无法取消
+                .show();
+    }
+
+    public void cancleLoading(){
+        dialog.dismiss();
     }
 }
