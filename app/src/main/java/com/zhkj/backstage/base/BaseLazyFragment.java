@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,6 +26,8 @@ import com.zhkj.backstage.R;
 import com.zhkj.backstage.interfaces.HandleBackInterface;
 import com.zhkj.backstage.util.HandleBackUtil;
 import com.zhkj.backstage.util.TUtil;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +47,7 @@ public abstract class BaseLazyFragment<P extends BasePresenter, M extends BaseMo
     public RxManager mRxManage;
     protected Activity mActivity;
     protected View mRootView;
+    private ZLoadingDialog dialog;
 
     /**
      * 是否对用户可见
@@ -322,12 +326,21 @@ public abstract class BaseLazyFragment<P extends BasePresenter, M extends BaseMo
 
     @Override
     public void showProgress() {
-
+        dialog=new ZLoadingDialog(mActivity);
+        dialog.setLoadingBuilder(Z_TYPE.ROTATE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintTextSize(14) // 设置字体大小 dp
+                .setHintTextColor(Color.BLACK)  // 设置字体颜色
+                .setDurationTime(1) // 设置动画时间百分比 - 0.5倍
+                .setCanceledOnTouchOutside(false)//点击外部无法取消
+                .show();
     }
 
     @Override
     public void hideProgress() {
-
+        if (dialog!=null){
+            dialog.dismiss();
+        }
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)

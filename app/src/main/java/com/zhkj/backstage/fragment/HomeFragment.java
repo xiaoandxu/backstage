@@ -123,6 +123,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                showProgress();
                 mPresenter.SalesToday();
                 mRefreshLayout.finishRefresh(1000);
             }
@@ -133,7 +134,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     protected void initView() {
         //loading
         dialog = new ZLoadingDialog(mActivity);
-        showLoading();
+        showProgress();
         mPresenter.SalesToday();
 
 
@@ -173,23 +174,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
-                cancleLoading();
+                hideProgress();
                 break;
         }
     }
 
-    public void showLoading(){
-        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
-                .setLoadingColor(Color.BLACK)//颜色
-                .setHintText("请稍后...")
-                .setHintTextSize(14) // 设置字体大小 dp
-                .setHintTextColor(Color.BLACK)  // 设置字体颜色
-                .setDurationTime(0.5) // 设置动画时间百分比 - 0.5倍
-                .setCanceledOnTouchOutside(false)//点击外部无法取消
-                .show();
-    }
 
-    public void cancleLoading(){
-        dialog.dismiss();
-    }
 }
