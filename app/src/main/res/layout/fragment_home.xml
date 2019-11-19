@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -18,6 +19,55 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="20dp"
+                        android:text="首页"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/sosou"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/sosou"
+                            android:hint="请输入工单号或者手机号"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:textColor="#9e9e9e"
+                            android:textSize="14dp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="12dp"
+                            android:src="@drawable/dkw" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -37,7 +87,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="厂商入驻待审核"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -63,7 +112,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="师傅入驻待审核"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -96,7 +144,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="已接单待服务"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -122,7 +169,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="远程费申请待审核"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -154,7 +200,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="今日入驻厂商"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -180,7 +225,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="昨日入驻厂商"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -212,7 +256,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="今日入驻师傅"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -238,7 +281,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="昨日入驻师傅"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -270,7 +312,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="待处理提现"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -296,7 +337,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="待处理仲裁"
-                            android:textColor="#000000"
                             android:textSize="14sp" />
 
                         <TextView
@@ -317,6 +357,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/ll_lastest"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -647,7 +688,9 @@
                         android:layout_marginBottom="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical"></LinearLayout>
+                        android:orientation="vertical">
+
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

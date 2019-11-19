@@ -201,15 +201,15 @@ public abstract class BaseLazyFragment<P extends BasePresenter, M extends BaseMo
     protected abstract void initData();
 
 //    public View getEmptyView() {
-//        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data, null);
+//        back LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data, null);
 //    }
 //
 //    public View getEmptyMessage() {
-//        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_message, null);
+//        back LayoutInflater.from(mActivity).inflate(R.layout.layout_no_message, null);
 //    }
 //
 //    public View getEmptyLogistics() {
-//        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_logistics, null);
+//        back LayoutInflater.from(mActivity).inflate(R.layout.layout_no_logistics, null);
 //    }
 
     /**

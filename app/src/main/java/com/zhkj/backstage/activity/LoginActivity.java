@@ -87,14 +87,16 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                 passWord = mEtPassword.getText().toString();
                 if ("".equals(userName)) {
                     ToastUtils.showShort("请输入手机号！");
+                    cancleLoading();
                     return;
                 }
 //                if (!RegexUtils.isMobileExact(userName)){
 //                    ToastUtils.showShort("手机号格式不正确！");
-//                    return;
+//                    back;
 //                }
                 if ("".equals(passWord)) {
                     ToastUtils.showShort("请输入密码！");
+                    cancleLoading();
                     return;
                 }
                 mPresenter.Login(userName, passWord);

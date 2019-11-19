@@ -1,8 +1,11 @@
 package com.zhkj.backstage.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.LatestorderActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
@@ -66,6 +70,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     TextView mTvAbolition;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
+    @BindView(R.id.sosou)
+    EditText mSosou;
+    @BindView(R.id.ll_lastest)
+    LinearLayout mLlLastest;
 
     private String mParam1;
     private String mParam2;
@@ -123,7 +131,6 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                showProgress();
                 mPresenter.SalesToday();
                 mRefreshLayout.finishRefresh(1000);
             }
@@ -134,7 +141,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     protected void initView() {
         //loading
         dialog = new ZLoadingDialog(mActivity);
-        showProgress();
+        showLoading();
         mPresenter.SalesToday();
 
 
@@ -142,12 +149,16 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
 
     @Override
     protected void setListener() {
-
+        mLlLastest.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.ll_lastest:
+                startActivity(new Intent(mActivity, LatestorderActivity.class));
+                break;
+        }
     }
 
 
@@ -174,10 +185,23 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
-                hideProgress();
+                cancleLoading();
                 break;
         }
     }
 
+    public void showLoading() {
+        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("请稍后...")
+                .setHintTextSize(14) // 设置字体大小 dp
+                .setHintTextColor(Color.BLACK)  // 设置字体颜色
+                .setDurationTime(0.5) // 设置动画时间百分比 - 0.5倍
+                .setCanceledOnTouchOutside(false)//点击外部无法取消
+                .show();
+    }
 
+    public void cancleLoading() {
+        dialog.dismiss();
+    }
 }
