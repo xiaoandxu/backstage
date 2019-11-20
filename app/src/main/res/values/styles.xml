@@ -29,4 +29,11 @@
         <item name="textAllCaps">true</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+    <!--首页状态栏为黑色-->
+    <style name="AppTheme.NoActionBar">
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:statusBarColor">#000000</item>
+    </style>
 </resources>
