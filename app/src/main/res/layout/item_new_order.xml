@@ -32,6 +32,7 @@
                 android:layout_centerVertical="true"/>
 
             <TextView
+                android:id="@+id/tv_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="待接单"
@@ -44,6 +45,7 @@
                 android:layout_centerVertical="true"/>
 
             <TextView
+                android:id="@+id/tv_order_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="40dp"
@@ -52,6 +54,7 @@
                 android:textSize="12dp"
                 android:layout_centerVertical="true"/>
             <ImageView
+                android:id="@+id/iv_copy"
                 android:src="@drawable/rsc_copy"
                 android:layout_width="15dp"
                 android:layout_height="20dp"
@@ -69,7 +72,7 @@
                 android:orientation="vertical"
                 android:layout_weight="0.2">
                 <TextView
-                    android:id="@+id/pic"
+                    android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="小天鹅  洗衣机"
@@ -78,6 +81,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"/>
                 <TextView
+                    android:id="@+id/tv_malfunction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="故障:洗衣机不转动,然后漏水"
@@ -94,6 +98,7 @@
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"/>
                 <TextView
+                    android:id="@+id/tv_billing_account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="发单账号：18067138219"
@@ -101,6 +106,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginLeft="10dp"/>
                 <TextView
+                    android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="地址:浙江省 宁波市 江北区 同济路169号1901室"

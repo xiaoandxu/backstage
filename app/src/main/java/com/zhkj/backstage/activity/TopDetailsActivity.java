@@ -42,6 +42,7 @@ public class TopDetailsActivity extends BaseActivity implements View.OnClickList
     View mView;
     private String[] title = new String[]{"订单详情", "支付记录", "订单记录", "配件信息", "服务信息", "返件信息", "投诉信息", "留言显示"};
     private List<Fragment> fragmentList = new ArrayList<>();
+    private String orderId;
 
     @Override
     protected void initImmersionBar() {
@@ -60,14 +61,15 @@ public class TopDetailsActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initData() {
-        fragmentList.add(DetailsFragment.newInstant(""));
-        fragmentList.add(PayCordFragment.newInstant(""));
-        fragmentList.add(OrderdetailsFragment.newInstant(""));
-        fragmentList.add(AccessoriesFragment.newInstant(""));
-        fragmentList.add(SysteminfoFragment.newInstant(""));
-        fragmentList.add(ReturnFragment.newInstant(""));
-        fragmentList.add(ComplaintFragment.newInstant(""));
-        fragmentList.add(MessageFragment.newInstant(""));
+        orderId = getIntent().getStringExtra("OrderId");
+        fragmentList.add(DetailsFragment.newInstance(orderId,""));
+        fragmentList.add(PayCordFragment.newInstance(orderId,""));
+        fragmentList.add(OrderdetailsFragment.newInstance(orderId,""));
+        fragmentList.add(AccessoriesFragment.newInstance(orderId,""));
+        fragmentList.add(SysteminfoFragment.newInstance(orderId,""));
+        fragmentList.add(ReturnFragment.newInstance(orderId,""));
+        fragmentList.add(ComplaintFragment.newInstance(orderId,""));
+        fragmentList.add(MessageFragment.newInstance(orderId,""));
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), title, fragmentList);
         mViewpager.setAdapter(adapter);
         mInforbar.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -78,6 +80,7 @@ public class TopDetailsActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initView() {
         mTvTitle.setText("工单详情");
+
     }
 
     @Override

@@ -397,6 +397,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_accessories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -436,6 +437,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_warranty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -481,6 +483,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/ll_remote_fee"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -520,6 +523,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_leave_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -559,6 +563,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_complaint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -604,6 +609,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/ll_carry_out"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -643,6 +649,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_abolition"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

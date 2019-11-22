@@ -15,7 +15,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
-import com.zhkj.backstage.activity.LatestorderActivity;
+import com.zhkj.backstage.activity.WorkOrderListActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
@@ -74,6 +74,20 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     EditText mSosou;
     @BindView(R.id.ll_lastest)
     LinearLayout mLlLastest;
+    @BindView(R.id.ll_accessories)
+    LinearLayout mLlAccessories;
+    @BindView(R.id.ll_warranty)
+    LinearLayout mLlWarranty;
+    @BindView(R.id.ll_remote_fee)
+    LinearLayout mLlRemoteFee;
+    @BindView(R.id.ll_leave_message)
+    LinearLayout mLlLeaveMessage;
+    @BindView(R.id.ll_complaint)
+    LinearLayout mLlComplaint;
+    @BindView(R.id.ll_carry_out)
+    LinearLayout mLlCarryOut;
+    @BindView(R.id.ll_abolition)
+    LinearLayout mLlAbolition;
 
     private String mParam1;
     private String mParam2;
@@ -150,15 +164,46 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     @Override
     protected void setListener() {
         mLlLastest.setOnClickListener(this);
+        mLlAccessories.setOnClickListener(this);
+        mLlCarryOut.setOnClickListener(this);
+        mLlAbolition.setOnClickListener(this);
+        mLlComplaint.setOnClickListener(this);
+        mLlLeaveMessage.setOnClickListener(this);
+        mLlRemoteFee.setOnClickListener(this);
+        mLlWarranty.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        Intent intent = new Intent(mActivity, WorkOrderListActivity.class);
+        switch (v.getId()) {
             case R.id.ll_lastest:
-                startActivity(new Intent(mActivity, LatestorderActivity.class));
+                intent.putExtra("name", "最新工单");
+                break;
+            case R.id.ll_accessories:
+                intent.putExtra("name", "配件工单");
+                break;
+            case R.id.ll_warranty:
+                intent.putExtra("name", "质保工单");
+                break;
+            case R.id.ll_remote_fee:
+                intent.putExtra("name", "远程费工单");
+                break;
+            case R.id.ll_leave_message:
+                intent.putExtra("name", "留言工单");
+                break;
+            case R.id.ll_complaint:
+                intent.putExtra("name", "投诉工单");
+                break;
+            case R.id.ll_carry_out:
+                intent.putExtra("name", "完成工单");
+                break;
+            case R.id.ll_abolition:
+                intent.putExtra("name", "废除工单");
                 break;
         }
+
+        startActivity(intent);
     }
 
 

@@ -10,15 +10,30 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 
 //配件信息
 public class AccessoriesFragment extends BaseLazyFragment {
-    private static final String Param="param";
-    private String mParam;
-   public static AccessoriesFragment newInstant(String param){
-       AccessoriesFragment orderdetails=new AccessoriesFragment();
-       Bundle args=new Bundle();
-       args.getString(Param,param);
-       orderdetails.setArguments(args);
-       return orderdetails;
-   }
+    private static final String ARG_PARAM1 = "param1";//
+    private static final String ARG_PARAM2 = "param2";//
+
+    private String mParam1;
+    private String mParam2;
+
+    public static AccessoriesFragment newInstance(String param1, String param2) {
+        AccessoriesFragment fragment = new AccessoriesFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
 
     @Override
     protected void initImmersionBar() {
@@ -50,11 +65,4 @@ public class AccessoriesFragment extends BaseLazyFragment {
 
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments()!=null){
-            mParam=getArguments().getString(Param);
-        }
-    }
 }

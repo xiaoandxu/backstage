@@ -10,15 +10,21 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 
 //服务信息
 public class SysteminfoFragment extends BaseLazyFragment {
-    private static final String Param="param";
-    private String mParam;
-   public static SysteminfoFragment newInstant(String param){
-       SysteminfoFragment orderdetails=new SysteminfoFragment();
-       Bundle args=new Bundle();
-       args.getString(Param,param);
-       orderdetails.setArguments(args);
-       return orderdetails;
-   }
+    private static final String ARG_PARAM1 = "param1";//
+    private static final String ARG_PARAM2 = "param2";//
+
+    private String mParam1;
+    private String mParam2;
+
+    public static SysteminfoFragment newInstance(String param1, String param2) {
+        SysteminfoFragment fragment = new SysteminfoFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     protected void initImmersionBar() {
@@ -50,11 +56,5 @@ public class SysteminfoFragment extends BaseLazyFragment {
 
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments()!=null){
-            mParam=getArguments().getString(Param);
-        }
-    }
+
 }

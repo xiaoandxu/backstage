@@ -10,15 +10,20 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 
 //支付记录
 public class PayCordFragment extends BaseLazyFragment {
-    private static final String Param="param";
-    private String mParam;
-   public static PayCordFragment newInstant(String param){
-       PayCordFragment orderdetails=new PayCordFragment();
-       Bundle args=new Bundle();
-       args.getString(Param,param);
-       orderdetails.setArguments(args);
-       return orderdetails;
-   }
+    private static final String ARG_PARAM1 = "param1";//
+    private static final String ARG_PARAM2 = "param2";//
+
+    private String mParam1;
+    private String mParam2;
+
+    public static PayCordFragment newInstance(String param1, String param2) {
+        PayCordFragment fragment = new PayCordFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     protected void initImmersionBar() {
@@ -50,11 +55,4 @@ public class PayCordFragment extends BaseLazyFragment {
 
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments()!=null){
-            mParam=getArguments().getString(Param);
-        }
-    }
 }

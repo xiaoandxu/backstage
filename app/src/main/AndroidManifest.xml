@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
-        <activity android:name=".activity.LatestorderActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
+        <activity android:name=".activity.WorkOrderListActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <activity android:name=".activity.TopDetailsActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
 
         <!--适配华为（huawei）刘海屏-->
