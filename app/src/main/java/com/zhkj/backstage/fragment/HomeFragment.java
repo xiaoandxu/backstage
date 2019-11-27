@@ -145,6 +145,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                showLoading();
                 mPresenter.SalesToday();
                 mRefreshLayout.finishRefresh(1000);
             }

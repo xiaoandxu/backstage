@@ -100,14 +100,16 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             }
         });
 
-        mRefreshLayout.setEnableLoadMore(false);
+        //没满屏时禁止上拉
+        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page=1;
                 list.clear();
-                showProgress();
+//                showProgress();
                 getData();
+                refreshLayout.finishRefresh(1000);
 //                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
             }
         });
@@ -118,6 +120,7 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                 page++;
                 getData();
 //                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
+                refreshLayout.finishLoadMore(1000);
             }
         });
     }
@@ -189,8 +192,17 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     public void GetOrderInfoList(BaseResult<WorkOrder> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                list.addAll(baseResult.getData().getData());
-                adapter.setNewData(list);
+                if (baseResult.getData()!=null){
+                    list.addAll(baseResult.getData().getData());
+                    adapter.setNewData(list);
+                }
+
+                mRefreshLayout.finishRefresh();
+                if (page != 1 && "0".equals(baseResult.getData().getCount())) {
+                    mRefreshLayout.finishLoadMoreWithNoMoreData();
+                } else {
+                    mRefreshLayout.finishLoadMore();
+                }
                 hideProgress();
                 break;
         }
