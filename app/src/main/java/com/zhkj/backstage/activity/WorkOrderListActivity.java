@@ -29,6 +29,9 @@ import com.zhkj.backstage.contract.OrderListContract;
 import com.zhkj.backstage.model.OrderListModel;
 import com.zhkj.backstage.presenter.OrderListPresenter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,6 +90,9 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             }
         });
         adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+
+            private Intent intent;
+
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 switch (view.getId()){
@@ -95,6 +101,18 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                         myClip = ClipData.newPlainText("", id);
                         myClipboard.setPrimaryClip(myClip);
                         ToastUtils.showShort("复制成功");
+                        break;
+                    case R.id.iv_specify:
+                        intent = new Intent(mActivity,DesignatedDispatchActivity.class);
+                        intent.putExtra("orderId",list.get(position).getOrderID());
+                        intent.putExtra("typeId","1");
+                        startActivity(intent);
+                        break;
+                    case R.id.iv_transfer:
+                        intent=new Intent(mActivity,DesignatedDispatchActivity.class);
+                        intent.putExtra("orderId",list.get(position).getOrderID());
+                        intent.putExtra("typeId","2");
+                        startActivity(intent);
                         break;
                 }
             }
@@ -205,6 +223,14 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                 }
                 hideProgress();
                 break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(String message) {
+        if ("send".equals(message)){
+            list.clear();
+            getData();
         }
     }
 }

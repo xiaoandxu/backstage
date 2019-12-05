@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -20,6 +21,8 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.SalesToday;
+import com.zhkj.backstage.bean.SalesToday2;
+import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.contract.HomeContract;
 import com.zhkj.backstage.model.HomeModel;
 import com.zhkj.backstage.presenter.HomePresenter;
@@ -91,7 +94,6 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
 
     private String mParam1;
     private String mParam2;
-    private ZLoadingDialog dialog;
 
 
     public HomeFragment() {
@@ -125,6 +127,20 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         }
     }
 
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        if (isVisibleToUser){
+////            ToastUtils.showShort("ddffdfd");
+////            showProgress();
+////            mPresenter.SalesToday();
+////            mPresenter.SalesToday2();
+////            mPresenter.SalesToday3();
+//            initView();
+//        }
+//        super.setUserVisibleHint(isVisibleToUser);
+//
+//    }
+
     @Override
     protected void initImmersionBar() {
         mImmersionBar = ImmersionBar.with(this);
@@ -145,8 +161,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                showLoading();
+                showProgress();
                 mPresenter.SalesToday();
+                mPresenter.SalesToday2();
+                mPresenter.SalesToday3();
                 mRefreshLayout.finishRefresh(1000);
             }
         });
@@ -155,9 +173,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     @Override
     protected void initView() {
         //loading
-        dialog = new ZLoadingDialog(mActivity);
-        showLoading();
+        showProgress();
         mPresenter.SalesToday();
+        mPresenter.SalesToday2();
+        mPresenter.SalesToday3();
 
 
     }
@@ -212,7 +231,14 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     public void SalesToday(BaseResult<Data<SalesToday>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
+                break;
+        }
+    }
 
+    @Override
+    public void SalesToday2(BaseResult<Data<SalesToday2>> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
                 mTvVendorSettled.setText(baseResult.getData().getItem2().getFactoryExamineCount() + "");
                 mTvMasterSettled.setText(baseResult.getData().getItem2().getMasterWorkerCount() + "");
                 mTvPendingService.setText(baseResult.getData().getItem2().getInServiceOreder() + "");
@@ -223,31 +249,26 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvYesterdayMaster.setText(baseResult.getData().getItem2().getYesterdayMasterWorkerCount() + "");
                 mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
                 mTvArbitration.setText(baseResult.getData().getItem2().getComplaintCount() + "");
+
+                break;
+        }
+    }
+
+    @Override
+    public void SalesToday3(BaseResult<Data<SalesToday3>> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
                 mTvLatestWorkOrder.setText(baseResult.getData().getItem2().getNewOrder() + "");
                 mTvAccessories.setText(baseResult.getData().getItem2().getOrderAccessroyDetailCount() + "");
                 mTvWarranty.setText(baseResult.getData().getItem2().getQualityAssurance() + "");
                 mTvRemoteFee.setText(baseResult.getData().getItem2().getServiceCount() + "");
                 mTvLeaveMessage.setText(baseResult.getData().getItem2().getLeavemessageServiceCount() + "");
-                mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount() + "");
+                mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount2() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
-                cancleLoading();
+                hideProgress();
                 break;
         }
     }
 
-    public void showLoading() {
-        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
-                .setLoadingColor(Color.BLACK)//颜色
-                .setHintText("请稍后...")
-                .setHintTextSize(14) // 设置字体大小 dp
-                .setHintTextColor(Color.BLACK)  // 设置字体颜色
-                .setDurationTime(0.5) // 设置动画时间百分比 - 0.5倍
-                .setCanceledOnTouchOutside(false)//点击外部无法取消
-                .show();
-    }
-
-    public void cancleLoading() {
-        dialog.dismiss();
-    }
 }

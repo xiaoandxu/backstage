@@ -2,6 +2,9 @@ package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.SalesToday2;
+import com.zhkj.backstage.bean.SalesToday3;
+import com.zhkj.backstage.bean.UserList;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.bean.SalesToday;
 
@@ -46,6 +49,17 @@ public interface ApiService {
     @POST("Order/SalesToday")
     Observable<BaseResult<Data<SalesToday>>> SalesToday();
 
+    /**
+     * 首页信息
+     */
+    @POST("Order/SalesToday2")
+    Observable<BaseResult<Data<SalesToday2>>> SalesToday2();
+
+    /**
+     * 首页信息
+     */
+    @POST("Order/SalesToday3")
+    Observable<BaseResult<Data<SalesToday3>>> SalesToday3();
     /*
     * 最新工单,配件工单等
     *
@@ -84,4 +98,24 @@ public interface ApiService {
     @POST("Order/GetOrderInfo")
     Observable<BaseResult<WorkOrder.DataBean>> GetOrderInfo(@Field("OrderID") String OrderID,
                                                             @Field("MessageType") String MessageType);
+
+
+    /*获取用户列表*/
+    @FormUrlEncoded
+    @POST("Account/GetMUserList")
+    Observable<BaseResult<UserList>> GetMUserList(@Field("UserID") String UserID,
+                                                  @Field("Type") String Type,
+                                                  @Field("page") String page,
+                                                  @Field("limit") String limit);
+
+    /*
+    * 指定派单
+    * TypeId:操作：1指定派单2改派工单
+    * */
+    @FormUrlEncoded
+    @POST("Order/SendOrder")
+    Observable<BaseResult<String>> SendOrder(@Field("OrderID") String OrderID,
+                                                  @Field("UserID") String UserID,
+                                                  @Field("LoginUser") String LoginUser,
+                                                  @Field("TypeID") String TypeID);
 }

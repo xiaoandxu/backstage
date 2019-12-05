@@ -23,6 +23,16 @@ public class LaterorderAdapter extends BaseQuickAdapter<WorkOrder.DataBean, Base
         } else {
             helper.setText(R.id.tv_service, item.getTypeName() + "/" + item.getGuarantee());
         }
+        helper.addOnClickListener(R.id.iv_specify)
+                .addOnClickListener(R.id.iv_transfer);
+
+        if (item.getSendUser()==null){
+            helper.setVisible(R.id.iv_transfer,false);
+            helper.setVisible(R.id.iv_specify,true);
+        }else {
+            helper.setVisible(R.id.iv_transfer,true);
+            helper.setVisible(R.id.iv_specify,false);
+        }
 
         helper.setText(R.id.tv_order_num,"工单号："+item.getOrderID())
                 .setText(R.id.tv_name, item.getBrandName() + " " + item.getSubCategoryName()+" "+item.getProductType())
