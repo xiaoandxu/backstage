@@ -9,5 +9,6 @@
     <color name="gray_two">#808080</color>
     <color name="gray_three">#b2b2b2</color>
     <color name="red">#F25037</color>
+    <color name="blue">#1690FF</color>
     <color name="transparent">#00000000</color>
 </resources>

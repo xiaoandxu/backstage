@@ -21,9 +21,9 @@ public class DesignatedDispatchPresenter extends DesignatedDispatchContract.Pres
     @Override
     public void SendOrder(String OrderID, String UserID, String LoginUser, String TypeID) {
         mModel.SendOrder(OrderID, UserID, LoginUser, TypeID)
-                .subscribe(new BaseObserver<String>() {
+                .subscribe(new BaseObserver<Data<String>>() {
                     @Override
-                    protected void onHandleSuccess(BaseResult<String> value) {
+                    protected void onHandleSuccess(BaseResult<Data<String>> value) {
                         mView.SendOrder(value);
                     }
                 });

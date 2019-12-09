@@ -19,7 +19,7 @@ public class DesignatedDispatchModel implements DesignatedDispatchContract.Model
     }
 
     @Override
-    public Observable<BaseResult<String>> SendOrder(String OrderID, String UserID, String LoginUser, String TypeID) {
+    public Observable<BaseResult<Data<String>>> SendOrder(String OrderID, String UserID, String LoginUser, String TypeID) {
         return ApiRetrofit.getDefault().SendOrder(OrderID, UserID, LoginUser, TypeID)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());

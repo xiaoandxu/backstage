@@ -1,7 +1,6 @@
 package com.zhkj.backstage.fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,12 +9,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.VendorListActivity;
 import com.zhkj.backstage.activity.WorkOrderListActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
@@ -26,8 +25,6 @@ import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.contract.HomeContract;
 import com.zhkj.backstage.model.HomeModel;
 import com.zhkj.backstage.presenter.HomePresenter;
-import com.zyao89.view.zloading.ZLoadingDialog;
-import com.zyao89.view.zloading.Z_TYPE;
 
 import butterknife.BindView;
 
@@ -91,9 +88,14 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     LinearLayout mLlCarryOut;
     @BindView(R.id.ll_abolition)
     LinearLayout mLlAbolition;
+    @BindView(R.id.ll_vendor_settled)
+    LinearLayout mLlVendorSettled;
+    @BindView(R.id.ll_master_settled)
+    LinearLayout mLlMasterSettled;
 
     private String mParam1;
     private String mParam2;
+    private Intent intent1;
 
 
     public HomeFragment() {
@@ -191,6 +193,8 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlLeaveMessage.setOnClickListener(this);
         mLlRemoteFee.setOnClickListener(this);
         mLlWarranty.setOnClickListener(this);
+        mLlVendorSettled.setOnClickListener(this);
+        mLlMasterSettled.setOnClickListener(this);
     }
 
     @Override
@@ -199,31 +203,49 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         switch (v.getId()) {
             case R.id.ll_lastest:
                 intent.putExtra("name", "最新工单");
+                startActivity(intent);
                 break;
             case R.id.ll_accessories:
                 intent.putExtra("name", "配件工单");
+                startActivity(intent);
                 break;
             case R.id.ll_warranty:
                 intent.putExtra("name", "质保工单");
+                startActivity(intent);
                 break;
             case R.id.ll_remote_fee:
                 intent.putExtra("name", "远程费工单");
+                startActivity(intent);
                 break;
             case R.id.ll_leave_message:
                 intent.putExtra("name", "留言工单");
+                startActivity(intent);
                 break;
             case R.id.ll_complaint:
                 intent.putExtra("name", "投诉工单");
+                startActivity(intent);
                 break;
             case R.id.ll_carry_out:
                 intent.putExtra("name", "完成工单");
+                startActivity(intent);
                 break;
             case R.id.ll_abolition:
                 intent.putExtra("name", "废除工单");
+                startActivity(intent);
+                break;
+            case R.id.ll_vendor_settled:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "6");
+                startActivity(intent1);
+                break;
+            case R.id.ll_master_settled:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "7");
+                startActivity(intent1);
                 break;
         }
 
-        startActivity(intent);
+
     }
 
 

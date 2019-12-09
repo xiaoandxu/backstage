@@ -198,12 +198,17 @@ public class DesignatedDispatchActivity extends BaseActivity<DesignatedDispatchP
     }
 
     @Override
-    public void SendOrder(BaseResult<String> baseResult) {
+    public void SendOrder(BaseResult<Data<String>> baseResult) {
         switch (baseResult.getStatusCode()){
             case 200:
-                ToastUtils.showShort("派单成功");
-                EventBus.getDefault().post("send");
-                finish();
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort("派单成功");
+                    EventBus.getDefault().post("send");
+                    finish();
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+
                 break;
         }
     }

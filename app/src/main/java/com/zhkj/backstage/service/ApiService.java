@@ -1,12 +1,18 @@
 package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.BankCard;
+import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.GetIDCardImg;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
+import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.UserList;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.bean.SalesToday;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -114,8 +120,51 @@ public interface ApiService {
     * */
     @FormUrlEncoded
     @POST("Order/SendOrder")
-    Observable<BaseResult<String>> SendOrder(@Field("OrderID") String OrderID,
+    Observable<BaseResult<Data<String>>> SendOrder(@Field("OrderID") String OrderID,
                                                   @Field("UserID") String UserID,
                                                   @Field("LoginUser") String LoginUser,
                                                   @Field("TypeID") String TypeID);
+
+
+    /*获取待审核列表
+    *
+    * */
+    @FormUrlEncoded
+    @POST("Account/GetUserInfoList")
+    Observable<BaseResult<UserInfoList>> GetUserInfoList(@Field("Type") String Type,
+                                                         @Field("IfAuth") String IfAuth,
+                                                         @Field("page") String page,
+                                                         @Field("limit") String limit);
+
+    /*获取用户信息*/
+    @FormUrlEncoded
+    @POST("Account/GetUserInfoList")
+    Observable<BaseResult<UserInfoList>> GetUserInfo(@Field("UserID") String UserID,
+                                                     @Field("limit") String limit);
+
+    /**
+     * 获取公司信息
+     */
+    @FormUrlEncoded
+    @POST("account/GetmessageBytype")
+    Observable<BaseResult<Data<CompanyInfo>>> GetmessageBytype(@Field("UserID") String UserID);
+
+    /**
+     * 获取用户实名照片
+     */
+    @FormUrlEncoded
+    @POST("Account/GetIDCardImg")
+    Observable<BaseResult<List<GetIDCardImg>>> GetIDCardImg(@Field("UserID") String UserID);
+
+    /*获取银行卡*/
+    @FormUrlEncoded
+    @POST("Account/GetAccountPayInfoList")
+    Observable<BaseResult<List<BankCard>>> GetAccountPayInfoList(@Field("UserID") String UserID);
+
+    /*审核实名认证*/
+    @FormUrlEncoded
+    @POST("Account/ApproveAuth")
+    Observable<BaseResult<Data<String>>> ApproveAuth(@Field("UserID") String UserID,
+                                                     @Field("State") String State,
+                                                     @Field("AuthMessage") String AuthMessage);
 }

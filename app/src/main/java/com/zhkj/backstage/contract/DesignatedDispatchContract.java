@@ -12,12 +12,12 @@ import io.reactivex.Observable;
 public interface DesignatedDispatchContract {
     interface Model extends BaseModel{
         Observable<BaseResult<UserList>> GetMUserList(String UserID, String Type, String page, String limit);
-        Observable<BaseResult<String>> SendOrder( String OrderID, String UserID, String LoginUser, String TypeID);
+        Observable<BaseResult<Data<String>>> SendOrder( String OrderID, String UserID, String LoginUser, String TypeID);
     }
 
     interface View extends BaseView{
         void GetMUserList(BaseResult<UserList> baseResult);
-        void SendOrder(BaseResult<String> baseResult);
+        void SendOrder(BaseResult<Data<String>> baseResult);
     }
 
     abstract class Presenter extends BasePresenter<View,Model>{
