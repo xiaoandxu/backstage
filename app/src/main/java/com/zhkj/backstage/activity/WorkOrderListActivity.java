@@ -124,7 +124,7 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page=1;
-                list.clear();
+//                list.clear();
 //                showProgress();
                 getData();
                 refreshLayout.finishRefresh(1000);
@@ -210,6 +210,9 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     public void GetOrderInfoList(BaseResult<WorkOrder> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
+                if(page==1){
+                    list.clear();
+                }
                 if (baseResult.getData()!=null){
                     list.addAll(baseResult.getData().getData());
                     adapter.setNewData(list);
