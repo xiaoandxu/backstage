@@ -74,9 +74,7 @@ public class PaymentFragment extends BaseLazyFragment<PersonalInformationPresent
 
     @Override
     protected void initData() {
-        adapter = new PaymentAdapter(R.layout.item_payment,list);
-        mRvPayment.setLayoutManager(new LinearLayoutManager(mActivity));
-        mRvPayment.setAdapter(adapter);
+
     }
 
     @Override
@@ -118,7 +116,9 @@ public class PaymentFragment extends BaseLazyFragment<PersonalInformationPresent
                         }
                     }
 
-                    adapter.setNewData(list);
+                    adapter = new PaymentAdapter(R.layout.item_payment,list);
+                    mRvPayment.setLayoutManager(new LinearLayoutManager(mActivity));
+                    mRvPayment.setAdapter(adapter);
                 }
                 break;
         }

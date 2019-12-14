@@ -1,12 +1,19 @@
 package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Address;
+import com.zhkj.backstage.bean.Area;
 import com.zhkj.backstage.bean.BankCard;
+import com.zhkj.backstage.bean.CategoryData;
+import com.zhkj.backstage.bean.City;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.Province;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
+import com.zhkj.backstage.bean.Skill;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.UserList;
 import com.zhkj.backstage.bean.WorkOrder;
@@ -167,4 +174,72 @@ public interface ApiService {
     Observable<BaseResult<Data<String>>> ApproveAuth(@Field("UserID") String UserID,
                                                      @Field("State") String State,
                                                      @Field("AuthMessage") String AuthMessage);
+
+    /**
+     * 获取分类
+     */
+    @FormUrlEncoded
+    @POST("FactoryConfig/GetFactoryCategory")
+    Observable<BaseResult<CategoryData>> GetFactoryCategory(@Field("ParentID") String ParentID);
+
+    /**
+     * 获取子分类
+     */
+    @FormUrlEncoded
+    @POST("FactoryConfig/GetFactoryCategory")
+    Observable<BaseResult<CategoryData>> GetChildFactoryCategory(@Field("ParentID") String ParentID);
+
+    /*获取账户的技能*/
+    @FormUrlEncoded
+    @POST("Account/GetAccountSkill")
+    Observable<BaseResult<List<Skill>>> GetAccountSkill(@Field("UserID") String UserID);
+
+    /**
+     * 添加技能
+     *
+     * @param UserID
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Account/UpdateAccountSkillData")
+    Observable<BaseResult<String>> UpdateAccountSkillData(@Field("UserID") String UserID, @Field("NodeIds") String NodeIds);
+
+    /**
+     * 获取省
+     */
+    @POST("Config/GetProvince")
+    Observable<BaseResult<List<Province>>> GetProvince();
+
+    /**
+     * 获取市
+     */
+    @FormUrlEncoded
+    @POST("Config/GetCity")
+    Observable<BaseResult<Data<List<City>>>> GetCity(@Field("parentcode") String parentcode);
+
+    /**
+     * 获取区
+     */
+    @FormUrlEncoded
+    @POST("Config/GetArea")
+    Observable<BaseResult<Data<List<Area>>>> GetArea(@Field("parentcode") String parentcode);
+
+    /**
+     * 获取区
+     */
+    @FormUrlEncoded
+    @POST("Config/GetDistrict")
+    Observable<BaseResult<Data<List<District>>>> GetDistrict(@Field("parentcode") String parentcode);
+
+    /*获取服务区域*/
+    @FormUrlEncoded
+    @POST("Account/GetServiceRangeByUserID")
+    Observable<BaseResult<List<Address>>> GetServiceRangeByUserID(@Field("UserID") String UserID);
+
+    /*更新服务区域*/
+    @FormUrlEncoded
+    @POST("Account/AddorUpdateServiceArea")
+    Observable<BaseResult<Data<String>>> AddorUpdateServiceArea(@Field("UserID") String UserID,
+                                                                @Field("ServiceAreaJsonStr") String ServiceAreaJsonStr);
+
 }

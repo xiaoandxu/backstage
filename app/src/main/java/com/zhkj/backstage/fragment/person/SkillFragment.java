@@ -1,19 +1,55 @@
 package com.zhkj.backstage.fragment.person;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.adapter.CarCircuitAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
+import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Category;
+import com.zhkj.backstage.bean.CategoryData;
+import com.zhkj.backstage.bean.MySkills;
+import com.zhkj.backstage.bean.Skill;
+import com.zhkj.backstage.contract.AddSkillsContract;
+import com.zhkj.backstage.model.AddSkillsModel;
+import com.zhkj.backstage.presenter.AddSkillsPresenter;
+import com.zyao89.view.zloading.ZLoadingDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 
 //技能
-public class SkillFragment extends BaseLazyFragment {
+public class SkillFragment extends BaseLazyFragment<AddSkillsPresenter, AddSkillsModel> implements AddSkillsContract.View , View.OnClickListener{
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
+    @BindView(R.id.expandablelistview)
+    ExpandableListView mExpandablelistview;
+    @BindView(R.id.btn_skill)
+    Button mBtnSkill;
 
     private String mParam1;
     private String mParam2;
-
+    private List<MySkills> mySkillsList = new ArrayList<>();
+    private List<Skill> mSkillList=new ArrayList<>();
+    private List<Category> popularList;
+    ZLoadingDialog dialog = new ZLoadingDialog(mActivity); //loading
+    private CarCircuitAdapter circuitAdapter;
+    private int position;
+    private String skills;
+    private String NodeIds;
+    private String userID;//用户id
     public static SkillFragment newInstance(String param1, String param2) {
         SkillFragment fragment = new SkillFragment();
         Bundle args = new Bundle();
@@ -56,12 +92,201 @@ public class SkillFragment extends BaseLazyFragment {
 
     @Override
     protected void initView() {
-
+        userID=mParam1;
+        mPresenter.GetFactoryCategory("999");
     }
 
     @Override
     protected void setListener() {
-
+        mBtnSkill.setOnClickListener(this);
     }
 
+    @Override
+    public void GetFactoryCategory(BaseResult<CategoryData> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                CategoryData data = baseResult.getData();
+                if ("0".equals(data.getCode())) {
+                    popularList = data.getData();
+                    if (popularList.size() == 0) {
+                    } else {
+                        for (int i = 0; i < popularList.size(); i++) {
+                            mySkillsList.add(new MySkills(false, popularList.get(i), new ArrayList<Category>()));
+                        }
+                        circuitAdapter = new CarCircuitAdapter(mActivity);
+                        circuitAdapter.addGroupList(mySkillsList);
+                        mExpandablelistview.setGroupIndicator(null);
+                        mExpandablelistview.setAdapter(circuitAdapter);
+                        //点击父级请求子级数据
+                        mExpandablelistview.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                            @Override
+                            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                                String circuit_id = circuitAdapter.getGroup(groupPosition).getCategory().getFCategoryID();
+                                position = groupPosition;
+                                if (circuitAdapter.getChildrenCount(groupPosition)>0){
+                                    if (parent.isGroupExpanded(groupPosition)){
+                                        parent.collapseGroup(groupPosition);
+                                    }else{
+                                        parent.expandGroup(groupPosition);
+                                    }
+                                }else{
+                                    mPresenter.GetChildFactoryCategory(circuit_id);
+                                }
+                                return true;
+                            }
+                        });
+                        mExpandablelistview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                            private List<Category> categoryArrayList;
+                            private int count=0;
+
+                            @Override
+                            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+                                count=0;
+                                categoryArrayList = circuitAdapter.getGroup(groupPosition).getCategoryArrayList();
+                                Category category = categoryArrayList.get(childPosition);
+                                category.setSelected(!category.isSelected());
+                                for (int i = 0; i < categoryArrayList.size() ; i++) {
+                                    if (categoryArrayList.get(i).isSelected()){
+                                        count++;
+                                    }
+                                }
+                                if (count==categoryArrayList.size()){
+                                    circuitAdapter.getGroup(groupPosition).setSelected(true);
+                                }else{
+                                    circuitAdapter.getGroup(groupPosition).setSelected(false);
+                                }
+                                circuitAdapter.notifyDataSetChanged();
+                                return false;
+                            }
+                        });
+                    }
+                } else {
+                    ToastUtils.showShort("获取分类失败！");
+                }
+                hideProgress();
+                break;
+            case 401:
+//                ToastUtils.showShort(baseResult.getData());
+                break;
+        }
+    }
+
+    @Override
+    public void GetChildFactoryCategory(BaseResult<CategoryData> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                CategoryData data = baseResult.getData();
+                if ("0".equals(data.getCode())) {
+                    popularList = data.getData();
+                    if (popularList.size() == 0) {
+                    } else {
+                        circuitAdapter.addAllChild(position,popularList);
+                        mExpandablelistview.expandGroup(position);
+                    }
+                    mPresenter.GetAccountSkill(userID);
+                } else {
+                    ToastUtils.showShort("获取分类失败！");
+                }
+                hideProgress();
+                break;
+            case 401:
+//                ToastUtils.showShort(baseResult.getData());
+                break;
+        }
+    }
+
+    @Override
+    public void GetAccountSkill(BaseResult<List<Skill>> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                mSkillList = baseResult.getData();
+                if (mSkillList.size() == 0) {
+//                        ToastUtils.showShort("获取技能失败！");
+                } else {
+                    for (int i = 0; i < mSkillList.size(); i++) {
+                        for (int j = 0; j < mySkillsList.size(); j++) {
+                            if (mSkillList.get(i).getCategoryID().equals(mySkillsList.get(j).getCategory().getId())){
+                                mySkillsList.get(j).setSelected(true);
+                            }
+                            for (int k = 0; k < mySkillsList.get(j).getCategoryArrayList().size(); k++) {
+                                if (mSkillList.get(i).getCategoryID().equals(mySkillsList.get(j).getCategoryArrayList().get(k).getId())){
+                                    mySkillsList.get(j).getCategoryArrayList().get(k).setSelected(true);
+                                }
+                            }
+                        }
+                        circuitAdapter.notifyDataSetChanged();
+                    }
+                }
+                break;
+            case 401:
+//                ToastUtils.showShort(baseResult.getData());
+                break;
+        }
+    }
+
+    @Override
+    public void UpdateAccountSkillData(BaseResult<String> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                mActivity.finish();
+                break;
+            case 401:
+//                ToastUtils.showShort(baseResult.getData());
+                break;
+
+            default:
+                hideProgress();
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_skill:
+                skills ="";
+                NodeIds ="";
+                for (int i = 0; i < circuitAdapter.getGroup().size(); i++) {
+                    if (circuitAdapter.getGroup().get(i).isSelected()){
+                        skills +=circuitAdapter.getGroup().get(i).getCategory().getFCategoryName()+"/";
+                        NodeIds +=circuitAdapter.getGroup().get(i).getCategory().getFCategoryID()+",";
+                    }
+                    for (int j = 0; j < circuitAdapter.getGroup().get(i).getCategoryArrayList().size(); j++) {
+                        if (circuitAdapter.getGroup().get(i).getCategoryArrayList().get(j).isSelected()){
+                            skills +=circuitAdapter.getGroup().get(i).getCategoryArrayList().get(j).getFCategoryName()+"/";
+                            NodeIds +=circuitAdapter.getGroup().get(i).getCategoryArrayList().get(j).getFCategoryID()+",";
+                        }
+                    }
+                }
+                if (skills.contains("/")){
+                    skills = skills.substring(0, skills.lastIndexOf("/"));
+                }
+                if (NodeIds.contains(",")){
+                    NodeIds = NodeIds.substring(0, NodeIds.lastIndexOf(","));
+                }
+                if ("".equals(skills)){
+                    ToastUtils.setBgColor(Color.BLACK);
+                    ToastUtils.setMsgColor(Color.WHITE);
+                    ToastUtils.setGravity(Gravity.CENTER,0 , 0);
+                    ToastUtils.showShort("未选择技能");
+                    return;
+                }
+                System.out.println(skills);
+                System.out.println(NodeIds);
+                new AlertDialog.Builder(mActivity).setMessage("替换之前的技能？\n\n已选技能："+skills)
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPresenter.UpdateAccountSkillData(userID,NodeIds);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton("取消",null)
+                        .create()
+                        .show();
+
+                break;
+        }
+    }
 }

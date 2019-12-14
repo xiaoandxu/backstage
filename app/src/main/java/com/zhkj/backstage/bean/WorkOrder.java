@@ -220,6 +220,15 @@ public class WorkOrder implements Serializable {
         private String ExamineMoney;
         private String isOnLookMessage;
         private String terraceMoney;
+        private String InvoiceName;
+
+        public String getInvoiceName() {
+            return InvoiceName;
+        }
+
+        public void setInvoiceName(String invoiceName) {
+            InvoiceName = invoiceName;
+        }
 
         public String getTerraceMoney() {
             return terraceMoney;

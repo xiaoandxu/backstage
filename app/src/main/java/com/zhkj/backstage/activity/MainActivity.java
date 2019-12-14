@@ -1,6 +1,9 @@
 package com.zhkj.backstage.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,9 +22,11 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.fragment.HomeFragment;
+import com.zhkj.backstage.service.GrayService;
 import com.zhkj.backstage.weight.CustomViewPager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +99,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     protected void initView() {
+        Intent grayIntent = new Intent(getApplicationContext(), GrayService.class);
+        startService(grayIntent);
+
+        // 适配android M，检查权限
+        List<String> permissions = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isNeedRequestPermissions(permissions)) {
+            requestPermissions(permissions.toArray(new String[permissions.size()]), 0);
+        }
+
         mViewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
         mViewPager.setOffscreenPageLimit(mFragments.size());
         mViewPager.setScroll(false);
@@ -223,5 +237,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean isNeedRequestPermissions(List<String> permissions) {
+        // 定位精确位置
+        addPermission(permissions, Manifest.permission.ACCESS_FINE_LOCATION);
+        // 存储权限
+        addPermission(permissions, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 前台服务权限
+            addPermission(permissions, Manifest.permission.FOREGROUND_SERVICE);
+        }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            // 后台定位权限
+            addPermission(permissions, Manifest.permission.ACCESS_COARSE_LOCATION);
+//        }
+
+        return permissions.size() > 0;
+    }
+
+    private void addPermission(List<String> permissionsList, String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+        }
     }
 }
