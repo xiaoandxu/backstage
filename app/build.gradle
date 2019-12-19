@@ -112,4 +112,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
+
 }

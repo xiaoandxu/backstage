@@ -56,7 +56,7 @@ public class PhotoViewActivity extends BaseActivity {
 
         RequestOptions options=new RequestOptions().fitCenter().error(R.mipmap.ic_launcher);
         Glide.with(mActivity)
-                .load("https://img.xigyu.com/Pics/IDCard/" +PhotoUrl)
+                .load(PhotoUrl)
                 .apply(options)
                 //   .placeholder(R.mipmap.ic_launcher)//加载过程中图片未显示时显示的本地图片
                 // .error(R.mipmap.ic_launcher)//加载异常时显示的图片

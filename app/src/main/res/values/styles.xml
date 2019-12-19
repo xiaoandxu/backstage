@@ -36,4 +36,11 @@
     <item name="windowNoTitle">true</item>
     <item name="android:statusBarColor">#000000</item>
     </style>
+
+    <style name="popwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/anim_enter_bottom</item>
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowExitAnimation">@anim/anim_exit_bottom</item>
+        <!-- 指定消失的动画xml -->
+    </style>
 </resources>

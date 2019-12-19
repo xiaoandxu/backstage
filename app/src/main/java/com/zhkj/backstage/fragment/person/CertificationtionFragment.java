@@ -154,17 +154,17 @@ public class CertificationtionFragment extends BaseLazyFragment<PersonalInformat
         switch (v.getId()){
             case R.id.iv_one:
                 intent = new Intent(mActivity, PhotoViewActivity.class);
-                intent.putExtra("PhotoUrl",list.get(0).getImageUrl());
+                intent.putExtra("PhotoUrl","https://img.xigyu.com/Pics/IDCard/" +list.get(0).getImageUrl());
                 startActivity(intent);
                 break;
             case R.id.iv_two:
                 intent = new Intent(mActivity, PhotoViewActivity.class);
-                intent.putExtra("PhotoUrl",list.get(1).getImageUrl());
+                intent.putExtra("PhotoUrl","https://img.xigyu.com/Pics/IDCard/" +list.get(1).getImageUrl());
                 startActivity(intent);
                 break;
             case R.id.iv_three:
                 intent = new Intent(mActivity, PhotoViewActivity.class);
-                intent.putExtra("PhotoUrl",list.get(2).getImageUrl());
+                intent.putExtra("PhotoUrl","https://img.xigyu.com/Pics/IDCard/" +list.get(2).getImageUrl());
                 startActivity(intent);
                 break;
         }

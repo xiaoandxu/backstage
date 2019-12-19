@@ -10,10 +10,12 @@ import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.bean.Skill;
+import com.zhkj.backstage.bean.Track;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.UserList;
 import com.zhkj.backstage.bean.WorkOrder;
@@ -242,4 +244,46 @@ public interface ApiService {
     Observable<BaseResult<Data<String>>> AddorUpdateServiceArea(@Field("UserID") String UserID,
                                                                 @Field("ServiceAreaJsonStr") String ServiceAreaJsonStr);
 
+
+    /*工单跟踪*/
+    @FormUrlEncoded
+    @POST("Order/GetOrderRecordByOrderID")
+    Observable<BaseResult<List<Track>>> GetOrderRecordByOrderID(@Field("OrderID") String OrderID);
+
+    /**
+     * 留言
+     */
+    @FormUrlEncoded
+    @POST("LeaveMessage/AddLeaveMessageForOrder ")
+    Observable<BaseResult<Data<String>>> AddLeaveMessageForOrder(@Field("UserId") String UserID,
+                                                                 @Field("Type") String Type,
+                                                                 @Field("OrderId") String OrderId,
+                                                                 @Field("Content") String Content,
+                                                                 @Field("photo") String photo);
+
+    /*
+     * 留言图片
+     * */
+    @POST("Upload/LeaveMessageImg")
+    Observable<BaseResult<Data<String>>> LeaveMessageImg(@Body RequestBody json);
+
+    /*
+     * 留言查看过
+     * 1  未读
+     * 2  已读
+     * */
+    @FormUrlEncoded
+    @POST("LeaveMessage/LeaveMessageWhetherLook")
+    Observable<BaseResult<Data>> LeaveMessageWhetherLook(@Field("OrderID") String OrderID,
+                                                         @Field("factoryIslook") String factoryIslook,
+                                                         @Field("workerIslook") String workerIslook,
+                                                         @Field("platformIslook") String platformIslook);
+
+
+    /*
+     * 工单支付记录
+     * */
+    @FormUrlEncoded
+    @POST("Pay/GetOrderPayByOrderID")
+    Observable<BaseResult<List<PayByOrderID>>> GetOrderPayByOrderID(@Field("OrderID") String OrderID);
 }

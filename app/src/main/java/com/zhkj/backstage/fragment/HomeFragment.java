@@ -92,6 +92,12 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     LinearLayout mLlVendorSettled;
     @BindView(R.id.ll_master_settled)
     LinearLayout mLlMasterSettled;
+    @BindView(R.id.tv_sale)
+    TextView mTvSale;
+    @BindView(R.id.tv_total_person)
+    TextView mTvTotalPerson;
+    @BindView(R.id.tv_total_order)
+    TextView mTvTotalOrder;
 
     private String mParam1;
     private String mParam2;
@@ -253,6 +259,9 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     public void SalesToday(BaseResult<Data<SalesToday>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
+                mTvSale.setText(baseResult.getData().getItem2().getMoney()+"");
+                mTvTotalPerson.setText(baseResult.getData().getItem2().getCount()+"");
+                mTvTotalOrder.setText(baseResult.getData().getItem2().getOrderCount()+"");
                 break;
         }
     }

@@ -1,20 +1,44 @@
 package com.zhkj.backstage.fragment;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.PhotoViewActivity;
+import com.zhkj.backstage.adapter.AccessoryDetailAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
+import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.contract.DetailContract;
+import com.zhkj.backstage.model.DetailModel;
+import com.zhkj.backstage.presenter.DetailPresenter;
+
+import butterknife.BindView;
 
 //配件信息
-public class AccessoriesFragment extends BaseLazyFragment {
+public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
-
+    @BindView(R.id.rv_accessories)
+    RecyclerView mRvAccessories;
+    private SimpleTarget<Bitmap> simpleTarget;
     private String mParam1;
     private String mParam2;
+    private WorkOrder.DataBean data;
+    private AccessoryDetailAdapter accessoryDetailAdapter;
+    private Intent intent;
 
     public static AccessoriesFragment newInstance(String param1, String param2) {
         AccessoriesFragment fragment = new AccessoriesFragment();
@@ -47,7 +71,7 @@ public class AccessoriesFragment extends BaseLazyFragment {
 
     @Override
     protected int setLayoutId() {
-       return R.layout.fragment_accessories;
+        return R.layout.fragment_accessories;
     }
 
     @Override
@@ -57,12 +81,56 @@ public class AccessoriesFragment extends BaseLazyFragment {
 
     @Override
     protected void initView() {
-
+        mPresenter.GetOrderInfo(mParam1);
     }
 
     @Override
     protected void setListener() {
 
     }
+
+    @Override
+    public void GetOrderInfo(BaseResult<WorkOrder.DataBean> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                data = baseResult.getData();
+                accessoryDetailAdapter = new AccessoryDetailAdapter(R.layout.item_accessories, data.getOrderAccessroyDetail(), data.getAccessoryState());
+                mRvAccessories.setLayoutManager(new LinearLayoutManager(mActivity));
+                mRvAccessories.setAdapter(accessoryDetailAdapter);
+                accessoryDetailAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+                    @Override
+                    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                        switch (view.getId()) {
+                            case R.id.iv_host:
+                                if (data.getOrderAccessroyDetail() == null) {
+                                    return;
+                                }
+                                if (data.getOrderAccessroyDetail().size() == 0) {
+                                    return;
+                                }
+                                intent = new Intent(mActivity, PhotoViewActivity.class);
+                                intent.putExtra("PhotoUrl","https://img.xigyu.com/Pics/Accessory/" + data.getOrderAccessroyDetail().get(position).getPhoto1());
+                                startActivity(intent);
+                                break;
+                            case R.id.iv_accessories:
+                                if (data.getOrderAccessroyDetail() == null) {
+                                    return;
+                                }
+                                if (data.getOrderAccessroyDetail().size() == 0) {
+                                    return;
+                                }
+                                intent=new Intent(mActivity, PhotoViewActivity.class);
+                                intent.putExtra("PhotoUrl","https://img.xigyu.com/Pics/Accessory/" + data.getOrderAccessroyDetail().get(position).getPhoto2());
+                                startActivity(intent);
+                                break;
+                        }
+                    }
+                });
+
+        break;
+        }
+
+    }
+
 
 }

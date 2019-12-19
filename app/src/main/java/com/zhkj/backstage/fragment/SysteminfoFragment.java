@@ -2,19 +2,32 @@ package com.zhkj.backstage.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.adapter.ServiceAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
+import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.contract.DetailContract;
+import com.zhkj.backstage.model.DetailModel;
+import com.zhkj.backstage.presenter.DetailPresenter;
+
+import butterknife.BindView;
 
 //服务信息
-public class SysteminfoFragment extends BaseLazyFragment {
+public class SysteminfoFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
+    @BindView(R.id.rv_service)
+    RecyclerView mRvService;
 
     private String mParam1;
     private String mParam2;
+    private WorkOrder.DataBean data;
+    private ServiceAdapter serviceAdapter;
 
     public static SysteminfoFragment newInstance(String param1, String param2) {
         SysteminfoFragment fragment = new SysteminfoFragment();
@@ -23,6 +36,15 @@ public class SysteminfoFragment extends BaseLazyFragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
 
@@ -48,7 +70,7 @@ public class SysteminfoFragment extends BaseLazyFragment {
 
     @Override
     protected void initView() {
-
+        mPresenter.GetOrderInfo(mParam1);
     }
 
     @Override
@@ -57,4 +79,16 @@ public class SysteminfoFragment extends BaseLazyFragment {
     }
 
 
+    @Override
+    public void GetOrderInfo(BaseResult<WorkOrder.DataBean> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                data = baseResult.getData();
+                serviceAdapter = new ServiceAdapter(R.layout.item_service, data.getOrderServiceDetail());
+                mRvService.setLayoutManager(new LinearLayoutManager(mActivity));
+                mRvService.setAdapter(serviceAdapter);
+                break;
+        }
+
+    }
 }
