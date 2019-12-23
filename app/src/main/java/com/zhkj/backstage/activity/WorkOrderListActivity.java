@@ -181,6 +181,9 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             case "废除工单":
                 mPresenter.GetOrderInfoList(null, null, null, "-1", null, null, null, null, null, null, String.valueOf(page), "10");
                 break;
+            case "已接单待服务":
+                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,String.valueOf(page), "10");
+                break;
         }
     }
 

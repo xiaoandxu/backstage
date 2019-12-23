@@ -12,6 +12,7 @@ import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
 import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
+import com.zhkj.backstage.bean.RemoteFeeAudit;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.bean.Skill;
@@ -286,4 +287,22 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("Pay/GetOrderPayByOrderID")
     Observable<BaseResult<List<PayByOrderID>>> GetOrderPayByOrderID(@Field("OrderID") String OrderID);
+
+    /*
+     * 远程费申请待审核列表
+     * */
+    @FormUrlEncoded
+    @POST("Order/RemoteFeeAudit")
+    Observable<BaseResult<Data<RemoteFeeAudit>>> RemoteFeeAudit(@Field("page") String page,
+                                                                @Field("limit") String limit);
+
+    /*
+     * 远程费申请审核
+     * */
+    @FormUrlEncoded
+    @POST("Order/ApproveBeyondMoney")
+    Observable<BaseResult<Data<String>>> ApproveBeyondMoney(   @Field("OrderID") String OrderID,
+                                                               @Field("BeyondState") String BeyondState,
+                                                               @Field("ComID") String ComID,
+                                                               @Field("BeyondMoney") String BeyondMoney);
 }

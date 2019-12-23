@@ -22,6 +22,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -47,9 +48,11 @@ public class MyApplication extends MultiDexApplication {
                 MaterialHeader header=new MaterialHeader(context);
                 header.setPrimaryColors(Color.parseColor("#00000000"));
                 header.setShowBezierWave(true);
-                layout.setEnableHeaderTranslationContent(false);
-                return header;//指定为经典Header，默认是 贝塞尔雷达Header
-//                return new ClassicsHeader(context).setSpinnerStyle(SpinnerStyle.Translate);//指定为经典Header，默认是 贝塞尔雷达Header
+//                layout.setEnableHeaderTranslationContent(false);
+//                layout.setRefreshHeader(new ClassicsHeader(context));//设置Header
+                layout.setEnableHeaderTranslationContent(true);//是否下拉Header的时候向下平移列表或者内容
+//                return header;//指定为经典Header，默认是 贝塞尔雷达Header
+                return new ClassicsHeader(context).setSpinnerStyle(SpinnerStyle.Translate);//指定为经典Header，默认是 贝塞尔雷达Header
             }
         });
         //设置全局的Footer构建器

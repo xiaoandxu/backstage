@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.RemoteFeeApplicationActivity;
 import com.zhkj.backstage.activity.VendorListActivity;
 import com.zhkj.backstage.activity.WorkOrderListActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
@@ -25,6 +27,9 @@ import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.contract.HomeContract;
 import com.zhkj.backstage.model.HomeModel;
 import com.zhkj.backstage.presenter.HomePresenter;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 
@@ -98,6 +103,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     TextView mTvTotalPerson;
     @BindView(R.id.tv_total_order)
     TextView mTvTotalOrder;
+    @BindView(R.id.ll_order_received_service)
+    LinearLayout mLlOrderReceivedService;
+    @BindView(R.id.ll_remote_fee_application)
+    LinearLayout mLlRemoteFeeApplication;
 
     private String mParam1;
     private String mParam2;
@@ -166,10 +175,12 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     @Override
     protected void initData() {
         mRefreshLayout.setEnableLoadMore(false);
+//        mRefreshLayout.setRefreshHeader(new ClassicsHeader(mActivity));//设置Header
+//        mRefreshLayout.setEnableHeaderTranslationContent(true);//是否下拉Header的时候向下平移列表或者内容
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                showProgress();
+//                showProgress();
                 mPresenter.SalesToday();
                 mPresenter.SalesToday2();
                 mPresenter.SalesToday3();
@@ -201,6 +212,8 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlWarranty.setOnClickListener(this);
         mLlVendorSettled.setOnClickListener(this);
         mLlMasterSettled.setOnClickListener(this);
+        mLlOrderReceivedService.setOnClickListener(this);
+        mLlRemoteFeeApplication.setOnClickListener(this);
     }
 
     @Override
@@ -249,6 +262,14 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 intent1.putExtra("type", "7");
                 startActivity(intent1);
                 break;
+            case R.id.ll_order_received_service:
+                intent.putExtra("name", "已接单待服务");
+                startActivity(intent);
+                break;
+            case R.id.ll_remote_fee_application:
+                intent1 = new Intent(mActivity, RemoteFeeApplicationActivity.class);
+                startActivity(intent1);
+                break;
         }
 
 
@@ -259,9 +280,9 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     public void SalesToday(BaseResult<Data<SalesToday>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                mTvSale.setText(baseResult.getData().getItem2().getMoney()+"");
-                mTvTotalPerson.setText(baseResult.getData().getItem2().getCount()+"");
-                mTvTotalOrder.setText(baseResult.getData().getItem2().getOrderCount()+"");
+                mTvSale.setText(baseResult.getData().getItem2().getMoney() + "");
+                mTvTotalPerson.setText(baseResult.getData().getItem2().getCount() + "");
+                mTvTotalOrder.setText(baseResult.getData().getItem2().getOrderCount() + "");
                 break;
         }
     }
@@ -302,4 +323,11 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(String message) {
+        if ("two".equals(message)){
+            mPresenter.SalesToday2();
+        }
+    }
 }

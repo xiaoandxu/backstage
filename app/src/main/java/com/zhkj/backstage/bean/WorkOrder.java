@@ -713,6 +713,9 @@ public class WorkOrder implements Serializable {
                 case "9":
                     status="远程费审核";
                     break;
+                case "20":
+                    status="无师傅";
+                    break;
             }
             return status;
         }
