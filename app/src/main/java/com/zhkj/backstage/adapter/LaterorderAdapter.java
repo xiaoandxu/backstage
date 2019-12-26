@@ -24,13 +24,16 @@ public class LaterorderAdapter extends BaseQuickAdapter<WorkOrder.DataBean, Base
             helper.setText(R.id.tv_service, item.getTypeName() + "/" + item.getGuarantee());
         }
         helper.addOnClickListener(R.id.iv_specify)
-                .addOnClickListener(R.id.iv_transfer);
+                .addOnClickListener(R.id.iv_transfer)
+                .addOnClickListener(R.id.tv_change_state);
 
         if (item.getSendUser()==null){
             helper.setVisible(R.id.iv_transfer,false);
+            helper.setVisible(R.id.tv_change_state,false);
             helper.setVisible(R.id.iv_specify,true);
         }else {
             helper.setVisible(R.id.iv_transfer,true);
+            helper.setVisible(R.id.tv_change_state,true);
             helper.setVisible(R.id.iv_specify,false);
         }
 

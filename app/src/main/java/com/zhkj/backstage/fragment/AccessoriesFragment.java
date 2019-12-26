@@ -20,6 +20,7 @@ import com.zhkj.backstage.activity.PhotoViewActivity;
 import com.zhkj.backstage.adapter.AccessoryDetailAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.DetailContract;
 import com.zhkj.backstage.model.DetailModel;
@@ -129,6 +130,21 @@ public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, Detai
 
         break;
         }
+
+    }
+
+    @Override
+    public void UpdatePhone(BaseResult<Data<String>> baseResult) {
+
+    }
+
+    @Override
+    public void CloseOrder(BaseResult<Data<String>> baseResult) {
+
+    }
+
+    @Override
+    public void modifyOrderMoney(BaseResult<Data<String>> baseResult) {
 
     }
 

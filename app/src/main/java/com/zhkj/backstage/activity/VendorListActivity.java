@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -25,7 +26,11 @@ import com.zhkj.backstage.contract.VendorListContract;
 import com.zhkj.backstage.model.VendorListModel;
 import com.zhkj.backstage.presenter.VendorListPresenter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,9 +48,11 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
     private String type;
-    private int page=1;
-    private List<UserInfoList.DataBean> list=new ArrayList<>();
+    private int page = 1;
+    private List<UserInfoList.DataBean> list = new ArrayList<>();
     private VendorListAdapter adapter;
+    private String day;
+    private String data;
 
     @Override
     protected void initImmersionBar() {
@@ -63,13 +70,26 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
 
     @Override
     protected void initData() {
+        adapter = new VendorListAdapter(R.layout.item_vendor, list);
+        mRvVerdor.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRvVerdor.setAdapter(adapter);
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(mActivity, PersonalInformationActivity.class);
+                intent.putExtra("userId", list.get(position).getUserID());
+                startActivity(intent);
+            }
+        });
+
         //没满屏时禁止上拉
         mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                page=1;
-                mPresenter.GetUserInfoList(type, "0",String.valueOf(page),"10");
+                page = 1;
+                getData();
+//                mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
                 refreshLayout.finishRefresh(1000);
             }
         });
@@ -78,7 +98,8 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-                mPresenter.GetUserInfoList(type, "0",String.valueOf(page),"10");
+//                mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
+                getData();
                 refreshLayout.finishLoadMore(1000);
             }
         });
@@ -87,13 +108,43 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
     @Override
     protected void initView() {
         type = getIntent().getStringExtra("type");
-        if ("6".equals(type)) {
+        day = getIntent().getStringExtra("day");
+        Date date = new Date();
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        data = dateformat.format(date);
+
+        if ("6".equals(type) && "no".equals(day)) {
             mTvTitle.setText("厂商入驻待审核");
-        } else if ("7".equals(type)) {
+        } else if ("7".equals(type) && "no".equals(day)) {
             mTvTitle.setText("师傅入驻待审核");
+        } else if ("tp".equals(day)) {
+            mTvTitle.setText("今日入驻厂商");
+        } else if ("yp".equals(day)) {
+            mTvTitle.setText("昨日入驻厂商");
+        } else if ("tm".equals(day)) {
+            mTvTitle.setText("今日入驻师傅");
+        } else if ("ym".equals(day)) {
+            mTvTitle.setText("昨日入驻师傅");
         }
         showProgress();
-        mPresenter.GetUserInfoList(type, "0",String.valueOf(page),"10");
+        getData();
+
+    }
+
+    private void getData() {
+        if ("6".equals(type) && "no".equals(day)) {
+            mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
+        } else if ("7".equals(type) && "no".equals(day)) {
+            mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
+        } else if ("tp".equals(day)) {
+            mPresenter.GetUserInfoList(type, "",getStringByFormat(getTimesmorning()) , getStringByFormat(getTimesmorning()), String.valueOf(page), "10");
+        } else if ("yp".equals(day)) {
+            mPresenter.GetUserInfoList(type, "", getStringByFormat(getYesterdaysmorning()), getStringByFormat(getYesterdaysmorning()), String.valueOf(page), "10");
+        } else if ("tm".equals(day)) {
+            mPresenter.GetUserInfoList(type, "", getStringByFormat(getTimesmorning()), getStringByFormat(getTimesmorning()), String.valueOf(page), "10");
+        } else if ("ym".equals(day)) {
+            mPresenter.GetUserInfoList(type, "",  getStringByFormat(getYesterdaysmorning()), getStringByFormat(getYesterdaysmorning()), String.valueOf(page), "10");
+        }
     }
 
     @Override
@@ -119,19 +170,59 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
 
     @Override
     public void GetUserInfoList(BaseResult<UserInfoList> baseResult) {
-        list.clear();
+        if (page==1){
+            list.clear();
+        }
         list.addAll(baseResult.getData().getData());
-        adapter = new VendorListAdapter(R.layout.item_vendor,baseResult.getData().getData());
-        mRvVerdor.setLayoutManager(new LinearLayoutManager(mActivity));
-        mRvVerdor.setAdapter(adapter);
-        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent=new Intent(mActivity,PersonalInformationActivity.class);
-                intent.putExtra("userId",list.get(position).getUserID());
-                startActivity(intent);
-            }
-        });
+        adapter.setNewData(list);
         hideProgress();
+    }
+
+    // 获得当天0点时间
+    public static Date getTimesmorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    public static String getStringByFormat(Date date) {
+        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = null;
+        try {
+            strDate = mSimpleDateFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strDate;
+    }
+
+    // 获得昨日0点时间
+    public static Date getYesterdaysmorning() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(cal.DATE, -1);//把日期往前减少一天，若想把日期向后推一天则将负数改为正数
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+
+//        Date date = new Date();//取时间
+//        Calendar calendar = new GregorianCalendar();
+//        calendar.setTime(date);
+//        calendar.add(calendar.DATE, -1);//把日期往前减少一天，若想把日期向后推一天则将负数改为正数
+//        date = calendar.getTime();
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//        String dateString = formatter.format(date);
+//
+//        calendar.setTime(date);
+//        calendar.set(Calendar.HOUR, 0);
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 }

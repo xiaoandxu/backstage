@@ -58,6 +58,8 @@
         <activity android:name=".activity.PersonalInformationActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <activity android:name=".activity.PhotoViewActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <activity android:name=".activity.RemoteFeeApplicationActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
+        <activity android:name=".activity.WithdrawActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
+        <activity android:name=".activity.ComplaintActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
 
         <!--适配华为（huawei）刘海屏-->
         <meta-data

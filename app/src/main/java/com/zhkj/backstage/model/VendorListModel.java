@@ -11,8 +11,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class VendorListModel implements VendorListContract.Model {
     @Override
-    public Observable<BaseResult<UserInfoList>> GetUserInfoList(String Type, String IfAuth,String page, String limit) {
-        return ApiRetrofit.getDefault().GetUserInfoList(Type, IfAuth,page,limit)
+    public Observable<BaseResult<UserInfoList>> GetUserInfoList(String Type, String IfAuth,String StartDate, String EndDate,String page, String limit) {
+        return ApiRetrofit.getDefault().GetUserInfoList(Type, IfAuth,StartDate,EndDate,page,limit)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

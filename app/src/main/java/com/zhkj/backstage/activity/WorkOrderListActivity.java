@@ -1,11 +1,14 @@
 package com.zhkj.backstage.activity;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +27,7 @@ import com.zhkj.backstage.R;
 import com.zhkj.backstage.adapter.LaterorderAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.OrderListContract;
 import com.zhkj.backstage.model.OrderListModel;
@@ -61,6 +65,9 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     private String name;
     private ClipboardManager myClipboard;
     private ClipData myClip;
+    private View sendView;
+    private AlertDialog senddialog;
+
     @Override
     protected void initImmersionBar() {
         mImmersionBar = ImmersionBar.with(this);
@@ -113,6 +120,34 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                         intent.putExtra("orderId",list.get(position).getOrderID());
                         intent.putExtra("typeId","2");
                         startActivity(intent);
+                        break;
+                    case R.id.tv_change_state:
+                        sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_home, null);
+                        Button btn_negtive = sendView.findViewById(R.id.negtive);
+                        Button btn_positive = sendView.findViewById(R.id.positive);
+                        TextView tv_title = sendView.findViewById(R.id.title);
+                        TextView tv_message = sendView.findViewById(R.id.message);
+                        tv_title.setText("提示");
+                        tv_message.setText("是否改变工单状态？");
+
+                        btn_negtive.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                senddialog.dismiss();
+                            }
+                        });
+                        btn_positive.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                senddialog.dismiss();
+                                mPresenter.ChangeOrderStateTwenty(list.get(position).getOrderID());
+                            }
+                        });
+
+                        senddialog = new AlertDialog.Builder(mActivity)
+                                .setView(sendView)
+                                .create();
+                        senddialog.show();
                         break;
                 }
             }
@@ -228,6 +263,19 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                     mRefreshLayout.finishLoadMore();
                 }
                 hideProgress();
+                break;
+        }
+    }
+
+    @Override
+    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
                 break;
         }
     }

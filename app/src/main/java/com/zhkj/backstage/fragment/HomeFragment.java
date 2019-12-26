@@ -12,11 +12,12 @@ import androidx.annotation.NonNull;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.ComplaintActivity;
 import com.zhkj.backstage.activity.RemoteFeeApplicationActivity;
 import com.zhkj.backstage.activity.VendorListActivity;
+import com.zhkj.backstage.activity.WithdrawActivity;
 import com.zhkj.backstage.activity.WorkOrderListActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
@@ -107,6 +108,22 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     LinearLayout mLlOrderReceivedService;
     @BindView(R.id.ll_remote_fee_application)
     LinearLayout mLlRemoteFeeApplication;
+    @BindView(R.id.ll_today_plant)
+    LinearLayout mLlTodayPlant;
+    @BindView(R.id.ll_yesterday_plant)
+    LinearLayout mLlYesterdayPlant;
+    @BindView(R.id.ll_today_master)
+    LinearLayout mLlTodayMaster;
+    @BindView(R.id.ll_yesterday_master)
+    LinearLayout mLlYesterdayMaster;
+    @BindView(R.id.tv_withdraw_factory)
+    TextView mTvWithdrawFactory;
+    @BindView(R.id.ll_factory_complaint)
+    LinearLayout mLlFactoryComplaint;
+    @BindView(R.id.ll_master_complaint)
+    LinearLayout mLlMasterComplaint;
+    @BindView(R.id.ll_withdraw)
+    LinearLayout mLlWithdraw;
 
     private String mParam1;
     private String mParam2;
@@ -214,6 +231,13 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlMasterSettled.setOnClickListener(this);
         mLlOrderReceivedService.setOnClickListener(this);
         mLlRemoteFeeApplication.setOnClickListener(this);
+        mLlTodayMaster.setOnClickListener(this);
+        mLlTodayPlant.setOnClickListener(this);
+        mLlYesterdayMaster.setOnClickListener(this);
+        mLlYesterdayPlant.setOnClickListener(this);
+        mLlWithdraw.setOnClickListener(this);
+        mLlFactoryComplaint.setOnClickListener(this);
+        mLlMasterComplaint.setOnClickListener(this);
     }
 
     @Override
@@ -252,14 +276,50 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 intent.putExtra("name", "废除工单");
                 startActivity(intent);
                 break;
+            case R.id.ll_factory_complaint:
+                intent1 = new Intent(mActivity, ComplaintActivity.class);
+                intent1.putExtra("name", "工厂待处理仲裁");
+                startActivity(intent1);
+                break;
+            case R.id.ll_master_complaint:
+                intent1 = new Intent(mActivity, ComplaintActivity.class);
+                intent1.putExtra("name", "师傅待处理仲裁");
+                startActivity(intent1);
+                break;
             case R.id.ll_vendor_settled:
                 intent1 = new Intent(mActivity, VendorListActivity.class);
                 intent1.putExtra("type", "6");
+                intent1.putExtra("day", "no");
                 startActivity(intent1);
                 break;
             case R.id.ll_master_settled:
                 intent1 = new Intent(mActivity, VendorListActivity.class);
                 intent1.putExtra("type", "7");
+                intent1.putExtra("day", "no");
+                startActivity(intent1);
+                break;
+            case R.id.ll_today_plant:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "6");
+                intent1.putExtra("day", "tp");
+                startActivity(intent1);
+                break;
+            case R.id.ll_yesterday_plant:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "6");
+                intent1.putExtra("day", "yp");
+                startActivity(intent1);
+                break;
+            case R.id.ll_today_master:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "7");
+                intent1.putExtra("day", "tm");
+                startActivity(intent1);
+                break;
+            case R.id.ll_yesterday_master:
+                intent1 = new Intent(mActivity, VendorListActivity.class);
+                intent1.putExtra("type", "7");
+                intent1.putExtra("day", "ym");
                 startActivity(intent1);
                 break;
             case R.id.ll_order_received_service:
@@ -268,6 +328,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 break;
             case R.id.ll_remote_fee_application:
                 intent1 = new Intent(mActivity, RemoteFeeApplicationActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.ll_withdraw:
+                intent1 = new Intent(mActivity, WithdrawActivity.class);
                 startActivity(intent1);
                 break;
         }
@@ -301,7 +365,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvYesterdayMaster.setText(baseResult.getData().getItem2().getYesterdayMasterWorkerCount() + "");
                 mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
                 mTvArbitration.setText(baseResult.getData().getItem2().getComplaintCount() + "");
-
+                mTvWithdrawFactory.setText(baseResult.getData().getItem2().getFactorycomplaint() + "");
                 break;
         }
     }
@@ -326,7 +390,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(String message) {
-        if ("two".equals(message)){
+        if ("two".equals(message)) {
             mPresenter.SalesToday2();
         }
     }

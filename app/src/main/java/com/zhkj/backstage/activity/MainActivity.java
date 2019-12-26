@@ -99,14 +99,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
 
     @Override
     protected void initView() {
-        Intent grayIntent = new Intent(getApplicationContext(), GrayService.class);
-        startService(grayIntent);
+//        Intent grayIntent = new Intent(getApplicationContext(), GrayService.class);
+////        startService(grayIntent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            //android8.0以上通过startForegroundService启动service
+//            startForegroundService(grayIntent);
+//        } else {
+//            startService(grayIntent);
+//        }
 
         // 适配android M，检查权限
-        List<String> permissions = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isNeedRequestPermissions(permissions)) {
-            requestPermissions(permissions.toArray(new String[permissions.size()]), 0);
-        }
+//        List<String> permissions = new ArrayList<>();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isNeedRequestPermissions(permissions)) {
+//            requestPermissions(permissions.toArray(new String[permissions.size()]), 0);
+//        }
 
         mViewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
         mViewPager.setOffscreenPageLimit(mFragments.size());

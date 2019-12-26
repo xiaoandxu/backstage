@@ -10,7 +10,7 @@ import io.reactivex.Observable;
 
 public interface VendorListContract  {
     interface Model extends BaseModel{
-        Observable<BaseResult<UserInfoList>> GetUserInfoList(String Type, String IfAuth ,String page, String limit);
+        Observable<BaseResult<UserInfoList>> GetUserInfoList(String Type, String IfAuth ,String StartDate, String EndDate,String page, String limit);
     }
 
     interface View extends BaseView{
@@ -18,6 +18,6 @@ public interface VendorListContract  {
     }
 
     abstract class Presenter extends BasePresenter<View,Model>{
-        public abstract void GetUserInfoList(String Type, String IfAuth,String page, String limit);
+        public abstract void GetUserInfoList(String Type, String IfAuth,String StartDate, String EndDate,String page, String limit);
     }
 }

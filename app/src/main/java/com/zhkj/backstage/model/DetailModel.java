@@ -1,6 +1,7 @@
 package com.zhkj.backstage.model;
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.DetailContract;
 import com.zhkj.backstage.service.ApiRetrofit;
@@ -16,4 +17,27 @@ public class DetailModel implements DetailContract.Model {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> UpdatePhone(String OrderID, String Phone) {
+        return ApiRetrofit.getDefault().UpdatePhone(OrderID, Phone)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> CloseOrder(String OrderID, String Type, String price, String UserID) {
+        return ApiRetrofit.getDefault().CloseOrder(OrderID, Type, price, UserID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> modifyOrderMoney(String OrderID, String orderMoney, String UserID) {
+        return ApiRetrofit.getDefault().modifyOrderMoney(OrderID, orderMoney, UserID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+
 }

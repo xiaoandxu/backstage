@@ -1,23 +1,30 @@
 package com.zhkj.backstage.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.DetailContract;
 import com.zhkj.backstage.model.DetailModel;
 import com.zhkj.backstage.presenter.DetailPresenter;
+import com.zhkj.backstage.weight.CommonDialog_Home;
 
 import butterknife.BindView;
 
 //工单详情
-public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View {
+public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View ,View.OnClickListener{
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
     @BindView(R.id.tv_customer_name)
@@ -86,11 +93,21 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     Button mBtnModify;
     @BindView(R.id.btn_finish)
     Button mBtnFinish;
+    @BindView(R.id.btn_change_phone)
+    Button mBtnChangePhone;
 
     private String orderId;
     private String mParam1;
     private String mParam2;
     private WorkOrder.DataBean detail;
+    private View sendView;
+    private AlertDialog senddialog;
+    private Button btn_negtive;
+    private Button btn_positive;
+    private TextView tv_title;
+    private EditText tv_message;
+    private SPUtils spUtils;
+    private String userId;
 
     public static DetailsFragment newInstance(String param1, String param2) {
         DetailsFragment fragment = new DetailsFragment();
@@ -128,7 +145,8 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     protected void initData() {
-
+        spUtils = SPUtils.getInstance("token");
+        userId = spUtils.getString("userName");
     }
 
     @Override
@@ -139,7 +157,142 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     protected void setListener() {
+        mBtnChangePhone.setOnClickListener(this);
+        mBtnClose.setOnClickListener(this);
+        mBtnAbolish.setOnClickListener(this);
+        mBtnModify.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_change_phone:
+                sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
+                btn_negtive = sendView.findViewById(R.id.negtive);
+                btn_positive = sendView.findViewById(R.id.positive);
+                tv_title = sendView.findViewById(R.id.title);
+                tv_message = sendView.findViewById(R.id.message);
+                tv_title.setText("提示");
+                tv_message.setHint("输入修改的手机号");
+
+
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        senddialog.dismiss();
+                    }
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phone= tv_message.getText().toString();
+                        if (phone.isEmpty()){
+                            ToastUtils.showShort("请输入手机号");
+                            return;
+                        }else {
+                            senddialog.dismiss();
+                            mPresenter.UpdatePhone(orderId,phone);
+                        }
+
+                    }
+                });
+
+                senddialog = new AlertDialog.Builder(mActivity)
+                        .setView(sendView)
+                        .create();
+                senddialog.show();
+                break;
+            case R.id.btn_close:
+                sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
+                btn_negtive = sendView.findViewById(R.id.negtive);
+                btn_positive = sendView.findViewById(R.id.positive);
+                tv_title = sendView.findViewById(R.id.title);
+                tv_message = sendView.findViewById(R.id.message);
+                tv_title.setText("提示");
+                tv_message.setHint("输入结算金额");
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        senddialog.dismiss();
+                    }
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phone= tv_message.getText().toString();
+                        if (phone.isEmpty()){
+                            ToastUtils.showShort("请输入结算金额");
+                            return;
+                        }else {
+                            senddialog.dismiss();
+                            mPresenter.CloseOrder(orderId,"1",phone,userId);
+                        }
+
+                    }
+                });
+
+                senddialog = new AlertDialog.Builder(mActivity)
+                        .setView(sendView)
+                        .create();
+                senddialog.show();
+                break;
+            case R.id.btn_abolish:
+                CommonDialog_Home reject = new CommonDialog_Home(mActivity);
+                reject.setMessage("是否废除工单")
+
+                        //.setImageResId(R.mipmap.ic_launcher)
+                        .setTitle("提示")
+                        .setSingle(false).setOnClickBottomListener(new CommonDialog_Home.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        reject.dismiss();
+                        mPresenter.CloseOrder(orderId,"2","",userId);
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {//取消
+                        reject.dismiss();
+                        // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+                break;
+            case R.id.btn_modify:
+                sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
+                btn_negtive = sendView.findViewById(R.id.negtive);
+                btn_positive = sendView.findViewById(R.id.positive);
+                tv_title = sendView.findViewById(R.id.title);
+                tv_message = sendView.findViewById(R.id.message);
+                tv_title.setText("提示");
+                tv_message.setHint("输入修改金额");
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        senddialog.dismiss();
+                    }
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phone= tv_message.getText().toString();
+                        if (phone.isEmpty()){
+                            ToastUtils.showShort("请输入修改金额");
+                            return;
+                        }else {
+                            senddialog.dismiss();
+                            mPresenter.modifyOrderMoney(orderId,phone,userId);
+                        }
+
+                    }
+                });
+
+                senddialog = new AlertDialog.Builder(mActivity)
+                        .setView(sendView)
+                        .create();
+                senddialog.show();
+                break;
+
+        }
     }
 
 
@@ -255,13 +408,57 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     mTvOrderTime.setText(detail.getAudDate());
                     mTvEndTime.setText(detail.getRepairCompleteDate());
 
-                    if ("服务完成".equals(detail.getState())){
+                    if ("服务完成".equals(detail.getState())) {
                         mBtnFinish.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         mBtnFinish.setVisibility(View.GONE);
                     }
                 }
                 break;
         }
     }
+
+    @Override
+    public void UpdatePhone(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort("修改成功");
+                    mPresenter.GetOrderInfo(orderId);
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void CloseOrder(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort("操作成功");
+                    mPresenter.GetOrderInfo(orderId);
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void modifyOrderMoney(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort("操作成功");
+                    mPresenter.GetOrderInfo(orderId);
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+
 }

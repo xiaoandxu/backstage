@@ -1,20 +1,40 @@
 package com.zhkj.backstage.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.PhotoViewActivity;
+import com.zhkj.backstage.adapter.ComplaintDetailAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
+import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.ComplaintList;
+import com.zhkj.backstage.contract.ComplaintListContract;
+import com.zhkj.backstage.model.ComplaintListModel;
+import com.zhkj.backstage.presenter.ComplaintListPresenter;
+import com.zhkj.backstage.service.Config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 
 //投诉信息
-public class ComplaintFragment extends BaseLazyFragment {
+public class ComplaintFragment extends BaseLazyFragment<ComplaintListPresenter, ComplaintListModel> implements ComplaintListContract.View {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
-
+    @BindView(R.id.rv_complaint)
+    RecyclerView mRvComplaint;
+    private List<ComplaintList> lists = new ArrayList<>();
     private String mParam1;
     private String mParam2;
+    private ComplaintDetailAdapter adapter;
 
     public static ComplaintFragment newInstance(String param1, String param2) {
         ComplaintFragment fragment = new ComplaintFragment();
@@ -52,12 +72,26 @@ public class ComplaintFragment extends BaseLazyFragment {
 
     @Override
     protected void initData() {
-
+        adapter = new ComplaintDetailAdapter(R.layout.item_complaint_detail, lists);
+        mRvComplaint.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRvComplaint.setAdapter(adapter);
+        adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.iv_image:
+                        Intent intent = new Intent(mActivity, PhotoViewActivity.class);
+                        intent.putExtra("PhotoUrl", Config.ComPlaint_URL + lists.get(position).getPhoto());
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
     }
 
     @Override
     protected void initView() {
-
+        mPresenter.GetComplaintListByOrderId(mParam1);
     }
 
     @Override
@@ -66,4 +100,15 @@ public class ComplaintFragment extends BaseLazyFragment {
     }
 
 
+    @Override
+    public void GetComplaintListByOrderId(BaseResult<List<ComplaintList>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData()!=null){
+                    lists.addAll(baseResult.getData());
+                    adapter.setNewData(lists);
+                }
+                break;
+        }
+    }
 }
