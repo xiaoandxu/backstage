@@ -105,6 +105,9 @@ public interface ApiService {
                                                        @Field("CreateDate") String CreateDate,
                                                        @Field("partsIs") String partsIs,
                                                        @Field("messageIs") String messageIs,
+                                                       @Field("SendUserIs")String SendUserIs,
+                                                       @Field("StartTime") String StartTime,
+                                                       @Field("EndTime") String EndTime,
                                                        @Field("page") String page,
                                                        @Field("limit") String limit);
 

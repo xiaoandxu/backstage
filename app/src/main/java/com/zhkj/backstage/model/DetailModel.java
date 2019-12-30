@@ -39,5 +39,10 @@ public class DetailModel implements DetailContract.Model {
                 .subscribeOn(Schedulers.io());
     }
 
-
+    @Override
+    public Observable<BaseResult<Data<String>>> ChangeOrderStateTwenty(String OrderId) {
+        return ApiRetrofit.getDefault().ChangeOrderStateTwenty(OrderId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
 }

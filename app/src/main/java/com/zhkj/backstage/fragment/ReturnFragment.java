@@ -145,6 +145,11 @@ public class ReturnFragment extends BaseLazyFragment<DetailPresenter, DetailMode
     }
 
     @Override
+    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_bar_code:

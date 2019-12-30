@@ -124,6 +124,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     LinearLayout mLlMasterComplaint;
     @BindView(R.id.ll_withdraw)
     LinearLayout mLlWithdraw;
+    @BindView(R.id.tv_yesterday_ticket)
+    TextView mTvYesterdayTicket;
+    @BindView(R.id.ll_yesterday_ticket)
+    LinearLayout mLlYesterdayTicket;
 
     private String mParam1;
     private String mParam2;
@@ -238,6 +242,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlWithdraw.setOnClickListener(this);
         mLlFactoryComplaint.setOnClickListener(this);
         mLlMasterComplaint.setOnClickListener(this);
+        mLlYesterdayTicket.setOnClickListener(this);
     }
 
     @Override
@@ -273,7 +278,11 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 startActivity(intent);
                 break;
             case R.id.ll_abolition:
-                intent.putExtra("name", "废除工单");
+                intent.putExtra("name", "已派未接单");
+                startActivity(intent);
+                break;
+            case R.id.ll_yesterday_ticket:
+                intent.putExtra("name", "昨日工单");
                 startActivity(intent);
                 break;
             case R.id.ll_factory_complaint:

@@ -12,8 +12,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class OrderListModel implements OrderListContract.Model {
     @Override
-    public Observable<BaseResult<WorkOrder>> GetOrderInfoList(String OrderID, String UserID, String TypeID, String State, String ProvinceCode, String CityCode, String AreaCode, String CreateDate, String partsIs, String messageIs, String page, String limit) {
-        return ApiRetrofit.getDefault().GetOrderInfoList(OrderID, UserID, TypeID, State, ProvinceCode, CityCode, AreaCode, CreateDate, partsIs, messageIs,page,limit)
+    public Observable<BaseResult<WorkOrder>> GetOrderInfoList(String OrderID, String UserID, String TypeID, String State, String ProvinceCode, String CityCode, String AreaCode, String CreateDate, String partsIs, String messageIs,String SendUserIs,String StartTime, String EndTime, String page, String limit) {
+        return ApiRetrofit.getDefault().GetOrderInfoList(OrderID, UserID, TypeID, State, ProvinceCode, CityCode, AreaCode, CreateDate, partsIs, messageIs,SendUserIs,StartTime,EndTime,page,limit)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

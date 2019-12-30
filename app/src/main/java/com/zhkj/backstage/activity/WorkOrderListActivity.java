@@ -38,6 +38,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -193,31 +194,34 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     private void getData() {
         switch (name){
             case "最新工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null,null,null,null, String.valueOf(page), "10");
                 break;
             case "配件工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, "1", null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, "1", null, null,null,null,String.valueOf(page), "10");
                 break;
             case "质保工单":
-                mPresenter.GetOrderInfoList(null, null, "3", null, null, null, null, null, null, null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, "3", null, null, null, null, null, null, null,null, null,null,String.valueOf(page), "10");
                 break;
             case "远程费工单":
-                mPresenter.GetOrderInfoList(null, null, null, "9", null, null, null, null, null, null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, "9", null, null, null, null, null, null, null,null,null,String.valueOf(page), "10");
                 break;
             case "留言工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, "1", String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, "1", null,null,null,String.valueOf(page), "10");
                 break;
             case "投诉工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, null,null,null,null, String.valueOf(page), "10");
                 break;
             case "完成工单":
-                mPresenter.GetOrderInfoList(null, null, null, "7", null, null, null, null, null, null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, "7", null, null, null, null, null, null, null,null,null,String.valueOf(page), "10");
                 break;
-            case "废除工单":
-                mPresenter.GetOrderInfoList(null, null, null, "-1", null, null, null, null, null, null, String.valueOf(page), "10");
+            case "已派未接单":
+                mPresenter.GetOrderInfoList(null, null, null, "1", null, null, null, null, null, null,"1", null,null,String.valueOf(page), "10");
                 break;
             case "已接单待服务":
-                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
+                break;
+            case "昨日工单":
+                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,getStringByFormat(getYesterdaysmorning()),getStringByFormat(getTimesmorning()),String.valueOf(page), "10");
                 break;
         }
     }
@@ -286,5 +290,38 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             list.clear();
             getData();
         }
+    }
+
+    // 获得当天0点时间
+    public static Date getTimesmorning() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    public static String getStringByFormat(Date date) {
+        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = null;
+        try {
+            strDate = mSimpleDateFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strDate;
+    }
+
+    // 获得昨日0点时间
+    public static Date getYesterdaysmorning() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(cal.DATE, -1);//把日期往前减少一天，若想把日期向后推一天则将负数改为正数
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 }

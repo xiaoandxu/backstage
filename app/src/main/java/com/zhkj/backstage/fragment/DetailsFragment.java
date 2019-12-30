@@ -24,7 +24,7 @@ import com.zhkj.backstage.weight.CommonDialog_Home;
 import butterknife.BindView;
 
 //工单详情
-public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View ,View.OnClickListener{
+public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailModel> implements DetailContract.View, View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
     @BindView(R.id.tv_customer_name)
@@ -95,6 +95,10 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     Button mBtnFinish;
     @BindView(R.id.btn_change_phone)
     Button mBtnChangePhone;
+    @BindView(R.id.tv_status)
+    TextView mTvStatus;
+    @BindView(R.id.tv_change_state)
+    TextView mTvChangeState;
 
     private String orderId;
     private String mParam1;
@@ -166,7 +170,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_change_phone:
                 sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
                 btn_negtive = sendView.findViewById(R.id.negtive);
@@ -186,13 +190,13 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                 btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String phone= tv_message.getText().toString();
-                        if (phone.isEmpty()){
+                        String phone = tv_message.getText().toString();
+                        if (phone.isEmpty()) {
                             ToastUtils.showShort("请输入手机号");
                             return;
-                        }else {
+                        } else {
                             senddialog.dismiss();
-                            mPresenter.UpdatePhone(orderId,phone);
+                            mPresenter.UpdatePhone(orderId, phone);
                         }
 
                     }
@@ -220,13 +224,13 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                 btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String phone= tv_message.getText().toString();
-                        if (phone.isEmpty()){
+                        String phone = tv_message.getText().toString();
+                        if (phone.isEmpty()) {
                             ToastUtils.showShort("请输入结算金额");
                             return;
-                        }else {
+                        } else {
                             senddialog.dismiss();
-                            mPresenter.CloseOrder(orderId,"1",phone,userId);
+                            mPresenter.CloseOrder(orderId, "1", phone, userId);
                         }
 
                     }
@@ -247,7 +251,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     @Override
                     public void onPositiveClick() {
                         reject.dismiss();
-                        mPresenter.CloseOrder(orderId,"2","",userId);
+                        mPresenter.CloseOrder(orderId, "2", "", userId);
                     }
 
                     @Override
@@ -274,13 +278,13 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                 btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String phone= tv_message.getText().toString();
-                        if (phone.isEmpty()){
+                        String phone = tv_message.getText().toString();
+                        if (phone.isEmpty()) {
                             ToastUtils.showShort("请输入修改金额");
                             return;
-                        }else {
+                        } else {
                             senddialog.dismiss();
-                            mPresenter.modifyOrderMoney(orderId,phone,userId);
+                            mPresenter.modifyOrderMoney(orderId, phone, userId);
                         }
 
                     }
@@ -290,6 +294,26 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                         .setView(sendView)
                         .create();
                 senddialog.show();
+                break;
+            case R.id.tv_change_state:
+                CommonDialog_Home changState = new CommonDialog_Home(mActivity);
+                changState.setMessage("是否改变工单状态？")
+
+                        //.setImageResId(R.mipmap.ic_launcher)
+                        .setTitle("提示")
+                        .setSingle(false).setOnClickBottomListener(new CommonDialog_Home.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        changState.dismiss();
+                        mPresenter.ChangeOrderStateTwenty(orderId);
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {//取消
+                        changState.dismiss();
+                        // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
                 break;
 
         }
@@ -307,6 +331,12 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     mTvServiceType.setText("服务类型：" + detail.getTypeName() + "/" + detail.getGuarantee());
                     mTvBrand.setText("品      牌：" + detail.getBrandName());
                     mTvModel.setText("型      号：" + detail.getProductType());
+                    mTvStatus.setText(detail.getState());
+                    if ("无师傅".equals(detail.getState())){
+                        mTvChangeState.setVisibility(View.VISIBLE);
+                    }else {
+                        mTvChangeState.setVisibility(View.GONE);
+                    }
                     if ("1".equals(detail.getTypeID())) {
                         mTvDescription.setText("故障描述");
                     } else if ("2".equals(detail.getTypeID())) {
@@ -420,12 +450,12 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void UpdatePhone(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
-                if (baseResult.getData().isItem1()){
+                if (baseResult.getData().isItem1()) {
                     ToastUtils.showShort("修改成功");
                     mPresenter.GetOrderInfo(orderId);
-                }else {
+                } else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }
                 break;
@@ -434,12 +464,12 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void CloseOrder(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
-                if (baseResult.getData().isItem1()){
+                if (baseResult.getData().isItem1()) {
                     ToastUtils.showShort("操作成功");
                     mPresenter.GetOrderInfo(orderId);
-                }else {
+                } else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }
                 break;
@@ -448,11 +478,24 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void modifyOrderMoney(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                if (baseResult.getData().isItem1()) {
+                    ToastUtils.showShort("操作成功");
+                    mPresenter.GetOrderInfo(orderId);
+                } else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
         switch (baseResult.getStatusCode()){
             case 200:
                 if (baseResult.getData().isItem1()){
-                    ToastUtils.showShort("操作成功");
-                    mPresenter.GetOrderInfo(orderId);
+                    ToastUtils.showShort(baseResult.getData().getItem2());
                 }else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }

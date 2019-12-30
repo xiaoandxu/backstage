@@ -8,8 +8,8 @@ import com.zhkj.backstage.contract.OrderListContract;
 
 public class OrderListPresenter extends OrderListContract.Presenter {
     @Override
-    public void GetOrderInfoList(String OrderID, String UserID, String TypeID, String State, String ProvinceCode, String CityCode, String AreaCode, String CreateDate, String partsIs, String messageIs,String page, String limit) {
-        mModel.GetOrderInfoList(OrderID, UserID, TypeID, State, ProvinceCode, CityCode, AreaCode, CreateDate, partsIs, messageIs,page,limit)
+    public void GetOrderInfoList(String OrderID, String UserID, String TypeID, String State, String ProvinceCode, String CityCode, String AreaCode, String CreateDate, String partsIs, String messageIs,String SendUserIs,String StartTime, String EndTime,String page, String limit) {
+        mModel.GetOrderInfoList(OrderID, UserID, TypeID, State, ProvinceCode, CityCode, AreaCode, CreateDate, partsIs, messageIs,SendUserIs,StartTime,EndTime,page,limit)
                 .subscribe(new BaseObserver<WorkOrder>() {
                     @Override
                     protected void onHandleSuccess(BaseResult<WorkOrder> value) {

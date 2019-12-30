@@ -148,5 +148,10 @@ public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, Detai
 
     }
 
+    @Override
+    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
+
+    }
+
 
 }

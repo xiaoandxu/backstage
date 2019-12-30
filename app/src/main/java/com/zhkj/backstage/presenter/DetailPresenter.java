@@ -51,5 +51,14 @@ public class DetailPresenter extends DetailContract.Presenter {
                 });
     }
 
-
+    @Override
+    public void ChangeOrderStateTwenty(String OrderId) {
+        mModel.ChangeOrderStateTwenty(OrderId)
+                .subscribe(new BaseObserver<Data<String>>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<Data<String>> value) {
+                        mView.ChangeOrderStateTwenty(value);
+                    }
+                });
+    }
 }

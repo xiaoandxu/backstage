@@ -107,4 +107,9 @@ public class SysteminfoFragment extends BaseLazyFragment<DetailPresenter, Detail
     public void modifyOrderMoney(BaseResult<Data<String>> baseResult) {
 
     }
+
+    @Override
+    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
+
+    }
 }
