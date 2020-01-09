@@ -153,5 +153,10 @@ public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, Detai
 
     }
 
+    @Override
+    public void NowEnSureOrder(BaseResult<Data<String>> baseResult) {
+
+    }
+
 
 }

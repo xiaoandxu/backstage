@@ -112,4 +112,9 @@ public class SysteminfoFragment extends BaseLazyFragment<DetailPresenter, Detail
     public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
 
     }
+
+    @Override
+    public void NowEnSureOrder(BaseResult<Data<String>> baseResult) {
+
+    }
 }

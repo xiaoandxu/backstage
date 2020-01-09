@@ -128,6 +128,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     TextView mTvYesterdayTicket;
     @BindView(R.id.ll_yesterday_ticket)
     LinearLayout mLlYesterdayTicket;
+    @BindView(R.id.tv_finish)
+    TextView mTvFinish;
+    @BindView(R.id.ll_finish)
+    LinearLayout mLlFinish;
 
     private String mParam1;
     private String mParam2;
@@ -243,6 +247,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlFactoryComplaint.setOnClickListener(this);
         mLlMasterComplaint.setOnClickListener(this);
         mLlYesterdayTicket.setOnClickListener(this);
+        mLlFinish.setOnClickListener(this);
     }
 
     @Override
@@ -283,6 +288,10 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 break;
             case R.id.ll_yesterday_ticket:
                 intent.putExtra("name", "昨日工单");
+                startActivity(intent);
+                break;
+            case R.id.ll_finish:
+                intent.putExtra("name", "待完结工单");
                 startActivity(intent);
                 break;
             case R.id.ll_factory_complaint:
@@ -375,6 +384,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
                 mTvArbitration.setText(baseResult.getData().getItem2().getComplaintCount() + "");
                 mTvWithdrawFactory.setText(baseResult.getData().getItem2().getFactorycomplaint() + "");
+
                 break;
         }
     }
@@ -391,6 +401,8 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount2() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
+                mTvYesterdayTicket.setText(baseResult.getData().getItem2().getYesterdayOrder()+"");
+                mTvFinish.setText(baseResult.getData().getItem2().getTobePaid()+"");
                 hideProgress();
                 break;
         }

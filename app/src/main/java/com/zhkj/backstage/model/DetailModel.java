@@ -45,4 +45,11 @@ public class DetailModel implements DetailContract.Model {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> NowEnSureOrder(String OrderId,String UserID) {
+        return ApiRetrofit.getDefault().NowEnSureOrder(OrderId,UserID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
 }

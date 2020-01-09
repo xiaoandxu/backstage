@@ -24,6 +24,7 @@ public interface OrderListContract {
                                                            String SendUserIs,
                                                            String StartTime,
                                                            String EndTime,
+                                                           String SendUser,
                                                            String page,
                                                            String limit);
         Observable<BaseResult<Data<String>>> ChangeOrderStateTwenty(String OrderId);
@@ -48,6 +49,7 @@ public interface OrderListContract {
                                               String SendUserIs,
                                               String StartTime,
                                               String EndTime,
+                                              String SendUser,
                                               String page,
                                               String limit);
         public abstract void ChangeOrderStateTwenty(String OrderId);

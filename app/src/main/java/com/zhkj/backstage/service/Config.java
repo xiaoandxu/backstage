@@ -17,15 +17,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class Config {
     public static boolean IS_DEBUG = true;
 
-    //47.104.175.133:80
-//    public static final String HTTP_URL = "http://192.168.2.132:8080/app/";
-//    public static final String BASE_URL = "http://192.168.2.132:8080/";
-//    public static final String URL = "http://192.168.2.132:8080/app/";
-    public static final String HTTP_URL = "https://www.jbshch.com/app/";
-    public static final String BASE_URL = "https://www.jbshch.com/";
-//    public static final String URL = "https://www.jbshch.com/app/";
-//    public static final String URL = "https://api.emjiayuan.com/";//正式服
-//    public static final String URL = "http://emapi.jb.emjiayuan.com/";//测试服
     public static final String URL = "https://api.xigyu.com/api/";//正式服
 //    public static final String URL = "http://47.96.126.145:8090/api/";//测试服
 //    public static final String URL = "http://47.96.126.145:8001/api/";//正式服

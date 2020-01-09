@@ -68,6 +68,7 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     private ClipData myClip;
     private View sendView;
     private AlertDialog senddialog;
+    private String phone;
 
     @Override
     protected void initImmersionBar() {
@@ -182,6 +183,7 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     @Override
     protected void initView() {
         name = getIntent().getStringExtra("name");
+        phone = getIntent().getStringExtra("phone");
         mTvTitle.setText(name);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  // HH:mm:ss  HH:24小时制  hh:12小时制
@@ -194,34 +196,40 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     private void getData() {
         switch (name){
             case "最新工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null,null,null,null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null,null,null,null,null, String.valueOf(page), "10");
                 break;
             case "配件工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, "1", null, null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, "1", null, null,null,null,null,String.valueOf(page), "10");
                 break;
             case "质保工单":
-                mPresenter.GetOrderInfoList(null, null, "3", null, null, null, null, null, null, null,null, null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, "3", null, null, null, null, null, null, null,null, null,null,null,String.valueOf(page), "10");
                 break;
             case "远程费工单":
-                mPresenter.GetOrderInfoList(null, null, null, "9", null, null, null, null, null, null, null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, "9", null, null, null, null, null, null, null,null,null,null,String.valueOf(page), "10");
                 break;
             case "留言工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, "1", null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, "1", null,null,null,null,String.valueOf(page), "10");
                 break;
             case "投诉工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, null,null,null,null, String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, null,null,null,null,null,String.valueOf(page), "10");
                 break;
             case "完成工单":
-                mPresenter.GetOrderInfoList(null, null, null, "7", null, null, null, null, null, null, null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, "7", null, null, null, null, null, null, null,null,null,null,String.valueOf(page), "10");
                 break;
             case "已派未接单":
-                mPresenter.GetOrderInfoList(null, null, null, "1", null, null, null, null, null, null,"1", null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null, null, null, "1", null, null, null, null, null, null,"1", null,null,null,String.valueOf(page), "10");
                 break;
             case "已接单待服务":
-                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
                 break;
             case "昨日工单":
-                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,getStringByFormat(getYesterdaysmorning()),getStringByFormat(getTimesmorning()),String.valueOf(page), "10");
+                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,getStringByFormat(getYesterdaysmorning()),getStringByFormat(getTimesmorning()),null,String.valueOf(page), "10");
+                break;
+            case "个人工单":
+                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,null,null,phone,String.valueOf(page), "10");
+                break;
+            case "待完结工单":
+                mPresenter.GetOrderInfoList(null,null,null,"5",null,null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
                 break;
         }
     }

@@ -21,6 +21,8 @@ import com.zhkj.backstage.fragment.MessageFragment;
 import com.zhkj.backstage.fragment.OrderdetailsFragment;
 import com.zhkj.backstage.fragment.PayCordFragment;
 import com.zhkj.backstage.fragment.ReturnFragment;
+import com.zhkj.backstage.fragment.ReturnLogisticsFragment;
+import com.zhkj.backstage.fragment.ShippingFragment;
 import com.zhkj.backstage.fragment.SysteminfoFragment;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class TopDetailsActivity extends BaseActivity implements View.OnClickList
     TextView mTvTitle;
     @BindView(R.id.view)
     View mView;
-    private String[] title = new String[]{"订单详情", "支付记录", "订单记录", "配件信息", "服务信息", "返件信息", "投诉信息", "留言显示"};
+    private String[] title = new String[]{"订单详情", "支付记录", "订单记录", "配件信息", "服务信息", "返件信息", "投诉信息", "留言显示","寄件物流","返件物流"};
     private List<Fragment> fragmentList = new ArrayList<>();
     private String orderId;
 
@@ -70,6 +72,8 @@ public class TopDetailsActivity extends BaseActivity implements View.OnClickList
         fragmentList.add(ReturnFragment.newInstance(orderId,""));
         fragmentList.add(ComplaintFragment.newInstance(orderId,""));
         fragmentList.add(MessageFragment.newInstance(orderId,""));
+        fragmentList.add(ShippingFragment.newInstance(orderId,""));
+        fragmentList.add(ReturnLogisticsFragment.newInstance(orderId,""));
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), title, fragmentList);
         mViewpager.setAdapter(adapter);
         mInforbar.setTabMode(TabLayout.MODE_SCROLLABLE);

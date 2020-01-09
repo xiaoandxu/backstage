@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.zhkj.backstage"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
-        versionCode 4
-        versionName "1.0.5"
+        versionCode 5
+        versionName "1.0.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -51,7 +51,7 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.youth.banner:banner:1.4.10'
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.1.1'
     implementation 'com.squareup.okio:okio:1.5.0'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'org.greenrobot:eventbus:3.0.0'
@@ -112,5 +112,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
+    //图片视频选择器
+    implementation('com.dmcBig:mediapicker:+') {
+        exclude group: 'com.github.chrisbanes', module: 'PhotoView'
+    }
 
 }

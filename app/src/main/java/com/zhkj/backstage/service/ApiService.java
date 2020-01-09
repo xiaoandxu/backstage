@@ -11,6 +11,7 @@ import com.zhkj.backstage.bean.ComplaintList;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.Logistics;
 import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
 import com.zhkj.backstage.bean.RemoteFeeAudit;
@@ -108,6 +109,7 @@ public interface ApiService {
                                                        @Field("SendUserIs")String SendUserIs,
                                                        @Field("StartTime") String StartTime,
                                                        @Field("EndTime") String EndTime,
+                                                       @Field("SendUser") String SendUser,
                                                        @Field("page") String page,
                                                        @Field("limit") String limit);
 
@@ -406,4 +408,25 @@ public interface ApiService {
             @Field("WithDrawID") String WithDrawID,
             @Field("ApproveUser") String ApproveUser
     );
+
+
+    /*
+     * 完结工单
+     * */
+    @FormUrlEncoded
+    @POST("Order/NowEnSureOrder")
+    Observable<BaseResult<Data<String>>> NowEnSureOrder(
+            @Field("OrderID") String OrderID,
+            @Field("UserID") String UserID
+    );
+
+    /**
+     * 快递信息
+     *
+     * @param ExpressNo 快递单号
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Mall/GetExpressInfo")
+    Observable<BaseResult<Data<Logistics>>> GetExpressInfo(@Field("ExpressNo") String ExpressNo);
 }

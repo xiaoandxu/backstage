@@ -3,6 +3,7 @@ package com.zhkj.backstage.activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -109,6 +110,15 @@ public class WithdrawActivity extends BaseActivity<WithdrawPresenter, WithdrawMo
                         }).show();
                         break;
                 }
+            }
+        });
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(mActivity, WorkOrderListActivity.class);
+                intent.putExtra("name", "个人工单");
+                intent.putExtra("phone",list.get(position).getUserID());
+                startActivity(intent);
             }
         });
         mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);

@@ -21,6 +21,8 @@ import com.zhkj.backstage.model.DetailModel;
 import com.zhkj.backstage.presenter.DetailPresenter;
 import com.zhkj.backstage.weight.CommonDialog_Home;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
 
 //工单详情
@@ -165,6 +167,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
         mBtnClose.setOnClickListener(this);
         mBtnAbolish.setOnClickListener(this);
         mBtnModify.setOnClickListener(this);
+        mBtnFinish.setOnClickListener(this);
 
     }
 
@@ -311,6 +314,26 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     @Override
                     public void onNegtiveClick() {//取消
                         changState.dismiss();
+                        // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
+                break;
+            case R.id.btn_finish:
+                CommonDialog_Home finishDialog = new CommonDialog_Home(mActivity);
+                finishDialog.setMessage("是否完结工单？")
+
+                        //.setImageResId(R.mipmap.ic_launcher)
+                        .setTitle("提示")
+                        .setSingle(false).setOnClickBottomListener(new CommonDialog_Home.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        finishDialog.dismiss();
+                        mPresenter.NowEnSureOrder(orderId,userId);
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {//取消
+                        finishDialog.dismiss();
                         // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
                     }
                 }).show();
@@ -496,6 +519,21 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
             case 200:
                 if (baseResult.getData().isItem1()){
                     ToastUtils.showShort(baseResult.getData().getItem2());
+                }else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void NowEnSureOrder(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()){
+            case 200:
+                if (baseResult.getData().isItem1()){
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                    mPresenter.GetOrderInfo(orderId);
+                    EventBus.getDefault().post("send");
                 }else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }

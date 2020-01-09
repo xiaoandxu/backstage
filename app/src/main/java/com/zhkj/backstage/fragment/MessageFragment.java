@@ -3,12 +3,14 @@ package com.zhkj.backstage.fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,13 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,13 +31,20 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.dmcbig.mediapicker.PickerActivity;
+import com.dmcbig.mediapicker.PickerConfig;
+import com.dmcbig.mediapicker.PreviewActivity;
+import com.dmcbig.mediapicker.entity.Media;
+import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.activity.PhotoViewActivity;
 import com.zhkj.backstage.adapter.LeaveMessageAdapter;
+import com.zhkj.backstage.adapter.PicAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.PicResult;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.LeaveMessageContract;
 import com.zhkj.backstage.model.LeaveMessageModel;
@@ -44,36 +52,43 @@ import com.zhkj.backstage.presenter.LeaveMessagePresenter;
 import com.zhkj.backstage.service.Config;
 import com.zhkj.backstage.util.MyUtils;
 import com.zhkj.backstage.util.imageutil.CompressHelper;
+import com.zhkj.backstage.util.imageutil.ImageCompress;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 //留言信息
-public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, LeaveMessageModel> implements View.OnClickListener , LeaveMessageContract.View {
+public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, LeaveMessageModel> implements View.OnClickListener, LeaveMessageContract.View {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
     @BindView(R.id.message_rv)
     RecyclerView mMessageRv;
-    @BindView(R.id.ll_message_list)
-    LinearLayout mLlMessageList;
     @BindView(R.id.et_message)
     EditText mEtMessage;
-    @BindView(R.id.annex_iv)
-    ImageView mAnnexIv;
+    @BindView(R.id.rv_icons)
+    RecyclerView mRvIcons;
     @BindView(R.id.btn_submit)
     Button mBtnSubmit;
+
 
     private String mParam1;
     private String mParam2;
@@ -90,6 +105,16 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
     private Uri uri;
     private HashMap<Integer, File> img = new HashMap<>();
 
+    private ArrayList<String> piclist = new ArrayList<>();
+    private ArrayList<String> selectpiclist = new ArrayList<>();
+    private ArrayList<String> successpiclist = new ArrayList<>();
+    private ArrayList<Media> select = new ArrayList<>();
+
+    private Bitmap bitmap;
+    private PicAdapter picAdapter;
+    private int k;
+    private String message;
+
     public static MessageFragment newInstance(String param1, String param2) {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
@@ -101,7 +126,7 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser){
+        if (isVisibleToUser) {
 
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -154,21 +179,73 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
         leaveMessageAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()){
+                switch (view.getId()) {
                     case R.id.iv_image:
                         Intent intent = new Intent(mActivity, PhotoViewActivity.class);
-                        intent.putExtra("PhotoUrl", Config.Leave_Message_URL+((WorkOrder.LeavemessageListBean)adapter.getData().get(position)).getPhoto());
+                        intent.putExtra("PhotoUrl", Config.Leave_Message_URL + ((WorkOrder.LeavemessageListBean) adapter.getData().get(position)).getPhoto());
                         startActivity(intent);
                         break;
                 }
             }
         });
+
+        piclist.add("add");
+        picAdapter = new PicAdapter(R.layout.item_picture, piclist);
+        mRvIcons.setLayoutManager(new GridLayoutManager(mActivity,5));
+        mRvIcons.setAdapter(picAdapter);
+        picAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()){
+                    case R.id.img:
+                        if ("add".equals(adapter.getItem(position))){
+                            if(requestPermissions()){
+                                goImage();
+                            }else{
+                                requestPermissions(permissions.toArray(new String[permissions.size()]), 10001);
+                            }
+                        }else{
+                            goPreviewActivity();
+                        }
+                }
+            }
+        });
+    }
+
+    private void loadAdpater(ArrayList<String> paths) {
+        piclist.clear();
+        piclist.addAll(paths);
+        selectpiclist.clear();
+//        selectpiclist.addAll(paths);
+        for (int i = 0; i < paths.size(); i++) {
+            selectpiclist.add(ImageCompress.compressImage(paths.get(i),Environment.getExternalStorageDirectory().getAbsolutePath() + "/xgy/" + System.currentTimeMillis() + ".jpg",80));
+        }
+        if (piclist.size() != 5) {
+            piclist.add("add");
+        }
+        System.out.println(selectpiclist);
+        picAdapter.setNewData(piclist);
+    }
+    void goImage(){
+        Intent intent =new Intent(mActivity, PickerActivity.class);
+        intent.putExtra(PickerConfig.SELECT_MODE,PickerConfig.PICKER_IMAGE);//default image and video (Optional)
+        long maxSize=188743680L;//long long long
+        intent.putExtra(PickerConfig.MAX_SELECT_SIZE,maxSize); //default 180MB (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT,5-piclist.size()+1);  //default 40 (Optional)
+//        intent.putExtra(PickerConfig.DEFAULT_SELECTED_LIST,select); // (Optional)
+        startActivityForResult(intent,200);
+    }
+    void goPreviewActivity(){
+        Intent intent =new Intent(mActivity, PreviewActivity.class);
+        intent.putExtra(PickerConfig.PRE_RAW_LIST,select);//default image and video (Optional)
+        intent.putExtra(PickerConfig.MAX_SELECT_COUNT,select.size());//default image and video (Optional)
+        startActivityForResult(intent,300);
     }
 
     @Override
     protected void setListener() {
         mBtnSubmit.setOnClickListener(this);
-        mAnnexIv.setOnClickListener(this);
         mEtMessage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -190,25 +267,27 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
 
     /**
      * EditText竖直方向是否可以滚动
+     *
      * @param editText 需要判断的EditText
      * @return true：可以滚动  false：不可以滚动
      */
-    public static  boolean canVerticalScroll(EditText editText) {
+    public static boolean canVerticalScroll(EditText editText) {
         //滚动的距离
         int scrollY = editText.getScrollY();
         //控件内容的总高度
         int scrollRange = editText.getLayout().getHeight();
         //控件实际显示的高度
-        int scrollExtent = editText.getHeight() - editText.getCompoundPaddingTop() -editText.getCompoundPaddingBottom();
+        int scrollExtent = editText.getHeight() - editText.getCompoundPaddingTop() - editText.getCompoundPaddingBottom();
         //控件内容总高度与实际显示高度的差值
         int scrollDifference = scrollRange - scrollExtent;
 
-        if(scrollDifference == 0) {
+        if (scrollDifference == 0) {
             return false;
         }
 
         return (scrollY > 0) || (scrollY < scrollDifference - 1);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(String name) {
 
@@ -218,25 +297,9 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                if (img.size()>0) {
-                    uploadImg(img);
-                }else{
-                    String message = mEtMessage.getText().toString();
-                    if (message == null || "".equals(message)) {
-                        ToastUtils.showShort("请输入留言内容");
-                    } else {
-                        mPresenter.AddLeaveMessageForOrder(userID, orderId, message,"");
-                    }
-                }
-                break;
-            case R.id.annex_iv:
-                if (requestPermissions()) {
-                    showPopupWindow(101, 102);
-                } else {
-                    requestPermissions(permissions.toArray(new String[permissions.size()]), 10001);
-                }
-                break;
+                uploadImg(selectpiclist);
 
+                break;
         }
     }
 
@@ -244,12 +307,13 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
     public void AddLeaveMessageForOrder(BaseResult<Data<String>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
+                hideProgress();
                 ToastUtils.showShort(baseResult.getData().getItem2());
                 mEtMessage.setText("");
-                img.clear();
-                Glide.with(mActivity)
-                        .load(R.drawable.annex)
-                        .into(mAnnexIv);
+                select.clear();
+                piclist.clear();
+                selectpiclist.clear();
+                loadAdpater(piclist);
                 mPresenter.GetOrderInfo(orderId);
                 break;
         }
@@ -259,11 +323,14 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
     public void GetOrderInfo(BaseResult<WorkOrder.DataBean> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                data = baseResult.getData();
-                list=data.getLeavemessageList();
-                Collections.reverse(list);
-                leaveMessageAdapter.setNewData(list);
                 mPresenter.LeaveMessageWhetherLook(orderId);
+                data = baseResult.getData();
+                if (data.getLeavemessageList().size() == 0) {
+                } else {
+                    list=data.getLeavemessageList();
+                    Collections.reverse(list);
+                    leaveMessageAdapter.setNewData(list);
+                }
                 hideProgress();
                 break;
         }
@@ -291,7 +358,7 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
 
     @Override
     public void LeaveMessageWhetherLook(BaseResult<Data> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
                 EventBus.getDefault().post("read");
                 break;
@@ -308,9 +375,9 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
             if (mActivity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
-            if (mActivity.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                permissions.add(Manifest.permission.CAMERA);
-            }
+//            if (mActivity.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                permissions.add(Manifest.permission.CAMERA);
+//            }
             if (permissions.size() == 0) {
                 return true;
             } else {
@@ -334,21 +401,7 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
         switch (requestCode) {
             case 10001:
                 if (size == grantResults.length) {//允许
-                    showPopupWindow(101, 102);
-                } else {//拒绝
-                    MyUtils.showToast(mActivity, "相关权限未开启");
-                }
-                break;
-            case 10002:
-                if (size == grantResults.length) {//允许
-                    showPopupWindow(201, 202);
-                } else {//拒绝
-                    MyUtils.showToast(mActivity, "相关权限未开启");
-                }
-                break;
-            case 10003:
-                if (size == grantResults.length) {//允许
-                    showPopupWindow(301, 302);
+                    goImage();
                 } else {//拒绝
                     MyUtils.showToast(mActivity, "相关权限未开启");
                 }
@@ -358,156 +411,98 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
 
         }
     }
-
-    /**
-     * 弹出Popupwindow
-     */
-    public void showPopupWindow(final int code1, final int code2) {
-        popupWindow_view = LayoutInflater.from(mActivity).inflate(R.layout.camera_layout, null);
-        Button camera_btn = popupWindow_view.findViewById(R.id.camera_btn);
-        Button photo_btn = popupWindow_view.findViewById(R.id.photo_btn);
-        Button cancel_btn = popupWindow_view.findViewById(R.id.cancel_btn);
-        camera_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View view) {
-//                if (requestPermissions()) {
-                Intent intent = new Intent();
-                // 指定开启系统相机的Action
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                String f = System.currentTimeMillis() + ".jpg";
-                String fileDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xgy";
-                FilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xgy/" + f;
-                File dirfile = new File(fileDir);
-                if (!dirfile.exists()) {
-                    dirfile.mkdirs();
-                }
-                File file = new File(FilePath);
-                Uri fileUri;
-                if (Build.VERSION.SDK_INT >= 24) {
-                    fileUri = FileProvider.getUriForFile(mActivity, "com.zhenhaikj.factoryside.fileProvider", file);
-                } else {
-                    fileUri = Uri.fromFile(file);
-                }
-
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                startActivityForResult(intent, code1);
-//                } else {
-//                    requestPermissions(permissions.toArray(new String[permissions.size()]), 10001);
-//                }
-                mPopupWindow.dismiss();
-            }
-        });
-        photo_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View view) {
-//                if (requestPermissions()) {
-//                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-//                i.addCategory(Intent.CATEGORY_OPENABLE);
-//                i.setType("image/*");
-//                startActivityForResult(Intent.createChooser(i, "test"), code2);
-//                Matisse.from(mActivity)
-//                        .choose(MimeType.ofImage())
-//                        .countable(true)
-//                        .maxSelectable(1)
-////                            .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-////                            .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-//                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-//                        .thumbnailScale(0.85f)
-//                        .imageEngine(new Glide4Engine())
-//                        .forResult(code2);
-//                mPopupWindow.dismiss();
-                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
-                intent1.addCategory(Intent.CATEGORY_OPENABLE);
-                intent1.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent1, "test"), code2);
-                mPopupWindow.dismiss();
-//                } else {
-//                    requestPermissions(permissions.toArray(new String[permissions.size()]), 10002);
-//                }
-
-            }
-        });
-        cancel_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPopupWindow.dismiss();
-            }
-        });
-        mPopupWindow = new PopupWindow(popupWindow_view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setAnimationStyle(R.style.popwindow_anim_style);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                MyUtils.setWindowAlpa(mActivity, false);
-            }
-        });
-        if (mPopupWindow != null && !mPopupWindow.isShowing()) {
-            mPopupWindow.showAtLocation(popupWindow_view, Gravity.BOTTOM, 0, 0);
-        }
-        MyUtils.setWindowAlpa(mActivity, true);
-    }
-
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         File file = null;
-        switch (requestCode) {
-            //拍照
-            case 101:
-                if (resultCode == -1) {
-                    Glide.with(mActivity).load(FilePath).into(mAnnexIv);
-//                    mLlDel.setVisibility(View.VISIBLE);
-                    file = new File(FilePath);
-//                    mAnnexIv.setClickable(false);
-                }
-                if (file != null) {
-
-                    File newFile = CompressHelper.getDefault(mActivity.getApplicationContext()).compressToFile(file);
-//                    uploadImg(newFile, 0);
-                    img.put(0, newFile);
-                }
-                break;
-            //相册
-            case 102:
-                if (data != null) {
-//                    List<Uri> mSelected = Matisse.obtainResult(data);
-//
-//
-//                    if (mSelected.size() == 1) {
-//                        uri = mSelected.get(0);
-//                    }
-////                    uri = data.getData();
-//                    Glide.with(mActivity).load(uri).into(mAnnexIv);
-////                    mLlDel.setVisibility(View.VISIBLE);
-////                    mAnnexIv.setClickable(false);
-//                    file = new File(MyUtils.getRealPathFromUri(mActivity, uri));
-                    Uri uri = data.getData();
-                    Glide.with(mActivity).load(uri).into(mAnnexIv);
-                    file = new File(MyUtils.getRealPathFromUri(mActivity, uri));
-
-                }
-                if (file != null) {
-                    File newFile = CompressHelper.getDefault(mActivity.getApplicationContext()).compressToFile(file);
-//                    uploadImg(newFile, 0);
-                    img.put(0, newFile);
-                }
-                break;
+        if(requestCode==200&&resultCode==PickerConfig.RESULT_CODE){
+            select.addAll((ArrayList)data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT));
+            ArrayList<String> list=new ArrayList<>();
+            Log.i("select","select.size"+select.size());
+            for(Media media:select){
+                list.add(media.path);
+                Log.i("media",media.path);
+                Log.e("media","s:"+media.size);
+            }
+            loadAdpater(list);
+        }
+        if(requestCode==300){
+            select=data.getParcelableArrayListExtra(PickerConfig.EXTRA_RESULT);
+            ArrayList<String> list=new ArrayList<>();
+            Log.i("select","select.size"+select.size());
+            for(Media media:select){
+                list.add(media.path);
+                Log.i("media",media.path);
+                Log.e("media","s:"+media.size);
+            }
+            loadAdpater(list);
         }
     }
 
-    public void uploadImg(HashMap<Integer, File> map) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("img", map.get(0).getName(), RequestBody.create(MediaType.parse("img/png"), map.get(0)));
-        MultipartBody requestBody = builder.build();
-        mPresenter.LeaveMessageImg(requestBody);
+    public void uploadImg(List<String> selectimg) {
+        message = mEtMessage.getText().toString();
+        if (message == null || "".equals(message)) {
+            ToastUtils.showShort("请输入留言内容");
+            return;
+        }
+        showProgress();
+        if (selectimg.size()==0){
+            mPresenter.AddLeaveMessageForOrder(userID,orderId,message,"");
+        }else{
+            successpiclist.clear();
+            for (int i = 0; i < selectimg.size(); i++) {
+                File file=new File(selectimg.get(i));
+                MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+                builder.addFormDataPart("img", file.getName(), RequestBody.create(MediaType.parse("img/png"), file));
+                MultipartBody requestBody = builder.build();
+                //接口
+                String path = Config.URL+"Upload/LeaveMessageImg";
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .connectTimeout(5, TimeUnit.MINUTES)
+                        .readTimeout(5, TimeUnit.MINUTES)
+                        .build();
+                final Request request = new Request.Builder()
+                        .url(path)
+                        .post(requestBody)
+                        .build();
+                Call call = okHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        hideProgress();
+                        ToastUtils.showShort("留言失败，请稍后重试");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String str = response.body().string();
+                        System.out.println(str);
+                        Gson gson=new Gson();
+                        PicResult result=gson.fromJson(str.replaceAll(" ",""), PicResult.class);
+                        if (result.getData().isItem1()){
+                            successpiclist.add(result.getData().getItem2());
+                            if(successpiclist.size()==selectpiclist.size()){
+                                String photo="";
+                                for (int i = 0; i < successpiclist.size(); i++) {
+                                    photo+=successpiclist.get(i)+",";
+                                }
+                                photo=photo.substring(0,photo.lastIndexOf(","));
+                                mPresenter.AddLeaveMessageForOrder(userID,orderId,message,photo);
+                            }
+                        }else{
+                            hideProgress();
+                            ToastUtils.showShort("留言失败，请稍后重试");
+                        }
+                    }
+                });
+            }
+        }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(Bitmap name) {
+        bitmap = name;
+        ToastUtils.showShort(bitmap+"");
+    }
 }

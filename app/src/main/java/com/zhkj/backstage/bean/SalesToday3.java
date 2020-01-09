@@ -23,6 +23,25 @@ public class SalesToday3 implements Serializable {
     private int ComplaintCount2;
     private int LeavemessageServiceCount;
     private int OrderAccessroyDetailCount;
+    private int YesterdayOrder;
+    private int TobePaid;
+
+    public int getTobePaid() {
+        return TobePaid;
+    }
+
+    public void setTobePaid(int tobePaid) {
+        TobePaid = tobePaid;
+    }
+
+    public int getYesterdayOrder() {
+        return YesterdayOrder;
+    }
+
+    public void setYesterdayOrder(int yesterdayOrder) {
+        YesterdayOrder = yesterdayOrder;
+    }
+
 
     public int getNewOrder() {
         return newOrder;

@@ -61,4 +61,15 @@ public class DetailPresenter extends DetailContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void NowEnSureOrder(String OrderId,String UserID) {
+        mModel.NowEnSureOrder(OrderId,UserID)
+                .subscribe(new BaseObserver<Data<String>>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<Data<String>> value) {
+                        mView.NowEnSureOrder(value);
+                    }
+                });
+    }
 }

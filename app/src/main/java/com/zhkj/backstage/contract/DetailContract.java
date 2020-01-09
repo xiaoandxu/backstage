@@ -16,6 +16,7 @@ public interface DetailContract {
         Observable<BaseResult<Data<String>>> CloseOrder(String OrderID, String Type, String price, String UserID);
         Observable<BaseResult<Data<String>>> modifyOrderMoney(String OrderID, String orderMoney,String UserID);
         Observable<BaseResult<Data<String>>> ChangeOrderStateTwenty(String OrderId);
+        Observable<BaseResult<Data<String>>> NowEnSureOrder(String OrderId,String UserID);
 
     }
 
@@ -25,6 +26,7 @@ public interface DetailContract {
         void CloseOrder(BaseResult<Data<String>> baseResult);
         void modifyOrderMoney(BaseResult<Data<String>> baseResult);
         void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult);
+        void NowEnSureOrder(BaseResult<Data<String>> baseResult);
 
     }
 
@@ -34,6 +36,7 @@ public interface DetailContract {
         public abstract void CloseOrder(String OrderID, String Type, String price, String UserID);
         public abstract void modifyOrderMoney(String OrderID, String orderMoney, String UserID);
         public abstract void ChangeOrderStateTwenty(String OrderId);
+        public abstract void NowEnSureOrder(String OrderId,String UserID);
 
     }
 }
