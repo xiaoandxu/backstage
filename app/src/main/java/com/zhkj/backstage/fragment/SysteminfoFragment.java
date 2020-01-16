@@ -117,4 +117,9 @@ public class SysteminfoFragment extends BaseLazyFragment<DetailPresenter, Detail
     public void NowEnSureOrder(BaseResult<Data<String>> baseResult) {
 
     }
+
+    @Override
+    public void endAgain(BaseResult<Data<String>> baseResult) {
+
+    }
 }

@@ -158,5 +158,10 @@ public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, Detai
 
     }
 
+    @Override
+    public void endAgain(BaseResult<Data<String>> baseResult) {
+
+    }
+
 
 }

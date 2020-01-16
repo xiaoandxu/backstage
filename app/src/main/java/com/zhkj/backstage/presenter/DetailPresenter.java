@@ -6,6 +6,8 @@ import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.contract.DetailContract;
 
+import java.util.List;
+
 public class DetailPresenter extends DetailContract.Presenter {
     @Override
     public void GetOrderInfo(String OrderID) {
@@ -30,8 +32,8 @@ public class DetailPresenter extends DetailContract.Presenter {
     }
 
     @Override
-    public void CloseOrder(String OrderID, String Type, String price, String UserID) {
-        mModel.CloseOrder(OrderID, Type, price, UserID)
+    public void CloseOrder(String OrderID, String Type, String price, String UserID,String value) {
+        mModel.CloseOrder(OrderID, Type, price, UserID,value)
                 .subscribe(new BaseObserver<Data<String>>() {
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<String>> value) {
@@ -69,6 +71,17 @@ public class DetailPresenter extends DetailContract.Presenter {
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<String>> value) {
                         mView.NowEnSureOrder(value);
+                    }
+                });
+    }
+
+    @Override
+    public void endAgain(String OrderID, String FactoryPrice, String wokerPrice, String UserID) {
+        mModel.endAgain(OrderID, FactoryPrice, wokerPrice, UserID)
+                .subscribe(new BaseObserver<Data<String>>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<Data<String>> value) {
+                        mView.endAgain(value);
                     }
                 });
     }

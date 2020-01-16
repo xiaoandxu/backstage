@@ -26,8 +26,8 @@ public class DetailModel implements DetailContract.Model {
     }
 
     @Override
-    public Observable<BaseResult<Data<String>>> CloseOrder(String OrderID, String Type, String price, String UserID) {
-        return ApiRetrofit.getDefault().CloseOrder(OrderID, Type, price, UserID)
+    public Observable<BaseResult<Data<String>>> CloseOrder(String OrderID, String Type, String price, String UserID,String value) {
+        return ApiRetrofit.getDefault().CloseOrder(OrderID, Type, price, UserID,value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
@@ -49,6 +49,13 @@ public class DetailModel implements DetailContract.Model {
     @Override
     public Observable<BaseResult<Data<String>>> NowEnSureOrder(String OrderId,String UserID) {
         return ApiRetrofit.getDefault().NowEnSureOrder(OrderId,UserID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> endAgain(String OrderID, String FactoryPrice, String wokerPrice, String UserID) {
+        return ApiRetrofit.getDefault().endAgain(OrderID, FactoryPrice, wokerPrice, UserID)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

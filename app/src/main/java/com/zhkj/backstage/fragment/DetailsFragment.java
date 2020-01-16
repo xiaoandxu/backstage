@@ -101,6 +101,8 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     TextView mTvStatus;
     @BindView(R.id.tv_change_state)
     TextView mTvChangeState;
+    @BindView(R.id.btn_finish_again)
+    Button mBtnFinishAgain;
 
     private String orderId;
     private String mParam1;
@@ -168,6 +170,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
         mBtnAbolish.setOnClickListener(this);
         mBtnModify.setOnClickListener(this);
         mBtnFinish.setOnClickListener(this);
+        mBtnFinishAgain.setOnClickListener(this);
 
     }
 
@@ -233,7 +236,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                             return;
                         } else {
                             senddialog.dismiss();
-                            mPresenter.CloseOrder(orderId, "1", phone, userId);
+                            mPresenter.CloseOrder(orderId, "1", phone, userId, "");
                         }
 
                     }
@@ -245,24 +248,39 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                 senddialog.show();
                 break;
             case R.id.btn_abolish:
-                CommonDialog_Home reject = new CommonDialog_Home(mActivity);
-                reject.setMessage("是否废除工单")
-
-                        //.setImageResId(R.mipmap.ic_launcher)
-                        .setTitle("提示")
-                        .setSingle(false).setOnClickBottomListener(new CommonDialog_Home.OnClickBottomListener() {
+                sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
+                btn_negtive = sendView.findViewById(R.id.negtive);
+                btn_positive = sendView.findViewById(R.id.positive);
+                tv_title = sendView.findViewById(R.id.title);
+                tv_message = sendView.findViewById(R.id.message);
+                tv_title.setText("提示");
+                tv_message.setHint("输入拒绝理由");
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onPositiveClick() {
-                        reject.dismiss();
-                        mPresenter.CloseOrder(orderId, "2", "", userId);
+                    public void onClick(View v) {
+                        senddialog.dismiss();
                     }
-
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onNegtiveClick() {//取消
-                        reject.dismiss();
-                        // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        String phone = tv_message.getText().toString();
+                        if (phone.isEmpty()) {
+                            ToastUtils.showShort("请输入拒绝理由");
+                            return;
+                        } else {
+                            senddialog.dismiss();
+                            mPresenter.CloseOrder(orderId, "2", "", userId, phone);
+                        }
+
                     }
-                }).show();
+                });
+
+                senddialog = new AlertDialog.Builder(mActivity)
+                        .setView(sendView)
+                        .create();
+                senddialog.show();
+
                 break;
             case R.id.btn_modify:
                 sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
@@ -328,7 +346,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     @Override
                     public void onPositiveClick() {
                         finishDialog.dismiss();
-                        mPresenter.NowEnSureOrder(orderId,userId);
+                        mPresenter.NowEnSureOrder(orderId, userId);
                     }
 
                     @Override
@@ -337,6 +355,44 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                         // Toast.makeText(MainActivity.this,"ssss",Toast.LENGTH_SHORT).show();
                     }
                 }).show();
+                break;
+            case R.id.btn_finish_again:
+                sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_finish_agagin, null);
+                btn_negtive = sendView.findViewById(R.id.negtive);
+                btn_positive = sendView.findViewById(R.id.positive);
+                EditText et_factory_amount=sendView.findViewById(R.id.et_factory_amount);
+                EditText et_master_amount=sendView.findViewById(R.id.et_master_amount);
+                tv_title = sendView.findViewById(R.id.title);
+                tv_title.setText("提示");
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        senddialog.dismiss();
+                    }
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String factory = et_factory_amount.getText().toString();
+                        String master = et_master_amount.getText().toString();
+                        if (factory.isEmpty()) {
+                            ToastUtils.showShort("请输入工厂价格");
+                            return;
+                        }else   if (master.isEmpty()) {
+                            ToastUtils.showShort("请输入师傅价格");
+                            return;
+                        } else {
+                            senddialog.dismiss();
+                            mPresenter.endAgain(orderId,factory,master,userId);
+                        }
+
+                    }
+                });
+
+                senddialog = new AlertDialog.Builder(mActivity)
+                        .setView(sendView)
+                        .create();
+                senddialog.show();
                 break;
 
         }
@@ -355,9 +411,9 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     mTvBrand.setText("品      牌：" + detail.getBrandName());
                     mTvModel.setText("型      号：" + detail.getProductType());
                     mTvStatus.setText(detail.getState());
-                    if ("无师傅".equals(detail.getState())){
+                    if ("无师傅".equals(detail.getState())) {
                         mTvChangeState.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         mTvChangeState.setVisibility(View.GONE);
                     }
                     if ("1".equals(detail.getTypeID())) {
@@ -466,6 +522,12 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                     } else {
                         mBtnFinish.setVisibility(View.GONE);
                     }
+
+                    if ("已完成".equals(detail.getState())) {
+                        mBtnFinishAgain.setVisibility(View.VISIBLE);
+                    } else {
+                        mBtnFinishAgain.setVisibility(View.GONE);
+                    }
                 }
                 break;
         }
@@ -515,11 +577,11 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
-                if (baseResult.getData().isItem1()){
+                if (baseResult.getData().isItem1()) {
                     ToastUtils.showShort(baseResult.getData().getItem2());
-                }else {
+                } else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }
                 break;
@@ -528,13 +590,27 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void NowEnSureOrder(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
-                if (baseResult.getData().isItem1()){
+                if (baseResult.getData().isItem1()) {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                     mPresenter.GetOrderInfo(orderId);
                     EventBus.getDefault().post("send");
-                }else {
+                } else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void endAgain(BaseResult<Data<String>> baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                if (baseResult.getData().isItem1()) {
+                    ToastUtils.showShort("再次完结成功");
+                    mPresenter.GetOrderInfo(orderId);
+                } else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }
                 break;

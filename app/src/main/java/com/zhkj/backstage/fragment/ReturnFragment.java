@@ -155,6 +155,11 @@ public class ReturnFragment extends BaseLazyFragment<DetailPresenter, DetailMode
     }
 
     @Override
+    public void endAgain(BaseResult<Data<String>> baseResult) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_bar_code:

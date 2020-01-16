@@ -382,7 +382,8 @@ public interface ApiService {
             @Field("OrderID") String OrderID,
             @Field("Type") String Type,
             @Field("price") String price,
-            @Field("UserID") String UserID
+            @Field("UserID") String UserID,
+            @Field("value") String value
     );
 
     /*
@@ -397,6 +398,15 @@ public interface ApiService {
             @Field("orderMoney") String orderMoney,
             @Field("UserID") String UserID
     );
+
+    /*再次完结*/
+    @FormUrlEncoded
+    @POST("Account/endAgain")
+    Observable<BaseResult<Data<String>>> endAgain(
+            @Field("OrderID") String OrderID,
+            @Field("FactoryPrice") String FactoryPrice,
+            @Field("wokerPrice") String wokerPrice,
+            @Field("UserID") String UserID);
 
 
     /*
