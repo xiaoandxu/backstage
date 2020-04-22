@@ -6,8 +6,8 @@ android {
         applicationId "com.zhkj.backstage"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -116,5 +116,4 @@ dependencies {
     implementation('com.dmcBig:mediapicker:+') {
         exclude group: 'com.github.chrisbanes', module: 'PhotoView'
     }
-
 }

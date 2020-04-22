@@ -1,5 +1,8 @@
 package com.zhkj.backstage.adapter;
 
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -16,6 +19,7 @@ public class VendorListAdapter extends BaseQuickAdapter<UserInfoList.DataBean, B
 
     @Override
     protected void convert(BaseViewHolder helper, UserInfoList.DataBean item) {
+        TextView tv_certification=helper.getView(R.id.tv_certification);
         String time=item.getCreateDate().replace("T"," ");
         helper.setText(R.id.tv_user,item.getUserID())
                 .setText(R.id.tv_create_time,"创建时间："+time);
@@ -26,5 +30,14 @@ public class VendorListAdapter extends BaseQuickAdapter<UserInfoList.DataBean, B
             helper.setText(R.id.tv_type,"师傅");
             helper.setBackgroundRes(R.id.tv_type,R.drawable.blue_shape);
         }
+
+        if ("1".equals(item.getIfAuth())){
+            tv_certification.setText("已实名");
+            tv_certification.setVisibility(View.VISIBLE);
+        }else {
+            tv_certification.setText("暂未实名");
+            tv_certification.setVisibility(View.GONE);
+        }
+
     }
 }

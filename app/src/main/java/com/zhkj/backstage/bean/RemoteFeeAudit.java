@@ -260,14 +260,14 @@ public class RemoteFeeAudit implements Serializable {
         private Object OrgSendUser;
         private String LoginUser;
         private String IsPay;
-        private int OrderMoney;
-        private int terraceMoney;
-        private int InitMoney;
-        private int ExamineMoney;
-        private int AgainMoney;
-        private int RelationOrderID;
-        private int BeyondMoney;
-        private int QuaMoney;
+        private double OrderMoney;
+        private double terraceMoney;
+        private double InitMoney;
+        private double ExamineMoney;
+        private double AgainMoney;
+        private double RelationOrderID;
+        private double BeyondMoney;
+        private double QuaMoney;
         private int BeyondID;
         private String BeyondState;
         private String BeyondDistance;
@@ -783,67 +783,67 @@ public class RemoteFeeAudit implements Serializable {
             this.IsPay = IsPay;
         }
 
-        public int getOrderMoney() {
+        public double getOrderMoney() {
             return OrderMoney;
         }
 
-        public void setOrderMoney(int OrderMoney) {
+        public void setOrderMoney(double OrderMoney) {
             this.OrderMoney = OrderMoney;
         }
 
-        public int getTerraceMoney() {
+        public double getTerraceMoney() {
             return terraceMoney;
         }
 
-        public void setTerraceMoney(int terraceMoney) {
+        public void setTerraceMoney(double terraceMoney) {
             this.terraceMoney = terraceMoney;
         }
 
-        public int getInitMoney() {
+        public double getInitMoney() {
             return InitMoney;
         }
 
-        public void setInitMoney(int InitMoney) {
+        public void setInitMoney(double InitMoney) {
             this.InitMoney = InitMoney;
         }
 
-        public int getExamineMoney() {
+        public double getExamineMoney() {
             return ExamineMoney;
         }
 
-        public void setExamineMoney(int ExamineMoney) {
+        public void setExamineMoney(double ExamineMoney) {
             this.ExamineMoney = ExamineMoney;
         }
 
-        public int getAgainMoney() {
+        public double getAgainMoney() {
             return AgainMoney;
         }
 
-        public void setAgainMoney(int AgainMoney) {
+        public void setAgainMoney(double AgainMoney) {
             this.AgainMoney = AgainMoney;
         }
 
-        public int getRelationOrderID() {
+        public double getRelationOrderID() {
             return RelationOrderID;
         }
 
-        public void setRelationOrderID(int RelationOrderID) {
+        public void setRelationOrderID(double RelationOrderID) {
             this.RelationOrderID = RelationOrderID;
         }
 
-        public int getBeyondMoney() {
+        public double getBeyondMoney() {
             return BeyondMoney;
         }
 
-        public void setBeyondMoney(int BeyondMoney) {
+        public void setBeyondMoney(double BeyondMoney) {
             this.BeyondMoney = BeyondMoney;
         }
 
-        public int getQuaMoney() {
+        public double getQuaMoney() {
             return QuaMoney;
         }
 
-        public void setQuaMoney(int QuaMoney) {
+        public void setQuaMoney(double QuaMoney) {
             this.QuaMoney = QuaMoney;
         }
 

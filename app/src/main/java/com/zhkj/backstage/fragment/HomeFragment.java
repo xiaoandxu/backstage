@@ -16,6 +16,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.activity.ComplaintActivity;
 import com.zhkj.backstage.activity.RemoteFeeApplicationActivity;
+import com.zhkj.backstage.activity.SearchActivity;
 import com.zhkj.backstage.activity.VendorListActivity;
 import com.zhkj.backstage.activity.WithdrawActivity;
 import com.zhkj.backstage.activity.WorkOrderListActivity;
@@ -77,7 +78,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.sosou)
-    EditText mSosou;
+    TextView mSosou;
     @BindView(R.id.ll_lastest)
     LinearLayout mLlLastest;
     @BindView(R.id.ll_accessories)
@@ -248,6 +249,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlMasterComplaint.setOnClickListener(this);
         mLlYesterdayTicket.setOnClickListener(this);
         mLlFinish.setOnClickListener(this);
+        mSosou.setOnClickListener(this);
     }
 
     @Override
@@ -351,6 +353,9 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
             case R.id.ll_withdraw:
                 intent1 = new Intent(mActivity, WithdrawActivity.class);
                 startActivity(intent1);
+                break;
+            case R.id.sosou:
+                startActivity(new Intent(mActivity, SearchActivity.class));
                 break;
         }
 

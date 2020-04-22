@@ -113,6 +113,18 @@ public interface ApiService {
                                                        @Field("page") String page,
                                                        @Field("limit") String limit);
 
+    /*
+     *根据手机号搜索
+     * */
+    @FormUrlEncoded
+    @POST("Order/GetOrderInfoList2")
+    Observable<BaseResult<WorkOrder>> GetOrderInfoList2(@Field("Phone") String Phone,
+                                                    @Field("OrderID") String OrderID,
+                                                    @Field("UserID") String UserID,
+                                                    @Field("UserName") String UserName,
+                                                    @Field("limit") String limit,
+                                                    @Field("page") String page);
+
     /*投诉列表*/
     @FormUrlEncoded
     @POST("Order/GetOrderInfoList")
