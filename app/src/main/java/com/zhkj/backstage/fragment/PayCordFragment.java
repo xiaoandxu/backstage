@@ -11,9 +11,9 @@ import com.zhkj.backstage.adapter.PayCordAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.PayByOrderID;
-import com.zhkj.backstage.contract.PayCordContract;
-import com.zhkj.backstage.model.PayCordModel;
-import com.zhkj.backstage.presenter.PayCordPresenter;
+import com.zhkj.backstage.mvp.contract.PayCordContract;
+import com.zhkj.backstage.mvp.model.PayCordModel;
+import com.zhkj.backstage.mvp.presenter.PayCordPresenter;
 
 import java.util.List;
 

@@ -22,8 +22,12 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.fragment.HomeFragment;
+import com.zhkj.backstage.fragment.HomeNewFragment;
 import com.zhkj.backstage.service.GrayService;
 import com.zhkj.backstage.weight.CustomViewPager;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,15 +94,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
     @Override
     protected void initData() {
         mFragments = new ArrayList<>();
-        mFragments.add(HomeFragment.newInstance("", ""));
+        mFragments.add(HomeNewFragment.newInstance("", ""));
 //        mFragments.add(HomeFragment.newInstance("", ""));
 //        mFragments.add(HomeFragment.newInstance("", ""));
 //        mFragments.add(HomeFragment.newInstance("", ""));
 //        mFragments.add(HomeFragment.newInstance("", ""));
     }
 
+
     @Override
     protected void initView() {
+
 //        Intent grayIntent = new Intent(getApplicationContext(), GrayService.class);
 ////        startService(grayIntent);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -269,4 +275,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
             permissionsList.add(permission);
         }
     }
+
 }

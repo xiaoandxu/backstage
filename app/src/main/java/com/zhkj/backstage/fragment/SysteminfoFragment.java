@@ -12,9 +12,9 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.DetailContract;
-import com.zhkj.backstage.model.DetailModel;
-import com.zhkj.backstage.presenter.DetailPresenter;
+import com.zhkj.backstage.mvp.contract.DetailContract;
+import com.zhkj.backstage.mvp.model.DetailModel;
+import com.zhkj.backstage.mvp.presenter.DetailPresenter;
 
 import butterknife.BindView;
 

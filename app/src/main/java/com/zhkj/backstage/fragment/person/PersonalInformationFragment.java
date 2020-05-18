@@ -19,9 +19,9 @@ import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
 import com.zhkj.backstage.bean.UserInfoList;
-import com.zhkj.backstage.contract.PersonalInformationCotract;
-import com.zhkj.backstage.model.PersonalInformationModel;
-import com.zhkj.backstage.presenter.PersonalInformationPresenter;
+import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
+import com.zhkj.backstage.mvp.model.PersonalInformationModel;
+import com.zhkj.backstage.mvp.presenter.PersonalInformationPresenter;
 
 import java.util.List;
 

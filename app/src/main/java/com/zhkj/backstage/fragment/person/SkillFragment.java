@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
@@ -20,9 +19,9 @@ import com.zhkj.backstage.bean.Category;
 import com.zhkj.backstage.bean.CategoryData;
 import com.zhkj.backstage.bean.MySkills;
 import com.zhkj.backstage.bean.Skill;
-import com.zhkj.backstage.contract.AddSkillsContract;
-import com.zhkj.backstage.model.AddSkillsModel;
-import com.zhkj.backstage.presenter.AddSkillsPresenter;
+import com.zhkj.backstage.mvp.contract.AddSkillsContract;
+import com.zhkj.backstage.mvp.model.AddSkillsModel;
+import com.zhkj.backstage.mvp.presenter.AddSkillsPresenter;
 import com.zyao89.view.zloading.ZLoadingDialog;
 
 import java.util.ArrayList;

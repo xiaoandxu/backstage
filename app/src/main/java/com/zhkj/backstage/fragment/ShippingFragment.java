@@ -22,9 +22,9 @@ import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.Logistics;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.ExpressInfoContract;
-import com.zhkj.backstage.model.ExpressInfoModel;
-import com.zhkj.backstage.presenter.ExpressInfoPresenter;
+import com.zhkj.backstage.mvp.contract.ExpressInfoContract;
+import com.zhkj.backstage.mvp.model.ExpressInfoModel;
+import com.zhkj.backstage.mvp.presenter.ExpressInfoPresenter;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 

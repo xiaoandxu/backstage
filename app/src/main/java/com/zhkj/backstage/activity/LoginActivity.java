@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.SPUtils;
@@ -15,9 +14,9 @@ import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
-import com.zhkj.backstage.contract.LoginContract;
-import com.zhkj.backstage.model.LoginModel;
-import com.zhkj.backstage.presenter.LoginPresenter;
+import com.zhkj.backstage.mvp.contract.LoginContract;
+import com.zhkj.backstage.mvp.model.LoginModel;
+import com.zhkj.backstage.mvp.presenter.LoginPresenter;
 import com.zhkj.backstage.weight.ClearEditText;
 import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
@@ -49,6 +48,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     protected void initData() {
 
     }
+
 
     @Override
     protected void initView() {
@@ -100,7 +100,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                     return;
                 }
                 mPresenter.Login(userName, passWord);
-//
+//                startActivity(new Intent(mActivity,TestActivity.class));
                 break;
         }
     }

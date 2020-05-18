@@ -4,17 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,12 +23,10 @@ import com.zhkj.backstage.adapter.SearchAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.SearchContract;
-import com.zhkj.backstage.model.SearchModel;
-import com.zhkj.backstage.presenter.SearchPresenter;
+import com.zhkj.backstage.mvp.contract.SearchContract;
+import com.zhkj.backstage.mvp.model.SearchModel;
+import com.zhkj.backstage.mvp.presenter.SearchPresenter;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;

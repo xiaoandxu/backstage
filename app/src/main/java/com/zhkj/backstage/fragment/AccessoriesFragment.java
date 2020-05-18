@@ -5,14 +5,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
@@ -22,9 +18,9 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.DetailContract;
-import com.zhkj.backstage.model.DetailModel;
-import com.zhkj.backstage.presenter.DetailPresenter;
+import com.zhkj.backstage.mvp.contract.DetailContract;
+import com.zhkj.backstage.mvp.model.DetailModel;
+import com.zhkj.backstage.mvp.presenter.DetailPresenter;
 
 import butterknife.BindView;
 

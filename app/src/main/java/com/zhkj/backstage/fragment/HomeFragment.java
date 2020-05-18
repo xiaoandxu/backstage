@@ -3,13 +3,17 @@ package com.zhkj.backstage.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+import com.lxj.xpopup.enums.PopupPosition;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -20,20 +24,30 @@ import com.zhkj.backstage.activity.SearchActivity;
 import com.zhkj.backstage.activity.VendorListActivity;
 import com.zhkj.backstage.activity.WithdrawActivity;
 import com.zhkj.backstage.activity.WorkOrderListActivity;
+import com.zhkj.backstage.adapter.SecondaryListAdapter;
+import com.zhkj.backstage.adapter.TreeAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.LeftTitle;
+import com.zhkj.backstage.bean.ParentEntity;
 import com.zhkj.backstage.bean.SalesToday;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
-import com.zhkj.backstage.contract.HomeContract;
-import com.zhkj.backstage.model.HomeModel;
-import com.zhkj.backstage.presenter.HomePresenter;
+import com.zhkj.backstage.mvp.contract.HomeContract;
+import com.zhkj.backstage.mvp.model.HomeModel;
+import com.zhkj.backstage.mvp.presenter.HomePresenter;
+import com.zhkj.backstage.weight.CustomFilterDrawerPopupView;
+import com.zhkj.backstage.weight.DividerItemDecoration;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> implements View.OnClickListener, HomeContract.View {
     private static final String TAG = "HomeFragment";
@@ -133,11 +147,20 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
     TextView mTvFinish;
     @BindView(R.id.ll_finish)
     LinearLayout mLlFinish;
+    @BindView(R.id.tv_first)
+    TextView mTvFirst;
 
     private String mParam1;
     private String mParam2;
     private Intent intent1;
-
+    private BasePopupView xPopup;
+    private CustomFilterDrawerPopupView customFilterDrawerPopupView;
+    private List<SecondaryListAdapter.DataTree<LeftTitle, String>> datas = new ArrayList<>();
+    private List<LeftTitle> leftTitleList=new ArrayList<>();
+    private String[] title={"权限管理","工单管理","工厂配置","财务管理","系统设置","文章管理","西瓜币管理","小程序管理","商城商品管理"};
+//    private String[] title2={"权限管理","工单管理","工厂配置","财务管理","系统设置","文章管理","西瓜币管理","小程序管理","商城商品管理"};
+    private TreeAdapter adapter;
+    private ArrayList list;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -223,6 +246,84 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mPresenter.SalesToday2();
         mPresenter.SalesToday3();
 
+        customFilterDrawerPopupView=new CustomFilterDrawerPopupView(mActivity);
+        RecyclerView recyclerView = (RecyclerView)customFilterDrawerPopupView.findViewById(R.id.recyclerView);
+//        RecyclerView rv = (RecyclerView)customFilterDrawerPopupView.findViewById(R.id.recyclerView);
+//        rv.setLayoutManager(new LinearLayoutManager(mActivity));
+//        rv.setHasFixedSize(true);
+//        rv.addItemDecoration(new RvDividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
+//
+//
+//        RecyclerAdapter adapter = new RecyclerAdapter(mActivity);
+//
+//        adapter.setData(datas);
+//        rv.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        recyclerView.addItemDecoration(new DividerItemDecoration(mActivity,
+                DividerItemDecoration.VERTICAL_LIST));//间距设置，完全copy了别人的代码。。
+        recyclerView.setItemAnimator(new SlideInUpAnimator());//这是一个开源的动画效果，非常棒的哦
+        list = new ArrayList();
+        adapter = new TreeAdapter(mActivity, list, R.layout.layout_treerecycler_item,
+                new int[]{R.id.parent_name, R.id.child_name,R.id.iv_logo,R.id.iv_right});
+        //这里的点击事件很重要
+        adapter.setOnItemClickLitener(new TreeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (list.get(position) instanceof ParentEntity){//判断是否为父
+                    ParentEntity parent = (ParentEntity) list.get(position);
+                    if ((position + 1) == list.size()) {//判断是否为最后一个元素
+                        adapter.addAllChild(parent.getChildren(), position + 1);
+                    } else {
+                        if (list.get(position + 1) instanceof ParentEntity) {//如果是父则表示为折叠状态需要添加儿子
+                            ((ParentEntity) list.get(position)).setSelect(true);
+                            adapter.addAllChild(parent.getChildren(), position + 1);
+                            adapter.notifyDataSetChanged();
+                        } else if (list.get(position + 1) instanceof ParentEntity.ChildEntity) {//如果是儿子则表示为展开状态需要删除儿子
+                            ((ParentEntity) list.get(position)).setSelect(false);
+                            adapter.deleteAllChild(position + 1, parent.getChildren().size());
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }else {//是儿子你想干啥就干啥吧
+                    ParentEntity.ChildEntity child = (ParentEntity.ChildEntity) list.get(position);
+//                    Toast.makeText(getApplicationContext(), child.getName(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        for (int i = 0; i < title.length; i++){
+            ParentEntity parent = new ParentEntity();
+            parent.setId(i);
+            parent.setName(title[i]);
+            parent.setSelect(false);
+            List<ParentEntity.ChildEntity> children = new ArrayList<>();
+            for (int j = 0; j < 4; j++){
+                ParentEntity.ChildEntity child = new ParentEntity.ChildEntity();
+                child.setId(j);
+                child.setName("我是父"+i+"的儿子" + j);
+                children.add(child);
+            }
+            parent.setChildren(children);
+            list.add(parent);
+        }
+        xPopup = new XPopup.Builder(mActivity)
+                .popupPosition(PopupPosition.Left)//右边
+                .hasStatusBarShadow(true) //启用状态栏阴影
+                .asCustom(customFilterDrawerPopupView);
+    }
+
+    {
+
+        List<String> group = new ArrayList<>();
+        for (int i = 0; i < title.length; i++) {
+            leftTitleList.add(new LeftTitle(title[i]));
+        }
+        for (int i = 0; i < leftTitleList.size(); i++) {
+
+            datas.add(new SecondaryListAdapter.DataTree<LeftTitle, String>(leftTitleList.get(i), new
+                    ArrayList<String>(){{add("sub 0"); add("sub 1"); add("sub 2");}}));
+
+        }
 
     }
 
@@ -250,6 +351,7 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
         mLlYesterdayTicket.setOnClickListener(this);
         mLlFinish.setOnClickListener(this);
         mSosou.setOnClickListener(this);
+        mTvFirst.setOnClickListener(this);
     }
 
     @Override
@@ -357,6 +459,9 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
             case R.id.sosou:
                 startActivity(new Intent(mActivity, SearchActivity.class));
                 break;
+            case R.id.tv_first:
+                xPopup.show();
+                break;
         }
 
 
@@ -406,8 +511,8 @@ public class HomeFragment extends BaseLazyFragment<HomePresenter, HomeModel> imp
                 mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount2() + "");
                 mTvCarryOut.setText(baseResult.getData().getItem2().getCompleteCount() + "");
                 mTvAbolition.setText(baseResult.getData().getItem2().getAbolishCount() + "");
-                mTvYesterdayTicket.setText(baseResult.getData().getItem2().getYesterdayOrder()+"");
-                mTvFinish.setText(baseResult.getData().getItem2().getTobePaid()+"");
+                mTvYesterdayTicket.setText(baseResult.getData().getItem2().getYesterdayOrder() + "");
+                mTvFinish.setText(baseResult.getData().getItem2().getTobePaid() + "");
                 hideProgress();
                 break;
         }

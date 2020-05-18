@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.zhkj.backstage">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 以下是鹰眼SDK基础权限 -->
 
@@ -24,14 +26,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- Android Q之后，后台定位需要申请该权限 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--android 26 以上需要-->
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
     <!-- 以下不是鹰眼SDK需要的基础权限，可选 -->
 
-    <!-- 用于加快GPS首次定位，可选权限，非必须-->
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
-    <!-- 用于Android M及以上系统，申请加入忽略电池优化白名单，可选权限，非必须-->
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"></uses-permission>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -39,15 +39,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ico"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="OGxY4487W6zGPHpk5vwrGfcplGeIqY58" />
         <activity android:name=".activity.LoginActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
@@ -61,7 +62,7 @@
         <activity android:name=".activity.WithdrawActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <activity android:name=".activity.ComplaintActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
-
+        <activity android:name=".activity.NewWorkOrderListActivity" android:screenOrientation="portrait"  android:launchMode="singleTask"/>
         <!--适配华为（huawei）刘海屏-->
         <meta-data
             android:name="android.notch_support"

@@ -27,9 +27,9 @@ import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WithDrawList;
-import com.zhkj.backstage.contract.WithdrawContract;
-import com.zhkj.backstage.model.WithdrawModel;
-import com.zhkj.backstage.presenter.WithdrawPresenter;
+import com.zhkj.backstage.mvp.contract.WithdrawContract;
+import com.zhkj.backstage.mvp.model.WithdrawModel;
+import com.zhkj.backstage.mvp.presenter.WithdrawPresenter;
 import com.zhkj.backstage.weight.CommonDialog_Home;
 
 import java.util.ArrayList;

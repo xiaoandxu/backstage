@@ -29,10 +29,11 @@ import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.OrderListContract;
-import com.zhkj.backstage.model.OrderListModel;
-import com.zhkj.backstage.presenter.OrderListPresenter;
+import com.zhkj.backstage.mvp.contract.OrderListContract;
+import com.zhkj.backstage.mvp.model.OrderListModel;
+import com.zhkj.backstage.mvp.presenter.OrderListPresenter;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -275,6 +276,10 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
                     mRefreshLayout.finishLoadMore();
                 }
                 hideProgress();
+
+                EventBus.getDefault().post("video:www.baidu.com");
+//                content="www.baidu.com";
+//                checkPermissionAndShow();
                 break;
         }
     }

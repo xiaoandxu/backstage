@@ -15,9 +15,9 @@ import com.zhkj.backstage.adapter.ComplaintDetailAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.ComplaintList;
-import com.zhkj.backstage.contract.ComplaintListContract;
-import com.zhkj.backstage.model.ComplaintListModel;
-import com.zhkj.backstage.presenter.ComplaintListPresenter;
+import com.zhkj.backstage.mvp.contract.ComplaintListContract;
+import com.zhkj.backstage.mvp.model.ComplaintListModel;
+import com.zhkj.backstage.mvp.presenter.ComplaintListPresenter;
 import com.zhkj.backstage.service.Config;
 
 import java.util.ArrayList;

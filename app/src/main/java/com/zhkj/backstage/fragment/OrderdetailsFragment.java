@@ -20,9 +20,9 @@ import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.Track;
-import com.zhkj.backstage.contract.TrackContract;
-import com.zhkj.backstage.model.TrackModel;
-import com.zhkj.backstage.presenter.TrackPresenter;
+import com.zhkj.backstage.mvp.contract.TrackContract;
+import com.zhkj.backstage.mvp.model.TrackModel;
+import com.zhkj.backstage.mvp.presenter.TrackPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

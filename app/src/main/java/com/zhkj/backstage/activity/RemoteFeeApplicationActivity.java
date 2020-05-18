@@ -33,10 +33,9 @@ import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.RemoteFeeAudit;
-import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.contract.RemoteFeeApplicationContract;
-import com.zhkj.backstage.model.RemoteFeeApplicationModel;
-import com.zhkj.backstage.presenter.RemoteFeeApplicationPresenter;
+import com.zhkj.backstage.mvp.contract.RemoteFeeApplicationContract;
+import com.zhkj.backstage.mvp.model.RemoteFeeApplicationModel;
+import com.zhkj.backstage.mvp.presenter.RemoteFeeApplicationPresenter;
 import com.zhkj.backstage.weight.CommonDialog_Home;
 
 import org.greenrobot.eventbus.EventBus;

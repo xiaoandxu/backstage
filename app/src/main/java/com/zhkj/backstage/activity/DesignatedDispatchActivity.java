@@ -27,9 +27,9 @@ import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.UserList;
-import com.zhkj.backstage.contract.DesignatedDispatchContract;
-import com.zhkj.backstage.model.DesignatedDispatchModel;
-import com.zhkj.backstage.presenter.DesignatedDispatchPresenter;
+import com.zhkj.backstage.mvp.contract.DesignatedDispatchContract;
+import com.zhkj.backstage.mvp.model.DesignatedDispatchModel;
+import com.zhkj.backstage.mvp.presenter.DesignatedDispatchPresenter;
 
 import org.greenrobot.eventbus.EventBus;
 

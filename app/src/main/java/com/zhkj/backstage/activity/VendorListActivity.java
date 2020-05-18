@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -22,15 +21,14 @@ import com.zhkj.backstage.adapter.VendorListAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.UserInfoList;
-import com.zhkj.backstage.contract.VendorListContract;
-import com.zhkj.backstage.model.VendorListModel;
-import com.zhkj.backstage.presenter.VendorListPresenter;
+import com.zhkj.backstage.mvp.contract.VendorListContract;
+import com.zhkj.backstage.mvp.model.VendorListModel;
+import com.zhkj.backstage.mvp.presenter.VendorListPresenter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.BindView;

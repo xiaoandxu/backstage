@@ -1,6 +1,7 @@
 package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.GetOderCountByCustomService2;
 import com.zhkj.backstage.bean.Address;
 import com.zhkj.backstage.bean.Area;
 import com.zhkj.backstage.bean.BankCard;
@@ -11,6 +12,7 @@ import com.zhkj.backstage.bean.ComplaintList;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetOderCountByCustomService;
 import com.zhkj.backstage.bean.Logistics;
 import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
@@ -451,4 +453,22 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("Mall/GetExpressInfo")
     Observable<BaseResult<Data<Logistics>>> GetExpressInfo(@Field("ExpressNo") String ExpressNo);
+
+    /**
+     * 首页工单数量
+     */
+
+    @POST("Order/GetOderCountByCustomService")
+    Observable<BaseResult<GetOderCountByCustomService>> GetOderCountByCustomService();
+
+    /**
+     * 首页工单列表
+     */
+    @POST("Order/GetOderCountByCustomService")
+    Observable<BaseResult<List<GetOderCountByCustomService2>>> GetOderCountByCustomService2(@Field("type") String type,
+                                                                                            @Field("IsCall") String IsCall,
+                                                                                            @Field("IsAll") String IsAll,
+                                                                                            @Field("searchContent") String searchContent,
+                                                                                            @Field("page") String page,
+                                                                                            @Field("limit") String limit);
 }
