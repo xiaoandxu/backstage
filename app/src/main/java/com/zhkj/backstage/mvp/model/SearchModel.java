@@ -2,9 +2,13 @@ package com.zhkj.backstage.mvp.model;
 
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.GetCustomService;
 import com.zhkj.backstage.bean.WorkOrder;
 import com.zhkj.backstage.mvp.contract.SearchContract;
 import com.zhkj.backstage.service.ApiRetrofit;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,4 +28,25 @@ public class SearchModel implements SearchContract.Model {
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribeOn(Schedulers.io());
 //    }
+
+    @Override
+    public Observable<BaseResult<List<GetCustomService>>> GetCustomService() {
+        return ApiRetrofit.getDefault().GetCustomService()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseResult<Data<String>>> SetChangeGiveWay(String orderID, String receivePersonID) {
+        return ApiRetrofit.getDefault().SetChangeGiveWay(orderID, receivePersonID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak2(String type, String OrderID, String Phone,String SelectCustomerUserId ,String page, String limit) {
+        return ApiRetrofit.getDefault().GetoderInfoPartListBak2(type, OrderID, Phone,SelectCustomerUserId, page, limit)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
 }

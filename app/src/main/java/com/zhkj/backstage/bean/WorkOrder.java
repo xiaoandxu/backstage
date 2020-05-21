@@ -221,6 +221,15 @@ public class WorkOrder implements Serializable {
         private String isOnLookMessage;
         private String terraceMoney;
         private String InvoiceName;
+        private String TrueName;
+
+        public String getTrueName() {
+            return TrueName;
+        }
+
+        public void setTrueName(String trueName) {
+            TrueName = trueName;
+        }
 
         public String getInvoiceName() {
             return InvoiceName;

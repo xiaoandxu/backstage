@@ -1,6 +1,9 @@
 package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.BackstageGetOrderNum;
+import com.zhkj.backstage.bean.GetCustomService;
+import com.zhkj.backstage.bean.GetModuleByRoleId;
 import com.zhkj.backstage.bean.GetOderCountByCustomService2;
 import com.zhkj.backstage.bean.Address;
 import com.zhkj.backstage.bean.Area;
@@ -13,6 +16,7 @@ import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.District;
 import com.zhkj.backstage.bean.GetIDCardImg;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
+import com.zhkj.backstage.bean.GetUserInfoPartListBak;
 import com.zhkj.backstage.bean.Logistics;
 import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
@@ -108,7 +112,7 @@ public interface ApiService {
                                                        @Field("CreateDate") String CreateDate,
                                                        @Field("partsIs") String partsIs,
                                                        @Field("messageIs") String messageIs,
-                                                       @Field("SendUserIs")String SendUserIs,
+                                                       @Field("SendUserIs") String SendUserIs,
                                                        @Field("StartTime") String StartTime,
                                                        @Field("EndTime") String EndTime,
                                                        @Field("SendUser") String SendUser,
@@ -121,11 +125,11 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("Order/GetOrderInfoList2")
     Observable<BaseResult<WorkOrder>> GetOrderInfoList2(@Field("Phone") String Phone,
-                                                    @Field("OrderID") String OrderID,
-                                                    @Field("UserID") String UserID,
-                                                    @Field("UserName") String UserName,
-                                                    @Field("limit") String limit,
-                                                    @Field("page") String page);
+                                                        @Field("OrderID") String OrderID,
+                                                        @Field("UserID") String UserID,
+                                                        @Field("UserName") String UserName,
+                                                        @Field("limit") String limit,
+                                                        @Field("page") String page);
 
     /*投诉列表*/
     @FormUrlEncoded
@@ -386,10 +390,10 @@ public interface ApiService {
 
 
     /*
-    * 关闭工单，废除工单
-    * 关闭，type=1
-    * 废除，type=2
-    * */
+     * 关闭工单，废除工单
+     * 关闭，type=1
+     * 废除，type=2
+     * */
     @FormUrlEncoded
     @POST("Order/CloseOrder")
     Observable<BaseResult<Data<String>>> CloseOrder(
@@ -462,13 +466,89 @@ public interface ApiService {
     Observable<BaseResult<GetOderCountByCustomService>> GetOderCountByCustomService();
 
     /**
-     * 首页工单列表
+     * 主管
+     * 首页工单数量
      */
-    @POST("Order/GetOderCountByCustomService")
+
+    @POST("Order/BackstageGetOrderNum")
+    Observable<BaseResult<BackstageGetOrderNum>> BackstageGetOrderNum();
+
+    /**
+     * 工单列表
+     */
+    @FormUrlEncoded
+    @POST("Order/GetOderListByCustomService")
     Observable<BaseResult<List<GetOderCountByCustomService2>>> GetOderCountByCustomService2(@Field("type") String type,
                                                                                             @Field("IsCall") String IsCall,
                                                                                             @Field("IsAll") String IsAll,
                                                                                             @Field("searchContent") String searchContent,
                                                                                             @Field("page") String page,
                                                                                             @Field("limit") String limit);
+
+    /**
+     * 主管工单列表
+     */
+    @FormUrlEncoded
+    @POST("Order/GetoderInfoPartListBak")
+    Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak(@Field("Type") String type,
+                                                             @Field("page") String page,
+                                                             @Field("limit") String limit);
+
+    /**
+     * 主管工单搜索列表
+     */
+    @FormUrlEncoded
+    @POST("Order/GetoderInfoPartListBak")
+    Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak2(@Field("Type") String type,
+                                                             @Field("OrderID") String OrderID,
+                                                             @Field("Phone") String Phone,
+                                                             @Field("SelectCustomerUserId") String SelectCustomerUserId,
+                                                             @Field("page") String page,
+                                                             @Field("limit") String limit);
+
+    /**
+     * 侧边权限
+     */
+    @FormUrlEncoded
+    @POST("Account/GetModuleByRoleId")
+    Observable<BaseResult<GetModuleByRoleId>> GetModuleByRoleId(@Field("RoleId") String RoleId);
+
+    /**
+     * 客服列表
+     */
+    @FormUrlEncoded
+    @POST("Account/GetUserInfoPartListBak")
+    Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(@Field("RoleId") String RoleId,
+                                                                          @Field("page") String page,
+                                                                          @Field("limit") String limit);
+
+
+    /**
+     * 结束接单
+     */
+    @FormUrlEncoded
+    @POST("Account/SetEndOrderReceiving")
+    Observable<BaseResult<Data<String>>> SetEndOrderReceiving(@Field("accountID") String accountID);
+
+    /**
+     * 开始接单
+     */
+    @FormUrlEncoded
+    @POST("Account/SetStartOrderReceiving")
+    Observable<BaseResult<Data<String>>> SetStartOrderReceiving(@Field("accountID") String accountID);
+
+    /**
+     * 获取客服列表
+     */
+
+    @POST("Order/GetCustomService")
+    Observable<BaseResult<List<GetCustomService>>> GetCustomService();
+
+    /**
+     * 指派客服
+     */
+    @FormUrlEncoded
+    @POST("Order/SetChangeGiveWay")
+    Observable<BaseResult<Data<String>>> SetChangeGiveWay(@Field("orderID") String orderID,
+                                                          @Field("receivePersonID") String receivePersonID);
 }
