@@ -19,7 +19,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
-import com.zhkj.backstage.activity.ComplaintActivity;
 import com.zhkj.backstage.activity.CustomerServiceActivity;
 import com.zhkj.backstage.activity.NewWorkOrderListActivity;
 import com.zhkj.backstage.activity.SearchActivity;
@@ -120,6 +119,14 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     SmartRefreshLayout mRefreshLayout;
     @BindView(R.id.ll_yesterday_order)
     LinearLayout mLlYesterdayOrder;
+    @BindView(R.id.ll_today_master)
+    LinearLayout mLlTodayMaster;
+    @BindView(R.id.ll_yes_master)
+    LinearLayout mLlYesMaster;
+    @BindView(R.id.ll_yes_factory)
+    LinearLayout mLlYesFactory;
+    @BindView(R.id.ll_today_factory)
+    LinearLayout mLlTodayFactory;
     private String mParam1;
     private String mParam2;
     private Intent intent;
@@ -290,6 +297,10 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mLlComplaint.setOnClickListener(this);
         mLlWithdraw.setOnClickListener(this);
         mLlYesterdayOrder.setOnClickListener(this);
+        mLlYesMaster.setOnClickListener(this);
+        mLlTodayMaster.setOnClickListener(this);
+        mLlYesFactory.setOnClickListener(this);
+        mLlTodayFactory.setOnClickListener(this);
     }
 
     @Override
@@ -366,6 +377,30 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
                 break;
             case R.id.ll_withdraw:
                 intent = new Intent(mActivity, WithdrawActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.ll_yes_master:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "7");
+                intent.putExtra("day", "ym");
+                startActivity(intent);
+                break;
+            case R.id.ll_today_master:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "7");
+                intent.putExtra("day", "tm");
+                startActivity(intent);
+                break;
+            case R.id.ll_yes_factory:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "6");
+                intent.putExtra("day", "yp");
+                startActivity(intent);
+                break;
+            case R.id.ll_today_factory:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "6");
+                intent.putExtra("day", "tp");
                 startActivity(intent);
                 break;
         }

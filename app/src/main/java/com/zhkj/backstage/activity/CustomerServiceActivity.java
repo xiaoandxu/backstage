@@ -98,7 +98,8 @@ public class CustomerServiceActivity extends BaseActivity<CustomerServicePresent
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                page=1;
+                list.clear();
+                    page=1;
 //                mPresenter.GetUserInfoPartListBak("5",page+"","10");
                 getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
                 getUserInfoPartListBakBean.setType("5");
