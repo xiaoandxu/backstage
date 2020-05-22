@@ -30,6 +30,12 @@ public class CustomerServiceAdapter extends BaseQuickAdapter<GetUserInfoPartList
 
         helper.setText(R.id.tv_user,item.getTrueName());
 
+        if ("客服".equals(item.getRoleID())){
+            helper.setVisible(R.id.tv_open,true);
+        }else {
+            helper.setGone(R.id.tv_open,false);
+        }
+
         if ("6".equals(item.getType())){
             helper.setText(R.id.tv_type,"厂商");
             helper.setBackgroundRes(R.id.tv_type,R.drawable.red_shape);

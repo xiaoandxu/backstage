@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,10 +15,17 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.lxj.xpopup.enums.PopupPosition;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.ComplaintActivity;
 import com.zhkj.backstage.activity.CustomerServiceActivity;
 import com.zhkj.backstage.activity.NewWorkOrderListActivity;
 import com.zhkj.backstage.activity.SearchActivity;
+import com.zhkj.backstage.activity.VendorListActivity;
+import com.zhkj.backstage.activity.WithdrawActivity;
+import com.zhkj.backstage.activity.WorkOrderListActivity;
 import com.zhkj.backstage.adapter.SecondaryListAdapter;
 import com.zhkj.backstage.adapter.TreeAdapter;
 import com.zhkj.backstage.base.BaseLazyFragment;
@@ -29,6 +37,7 @@ import com.zhkj.backstage.bean.GetOderCountByCustomService;
 import com.zhkj.backstage.bean.LeftTitle;
 import com.zhkj.backstage.bean.ParentEntity;
 import com.zhkj.backstage.bean.SalesToday2;
+import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.HomeNewContract;
 import com.zhkj.backstage.mvp.model.HomeNewModel;
@@ -107,6 +116,10 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     LinearLayout mLlFinished;
     @BindView(R.id.ll_customer_service)
     LinearLayout mLlCustomerService;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+    @BindView(R.id.ll_yesterday_order)
+    LinearLayout mLlYesterdayOrder;
     private String mParam1;
     private String mParam2;
     private Intent intent;
@@ -155,7 +168,18 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
 
     @Override
     protected void initData() {
-
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+//                showProgress();
+//                mPresenter.SalesToday();
+                mPresenter.SalesToday2();
+                mPresenter.GetUserInfo(userID, "1");
+//                mPresenter.SalesToday3();
+                mRefreshLayout.finishRefresh(1000);
+            }
+        });
+        mRefreshLayout.setEnableLoadMore(false);
     }
 
     @Override
@@ -261,6 +285,11 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mLlFinished.setOnClickListener(this);
         mTvFirst.setOnClickListener(this);
         mLlCustomerService.setOnClickListener(this);
+        mLlMaster.setOnClickListener(this);
+        mLlFactory.setOnClickListener(this);
+        mLlComplaint.setOnClickListener(this);
+        mLlWithdraw.setOnClickListener(this);
+        mLlYesterdayOrder.setOnClickListener(this);
     }
 
     @Override
@@ -268,42 +297,43 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         switch (v.getId()) {
             case R.id.sosou:
                 intent = new Intent(mActivity, SearchActivity.class);
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_all_work_orders:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "所有工单");
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_new_order:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "未指派");
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_no_appointment:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "未预约");
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_serving_work_orders:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "服务中");
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_unconfirmed:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "未支付");
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.ll_finished:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "已完成");
-                intent.putExtra("roleId",roleId);
+                intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
             case R.id.tv_first:
@@ -311,6 +341,32 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
                 break;
             case R.id.ll_customer_service:
                 startActivity(new Intent(mActivity, CustomerServiceActivity.class));
+                break;
+            case R.id.ll_master:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "7");
+                intent.putExtra("day", "no");
+                startActivity(intent);
+                break;
+            case R.id.ll_factory:
+                intent = new Intent(mActivity, VendorListActivity.class);
+                intent.putExtra("type", "6");
+                intent.putExtra("day", "no");
+                startActivity(intent);
+                break;
+            case R.id.ll_complaint:
+                intent = new Intent(mActivity, WorkOrderListActivity.class);
+                intent.putExtra("name", "最新工单");
+                startActivity(intent);
+                break;
+            case R.id.ll_yesterday_order:
+                intent = new Intent(mActivity, WorkOrderListActivity.class);
+                intent.putExtra("name", "昨日工单");
+                startActivity(intent);
+                break;
+            case R.id.ll_withdraw:
+                intent = new Intent(mActivity, WithdrawActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -332,7 +388,7 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mTvNoAppointment.setText(baseResult.getData().getNoappointment() + "");
         mTvServingWorkOrders.setText(baseResult.getData().getInservice() + "");
         mTvUnconfirmed.setText(baseResult.getData().getOutstanding() + "");
-        mTvFinished.setText(baseResult.getData().getComplete()+ "");
+        mTvFinished.setText(baseResult.getData().getComplete() + "");
     }
 
     @Override
@@ -343,18 +399,26 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mTvFactory.setText(baseResult.getData().getItem2().getFactoryExamineCount() + "");
         mTvFactoryToday.setText(baseResult.getData().getItem2().getTodayFactoryCount() + "");
         mTvFactoryYesterday.setText(baseResult.getData().getItem2().getYesterdayFactoryCount() + "");
-        mTvComplaint.setText(baseResult.getData().getItem2().getComplaintCount() + "");
+
         mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
+        mPresenter.SalesToday3();
+    }
+
+    @Override
+    public void SalesToday3(BaseResult<Data<SalesToday3>> baseResult) {
+        mTvComplaint.setText(baseResult.getData().getItem2().getNewOrder() + "");
+        mTvComplaintToday.setText(baseResult.getData().getItem2().getNewOrder() + "");
+        mTvComplaintYesterday.setText(baseResult.getData().getItem2().getYesterdayOrder() + "");
     }
 
     @Override
     public void GetUserInfo(BaseResult<UserInfoList> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                roleId = baseResult.getData().getData().get(0).getRoleID()+"";
-                if (baseResult.getData().getData().get(0).getRoleID()==22){
+                roleId = baseResult.getData().getData().get(0).getRoleID() + "";
+                if (baseResult.getData().getData().get(0).getRoleID() == 22 || baseResult.getData().getData().get(0).getRoleID() == 1 || baseResult.getData().getData().get(0).getRoleID() == 2) {
                     mPresenter.BackstageGetOrderNum();
-                }else {
+                } else {
                     mPresenter.GetOderCountByCustomService();
                 }
 //                mPresenter.GetModuleByRoleId(baseResult.getData().getData().get(0).getRoleID()+"");

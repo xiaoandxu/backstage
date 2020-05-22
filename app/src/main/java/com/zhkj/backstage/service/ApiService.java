@@ -516,11 +516,9 @@ public interface ApiService {
     /**
      * 客服列表
      */
-    @FormUrlEncoded
+//    @FormUrlEncoded
     @POST("Account/GetUserInfoPartListBak")
-    Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(@Field("RoleId") String RoleId,
-                                                                          @Field("page") String page,
-                                                                          @Field("limit") String limit);
+    Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(@Body RequestBody json);
 
 
     /**

@@ -8,6 +8,7 @@ import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetModuleByRoleId;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
 import com.zhkj.backstage.bean.SalesToday2;
+import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.HomeNewContract;
 
@@ -41,6 +42,17 @@ public class HomeNewPresenter extends HomeNewContract.Presenter {
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<SalesToday2>> value) {
                         mView.SalesToday2(value);
+                    }
+                });
+    }
+
+    @Override
+    public void SalesToday3() {
+        mModel.SalesToday3()
+                .subscribe(new BaseObserver<Data<SalesToday3>>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<Data<SalesToday3>> value) {
+                        mView.SalesToday3(value);
                     }
                 });
     }

@@ -9,6 +9,8 @@ import com.zhkj.backstage.mvp.contract.CustomerServiceContract;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
+
 public class CustomerServicePresenter extends CustomerServiceContract.Presenter {
     @Override
     public void GetUserInfo(String UserID, String limit) {
@@ -22,8 +24,8 @@ public class CustomerServicePresenter extends CustomerServiceContract.Presenter 
     }
 
     @Override
-    public void GetUserInfoPartListBak(String RoleId, String page, String limit) {
-        mModel.GetUserInfoPartListBak(RoleId, page, limit)
+    public void GetUserInfoPartListBak(RequestBody json) {
+        mModel.GetUserInfoPartListBak(json)
                 .subscribe(new BaseObserver<GetUserInfoPartListBak>() {
                     @Override
                     protected void onHandleSuccess(BaseResult<GetUserInfoPartListBak> value) {

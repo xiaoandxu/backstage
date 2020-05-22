@@ -172,7 +172,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter, SearchModel> i
     public void GetoderInfoPartListBak2(BaseResult<WorkOrder> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                if ("22".equals(roleId)){
+                if ("22".equals(roleId)||"1".equals(roleId)||"2".equals(roleId)){
                     mPresenter.GetCustomService();
                     newWorkOrderAdapter2 = new NewWorkOrderAdapter2(R.layout.item_new_work_order, baseResult.getData().getData());
                     mRvSearch.setLayoutManager(new LinearLayoutManager(mActivity));

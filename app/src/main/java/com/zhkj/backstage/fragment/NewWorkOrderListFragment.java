@@ -119,7 +119,7 @@ public class NewWorkOrderListFragment extends BaseLazyFragment<NewWorkOrderListP
     protected void initData() {
         getData();
         myClipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-        if ("22".equals(mParam2)){
+        if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
             newWorkOrderAdapter2 = new NewWorkOrderAdapter2(R.layout.item_new_work_order,list2);
             mRvOrder.setLayoutManager(new LinearLayoutManager(mActivity));
             mRvOrder.setAdapter(newWorkOrderAdapter2);
@@ -378,7 +378,7 @@ public class NewWorkOrderListFragment extends BaseLazyFragment<NewWorkOrderListP
     private void getData() {
         switch (mParam1.substring(0,3)){
             case "未指派":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("0",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("0",null,null,null,page+"","10");
@@ -386,35 +386,35 @@ public class NewWorkOrderListFragment extends BaseLazyFragment<NewWorkOrderListP
 
                 break;
             case "未预约":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("1",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("1", null, null, null, page + "", "10");
                 }
                 break;
             case "服务中":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("2",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("2", null, null, null, page + "", "10");
                 }
                 break;
             case "未支付":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("3",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("3", null, null, null, page + "", "10");
                 }
                 break;
             case "已完成":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("4",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("4", null, null, null, page + "", "10");
                 }
                 break;
             case "所有工":
-                if ("22".equals(mParam2)){
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
                     mPresenter.GetoderInfoPartListBak("5",page+"","10");
                 }else {
                     mPresenter.GetOderCountByCustomService2("5", null, null, null, page + "", "10");

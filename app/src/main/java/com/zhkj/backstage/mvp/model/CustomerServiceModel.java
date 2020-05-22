@@ -12,6 +12,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 
 public class CustomerServiceModel implements CustomerServiceContract.Model {
     @Override
@@ -21,8 +22,8 @@ public class CustomerServiceModel implements CustomerServiceContract.Model {
                 .subscribeOn(Schedulers.io());
     }
     @Override
-    public Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(String RoleId, String page, String limit) {
-        return ApiRetrofit.getDefault().GetUserInfoPartListBak(RoleId, page, limit)
+    public Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(RequestBody json) {
+        return ApiRetrofit.getDefault().GetUserInfoPartListBak(json)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

@@ -97,7 +97,7 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
                 break;
         }
 
-        if ("22".equals(roleId)){
+        if ("22".equals(roleId)||"1".equals(roleId)||"2".equals(roleId)){
             mPresenter.BackstageGetOrderNum();
         }else {
             mPresenter.GetOderCountByCustomService();

@@ -150,6 +150,9 @@ public class ComplaintActivity extends BaseActivity<ComplaintPresenter, Complain
             case "师傅待处理仲裁":
                 mPresenter.GetOrderInfoComplaintList("", "W", "", String.valueOf(page), "10");
                 break;
+            case "全部":
+                mPresenter.GetOrderInfoComplaintList("", "", "", String.valueOf(page), "10");
+                break;
         }
     }
 

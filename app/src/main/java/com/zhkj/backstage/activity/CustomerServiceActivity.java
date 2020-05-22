@@ -1,6 +1,7 @@
 package com.zhkj.backstage.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -23,6 +25,7 @@ import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
+import com.zhkj.backstage.bean.GetUserInfoPartListBakBean;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.CustomerServiceContract;
 import com.zhkj.backstage.mvp.model.CustomerServiceModel;
@@ -33,6 +36,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class CustomerServiceActivity extends BaseActivity<CustomerServicePresenter, CustomerServiceModel> implements View.OnClickListener , CustomerServiceContract.View {
     @BindView(R.id.iv_back)
@@ -51,6 +56,8 @@ public class CustomerServiceActivity extends BaseActivity<CustomerServicePresent
     private int pos;
     private List<GetUserInfoPartListBak.DataBean> list=new ArrayList<>();
     private CustomerServiceAdapter adapter;
+    private Gson gson=new Gson();
+    private GetUserInfoPartListBakBean getUserInfoPartListBakBean;
 
     /**
      * 初始化沉浸式
@@ -92,7 +99,15 @@ public class CustomerServiceActivity extends BaseActivity<CustomerServicePresent
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page=1;
-                mPresenter.GetUserInfoPartListBak("19",page+"","10");
+//                mPresenter.GetUserInfoPartListBak("5",page+"","10");
+                getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
+                getUserInfoPartListBakBean.setType("5");
+                getUserInfoPartListBakBean.setPage(page+"");
+                getUserInfoPartListBakBean.setLimit("10");
+                String s = gson.toJson(getUserInfoPartListBakBean);
+                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+                mPresenter.GetUserInfoPartListBak(body);
+                mRefreshLayout.finishRefresh(1000);
             }
         });
 
@@ -100,7 +115,15 @@ public class CustomerServiceActivity extends BaseActivity<CustomerServicePresent
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page=page+1;
-                mPresenter.GetUserInfoPartListBak("19",page+"","10");
+//                mPresenter.GetUserInfoPartListBak("5",page+"","10");
+                getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
+                getUserInfoPartListBakBean.setType("5");
+                getUserInfoPartListBakBean.setPage(page+"");
+                getUserInfoPartListBakBean.setLimit("10");
+                String s = gson.toJson(getUserInfoPartListBakBean);
+                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+                mPresenter.GetUserInfoPartListBak(body);
+                refreshLayout.finishLoadMore(1000);
             }
         });
     }
@@ -110,7 +133,13 @@ public class CustomerServiceActivity extends BaseActivity<CustomerServicePresent
         SPUtils spUtils = SPUtils.getInstance("token");
         userID = spUtils.getString("userName");
         mTvTitle.setText("客服管理");
-        mPresenter.GetUserInfoPartListBak("19",page+"","10");
+        getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
+        getUserInfoPartListBakBean.setType("5");
+        getUserInfoPartListBakBean.setPage(page+"");
+        getUserInfoPartListBakBean.setLimit("10");
+        String s = gson.toJson(getUserInfoPartListBakBean);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+        mPresenter.GetUserInfoPartListBak(body);
 //        mPresenter.GetUserInfo(userID,"1");
     }
 

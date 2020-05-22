@@ -11,11 +11,12 @@ import com.zhkj.backstage.bean.UserInfoList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 
 public interface CustomerServiceContract {
     interface Model extends BaseModel{
         Observable<BaseResult<UserInfoList>> GetUserInfo(String UserID, String limit);
-        Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(String RoleId, String page, String limit);
+        Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(RequestBody json);
         Observable<BaseResult<Data<String>>> SetEndOrderReceiving(String accountID);
         Observable<BaseResult<Data<String>>> SetStartOrderReceiving(String accountID);
     }
@@ -29,7 +30,7 @@ public interface CustomerServiceContract {
 
     abstract class Presenter extends BasePresenter<View,Model>{
         public abstract void GetUserInfo(String UserID, String limit);
-        public abstract void GetUserInfoPartListBak(String RoleId, String page, String limit);
+        public abstract void GetUserInfoPartListBak(RequestBody json);
         public abstract void SetEndOrderReceiving(String accountID);
         public abstract void SetStartOrderReceiving(String accountID);
     }
