@@ -46,7 +46,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
 
     @Override
     protected void initData() {
-
+        setSwipeBackEnable(false);
     }
 
 
@@ -60,6 +60,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
         isLogin = spUtils.getBoolean("isLogin");
         mEtUsername.setText(userName);
         mEtPassword.setText(passWord);
+        if (isLogin){
+            mPresenter.Login(userName, passWord);
+        }
     }
 
     @Override
@@ -124,7 +127,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                     spUtils.put("isLogin", true);
 //                    mPresenter.AddAndUpdatePushAccount(XGPushConfig.getToken(this),"6",userName);
                     startActivity(new Intent(mActivity, MainActivity.class));
-                    finish();
                 }else{
                     ToastUtils.showShort(data.getItem2());
                 }

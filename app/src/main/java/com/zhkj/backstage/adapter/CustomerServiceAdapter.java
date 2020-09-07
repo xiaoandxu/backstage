@@ -1,5 +1,7 @@
 package com.zhkj.backstage.adapter;
 
+import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ public class CustomerServiceAdapter extends BaseQuickAdapter<GetUserInfoPartList
         super(layoutResId, data);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void convert(BaseViewHolder helper, GetUserInfoPartListBak.DataBean item) {
         helper.addOnClickListener(R.id.tv_open);
@@ -30,11 +33,11 @@ public class CustomerServiceAdapter extends BaseQuickAdapter<GetUserInfoPartList
 
         helper.setText(R.id.tv_user,item.getTrueName());
 
-        if ("客服".equals(item.getRoleID())){
-            helper.setVisible(R.id.tv_open,true);
-        }else {
-            helper.setGone(R.id.tv_open,false);
-        }
+//        if ("客服".equals(item.getRoleID())){
+//            helper.setVisible(R.id.tv_open,true);
+//        }else {
+//            helper.setGone(R.id.tv_open,false);
+//        }
 
         if ("6".equals(item.getType())){
             helper.setText(R.id.tv_type,"厂商");
@@ -49,8 +52,10 @@ public class CustomerServiceAdapter extends BaseQuickAdapter<GetUserInfoPartList
 
         if (item.getIsOrderReceiving()==-1){
             helper.setText(R.id.tv_open,"开启接单");
+            helper.setTextColor(R.id.tv_open, Color.BLUE);
         }else {
             helper.setText(R.id.tv_open,"停止接单");
+            helper.setTextColor(R.id.tv_open, Color.RED);
         }
 
         if ("1".equals(item.getIfAuth())){

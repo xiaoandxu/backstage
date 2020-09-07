@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseLazyFragment;
@@ -18,17 +20,22 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
 import com.zhkj.backstage.mvp.model.PersonalInformationModel;
 import com.zhkj.backstage.mvp.presenter.PersonalInformationPresenter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.BindView;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 //个人信息
-public class PersonalInformationFragment extends BaseLazyFragment<PersonalInformationPresenter, PersonalInformationModel> implements PersonalInformationCotract.View,View.OnClickListener {
+public class PersonalInformationFragment extends BaseLazyFragment<PersonalInformationPresenter, PersonalInformationModel> implements PersonalInformationCotract.View, View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";//
     private static final String ARG_PARAM2 = "param2";//
     @BindView(R.id.tv_username)
@@ -83,6 +90,16 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
     TextView mTvCertification;
     @BindView(R.id.ll_verified)
     LinearLayout mLlVerified;
+    @BindView(R.id.et_initmoney)
+    EditText mEtInitmoney;
+    @BindView(R.id.et_againmoney)
+    EditText mEtAgainmoney;
+    @BindView(R.id.et_platformmoney)
+    EditText mEtPlatformmoney;
+    @BindView(R.id.switcher_work_order_barcode)
+    Switch mSwitcherWorkOrderBarcode;
+    @BindView(R.id.ll_company)
+    LinearLayout mLlCompany;
 
     private String mParam1;
     private String mParam2;
@@ -157,6 +174,9 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
                         mTvCertification.setText("未认证");
                     }
 
+                    mEtInitmoney.setText(detail.getDoorFee() + "");
+                    mEtAgainmoney.setText(detail.getAgainMoney() + "");
+                    mEtPlatformmoney.setText(detail.getPlatformFee() + "");
                     mTvNickname.setText(detail.getNickName());
                     mTvPhone.setText(detail.getPhone());
                     mTvTrueName.setText(detail.getTrueName());
@@ -173,15 +193,17 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
                     mTvAddress.setText(detail.getAddress());
                     if ("6".equals(detail.getType())) {
                         mTvType.setText("加盟公司");
+                        mLlCompany.setVisibility(View.VISIBLE);
                     } else if ("7".equals(detail.getType())) {
                         mTvType.setText("加盟维修");
+                        mLlCompany.setVisibility(View.GONE);
                     }
                     mTvRoles.setText(detail.getRoleName());
                     mTvCreationTime.setText(detail.getCreateDate());
                     mTvLastLoginTime.setText(detail.getLastLoginDate());
-                    if ("0".equals(detail.getIfAuth())){
+                    if ("0".equals(detail.getIfAuth())) {
                         mLlVerified.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         mLlVerified.setVisibility(View.GONE);
                     }
                 }
@@ -218,19 +240,63 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
 
     @Override
     public void ApproveAuth(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
+        switch (baseResult.getStatusCode()) {
             case 200:
-                ToastUtils.showShort("审核完成");
-                mPresenter.GetUserInfo(userId,"1");
+                if (baseResult.getData().isItem1()) {
+                    ToastUtils.showShort("审核完成");
+                    mPresenter.GetUserInfo(userId, "1");
+                    EventBus.getDefault().post("审核完成");
+                } else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void UpdateFactroyUser(UpdateFactroyUserResult baseResult) {
+        switch (baseResult.getStatusCode()) {
+            case 200:
+                if (baseResult.getData().isItem1()) {
+                    mPresenter.ApproveAuth(userId, "1", "");
+                } else {
+                    ToastUtils.showShort(baseResult.getData().getItem2());
+                }
                 break;
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_pass:
-                mPresenter.ApproveAuth(userId,"1","");
+                if ("6".equals(detail.getType())) {
+                    String DoorFee = mEtInitmoney.getText().toString();
+                    String AgainMoney = mEtAgainmoney.getText().toString();
+                    String PlatformFee = mEtPlatformmoney.getText().toString();
+                    if (DoorFee.isEmpty()) {
+                        ToastUtils.showShort("请设置上门费");
+                        return;
+                    }
+                    if (AgainMoney.isEmpty()) {
+                        ToastUtils.showShort("请设置二次上门费");
+                        return;
+                    }
+                    if (PlatformFee.isEmpty()) {
+                        ToastUtils.showShort("请设置平台费");
+                        return;
+                    }
+                    detail.setDoorFee(Double.parseDouble(DoorFee));
+                    detail.setAgainMoney(Double.parseDouble(AgainMoney));
+                    detail.setPlatformFee(Double.parseDouble(PlatformFee));
+                    Gson gson = new Gson();
+                    String s = gson.toJson(detail);
+                    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+                    mPresenter.UpdateFactroyUser(body);
+                } else if ("7".equals(detail.getType())) {
+                    mPresenter.ApproveAuth(userId, "1", "");
+                }
+
                 break;
             case R.id.btn_refuse:
                 view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
@@ -248,12 +314,12 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
                 btn_positive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String reason=message.getText().toString();
-                        if (reason.isEmpty()){
+                        String reason = message.getText().toString();
+                        if (reason.isEmpty()) {
                             ToastUtils.showShort("请输入拒绝理由");
                             return;
-                        }else {
-                            mPresenter.ApproveAuth(userId,"-1",reason);
+                        } else {
+                            mPresenter.ApproveAuth(userId, "-1", reason);
                         }
                         dialog.dismiss();
                     }

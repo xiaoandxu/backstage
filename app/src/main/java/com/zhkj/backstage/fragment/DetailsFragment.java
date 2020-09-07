@@ -35,14 +35,6 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     TextView mTvAddress;
     @BindView(R.id.tv_service_type)
     TextView mTvServiceType;
-    @BindView(R.id.tv_brand)
-    TextView mTvBrand;
-    @BindView(R.id.tv_model)
-    TextView mTvModel;
-    @BindView(R.id.tv_description)
-    TextView mTvDescription;
-    @BindView(R.id.tv_fault_description)
-    TextView mTvFaultDescription;
     @BindView(R.id.tv_receiver)
     TextView mTvReceiver;
     @BindView(R.id.tv_send_user)
@@ -103,6 +95,8 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     TextView mTvChangeState;
     @BindView(R.id.btn_finish_again)
     Button mBtnFinishAgain;
+    @BindView(R.id.tv_prod)
+    TextView mTvProd;
 
     private String orderId;
     private String mParam1;
@@ -116,6 +110,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     private EditText tv_message;
     private SPUtils spUtils;
     private String userId;
+    private WorkOrder.OrderProductModelsBean orderProductModelsBean;
 
     public static DetailsFragment newInstance(String param1, String param2) {
         DetailsFragment fragment = new DetailsFragment();
@@ -160,6 +155,7 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
     @Override
     protected void initView() {
         orderId = mParam1;
+        showProgress();
         mPresenter.GetOrderInfo(orderId);
     }
 
@@ -360,8 +356,8 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                 sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_finish_agagin, null);
                 btn_negtive = sendView.findViewById(R.id.negtive);
                 btn_positive = sendView.findViewById(R.id.positive);
-                EditText et_factory_amount=sendView.findViewById(R.id.et_factory_amount);
-                EditText et_master_amount=sendView.findViewById(R.id.et_master_amount);
+                EditText et_factory_amount = sendView.findViewById(R.id.et_factory_amount);
+                EditText et_master_amount = sendView.findViewById(R.id.et_master_amount);
                 tv_title = sendView.findViewById(R.id.title);
                 tv_title.setText("提示");
                 btn_negtive.setOnClickListener(new View.OnClickListener() {
@@ -378,12 +374,12 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
                         if (factory.isEmpty()) {
                             ToastUtils.showShort("请输入工厂价格");
                             return;
-                        }else   if (master.isEmpty()) {
+                        } else if (master.isEmpty()) {
                             ToastUtils.showShort("请输入师傅价格");
                             return;
                         } else {
                             senddialog.dismiss();
-                            mPresenter.endAgain(orderId,factory,master,userId);
+                            mPresenter.endAgain(orderId, factory, master, userId);
                         }
 
                     }
@@ -401,30 +397,29 @@ public class DetailsFragment extends BaseLazyFragment<DetailPresenter, DetailMod
 
     @Override
     public void GetOrderInfo(BaseResult<WorkOrder.DataBean> baseResult) {
+        hideProgress();
         switch (baseResult.getStatusCode()) {
             case 200:
                 if (baseResult != null) {
                     detail = baseResult.getData();
+                    String prod="";
+                    for (int i = 0; i < detail.getOrderProductModels().size(); i++) {
+                        orderProductModelsBean = detail.getOrderProductModels().get(i);
+                        prod+=orderProductModelsBean.getBrandName()+" "+orderProductModelsBean.getProductType()+"-"+orderProductModelsBean.getSubCategoryName()+"(服务要求："+orderProductModelsBean.getMemo()+")"+",";
+                    }
+                    if (prod.contains(",")){
+                        prod=prod.substring(0,prod.lastIndexOf(","));
+                    }
+                    mTvProd.setText("产品信息："+prod);
                     mTvCustomerName.setText(detail.getUserName() + "     " + detail.getPhone());
                     mTvAddress.setText(detail.getAddress());
                     mTvServiceType.setText("服务类型：" + detail.getTypeName() + "/" + detail.getGuarantee());
-                    mTvBrand.setText("品      牌：" + detail.getBrandName());
-                    mTvModel.setText("型      号：" + detail.getProductType());
                     mTvStatus.setText(detail.getState());
                     if ("无师傅".equals(detail.getState())) {
                         mTvChangeState.setVisibility(View.VISIBLE);
                     } else {
                         mTvChangeState.setVisibility(View.GONE);
                     }
-                    if ("1".equals(detail.getTypeID())) {
-                        mTvDescription.setText("故障描述");
-                    } else if ("2".equals(detail.getTypeID())) {
-                        mTvDescription.setText("安装备注");
-                    } else {
-                        mTvDescription.setText("故障描述");
-                    }
-
-                    mTvFaultDescription.setText(detail.getMemo());
                     if (detail.getSendUser() == null) {
                         mTvReceiver.setText("未找到师傅");
                     } else {

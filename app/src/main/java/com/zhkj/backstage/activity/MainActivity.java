@@ -5,29 +5,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.blankj.utilcode.util.ActivityUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.base.BaseActivity;
-import com.zhkj.backstage.fragment.HomeFragment;
 import com.zhkj.backstage.fragment.HomeNewFragment;
-import com.zhkj.backstage.service.GrayService;
 import com.zhkj.backstage.weight.CustomViewPager;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -228,28 +220,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener ,
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        /*  两秒之内再按一下退出*/
-        //判断用户是否点击了返回键
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            //与上次点击返回键作差
-            if ((System.currentTimeMillis() - mExittime) > 2000) {
-                //大于2秒认为是误操作
-                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-                //并记录记录下本次点击返回键的时刻
-                mExittime = System.currentTimeMillis();
-            } else {
-                //小于2秒 则用户希望退出
-                System.exit(0);
-            }
-            return true;
-
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//
+//        /*  两秒之内再按一下退出*/
+//        //判断用户是否点击了返回键
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            //与上次点击返回键作差
+//            if ((System.currentTimeMillis() - mExittime) > 2000) {
+//                //大于2秒认为是误操作
+//                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//                //并记录记录下本次点击返回键的时刻
+//                mExittime = System.currentTimeMillis();
+//            } else {
+//                //小于2秒 则用户希望退出
+//                System.exit(0);
+//            }
+//            return true;
+//
+//        }
+//
+//        return super.onKeyDown(keyCode, event);
+//    }
 
     private boolean isNeedRequestPermissions(List<String> permissions) {
         // 定位精确位置

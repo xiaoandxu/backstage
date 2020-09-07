@@ -97,7 +97,7 @@ public class ReturnLogisticsFragment extends BaseLazyFragment<ExpressInfoPresent
     @Override
     protected void initData() {
         orderId = mParam1;
-        mPresenter.GetOrderInfo(orderId);
+//        mPresenter.GetOrderInfo(orderId);
     }
 
     @Override

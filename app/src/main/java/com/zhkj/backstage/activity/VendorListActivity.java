@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -20,10 +21,16 @@ import com.zhkj.backstage.R;
 import com.zhkj.backstage.adapter.VendorListAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.AddrList;
+import com.zhkj.backstage.bean.GetUserInfoPartListBakBean;
 import com.zhkj.backstage.bean.UserInfoList;
+import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
 import com.zhkj.backstage.mvp.model.VendorListModel;
 import com.zhkj.backstage.mvp.presenter.VendorListPresenter;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +40,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class VendorListActivity extends BaseActivity<VendorListPresenter, VendorListModel> implements View.OnClickListener, VendorListContract.View {
     @BindView(R.id.view)
@@ -51,6 +60,9 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
     private VendorListAdapter adapter;
     private String day;
     private String data;
+    private String provinceCode;
+    private GetUserInfoPartListBakBean getUserInfoPartListBakBean;
+    private String provinceName;
 
     @Override
     protected void initImmersionBar() {
@@ -87,8 +99,7 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 page = 1;
                 getData();
-//                mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
-                refreshLayout.finishRefresh(1000);
+                mRefreshLayout.finishRefresh(1000);
             }
         });
 
@@ -96,9 +107,8 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
-//                mPresenter.GetUserInfoList(type, "0", "", "", String.valueOf(page), "10");
                 getData();
-                refreshLayout.finishLoadMore(1000);
+                mRefreshLayout.finishLoadMore(1000);
             }
         });
     }
@@ -107,6 +117,8 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
     protected void initView() {
         type = getIntent().getStringExtra("type");
         day = getIntent().getStringExtra("day");
+        provinceCode = getIntent().getStringExtra("provinceCode");
+        provinceName = getIntent().getStringExtra("provinceName");
         Date date = new Date();
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         data = dateformat.format(date);
@@ -123,6 +135,8 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             mTvTitle.setText("今日入驻师傅");
         } else if ("ym".equals(day)) {
             mTvTitle.setText("昨日入驻师傅");
+        }else{
+            mTvTitle.setText("所有师傅");
         }
         showProgress();
         getData();
@@ -142,6 +156,16 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             mPresenter.GetUserInfoList(type, "", getStringByFormat(getTimesmorning()), getStringByFormat(getTimesmorning()), String.valueOf(page), "10");
         } else if ("ym".equals(day)) {
             mPresenter.GetUserInfoList(type, "",  getStringByFormat(getYesterdaysmorning()), getStringByFormat(getYesterdaysmorning()), String.valueOf(page), "10");
+        }else{
+            Gson gson=new Gson();
+            getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
+            getUserInfoPartListBakBean.setType("7");
+            getUserInfoPartListBakBean.setPage(page+"");
+            getUserInfoPartListBakBean.setLimit("15");
+            getUserInfoPartListBakBean.setProvinceCode(provinceCode);
+            String s = gson.toJson(getUserInfoPartListBakBean);
+            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+            mPresenter.GetUserInfoPartList(body);
         }
     }
 
@@ -172,8 +196,37 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
             list.clear();
         }
         list.addAll(baseResult.getData().getData());
+        if (type==null){
+            mTvTitle.setText("所有师傅("+baseResult.getData().getCount()+")");
+        }
         adapter.setNewData(list);
         hideProgress();
+    }
+
+    @Override
+    public void GetUserInfoPartList(BaseResult<UserInfoList> baseResult) {
+        if (page==1){
+            list.clear();
+        }
+        list.addAll(baseResult.getData().getData());
+        if (type==null){
+            if(mTvTitle==null){
+                return;
+            }
+            mTvTitle.setText(provinceName +"("+baseResult.getData().getCount()+")");
+        }
+        adapter.setNewData(list);
+        hideProgress();
+    }
+
+    @Override
+    public void GetProvinceMasterDistance(BaseResult<AddrList> baseResult) {
+
+    }
+
+    @Override
+    public void GetProvinceMasterList(BaseResult<worker> baseResult) {
+
     }
 
     // 获得当天0点时间
@@ -222,5 +275,12 @@ public class VendorListActivity extends BaseActivity<VendorListPresenter, Vendor
 //        calendar.set(Calendar.SECOND, 0);
 //        calendar.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(String message) {
+        if ("审核完成".equals(message)){
+            list.clear();
+            getData();
+        }
     }
 }

@@ -2,8 +2,12 @@ package com.zhkj.backstage.mvp.presenter;
 
 import com.zhkj.backstage.base.BaseObserver;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.AddrList;
 import com.zhkj.backstage.bean.UserInfoList;
+import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
+
+import okhttp3.RequestBody;
 
 public class VendorListPresenter extends VendorListContract.Presenter {
     @Override
@@ -13,6 +17,38 @@ public class VendorListPresenter extends VendorListContract.Presenter {
                     @Override
                     protected void onHandleSuccess(BaseResult<UserInfoList> value) {
                         mView.GetUserInfoList(value);
+                    }
+                });
+    }
+    @Override
+    public void GetUserInfoPartList(RequestBody json) {
+        mModel.GetUserInfoPartList(json)
+                .subscribe(new BaseObserver<UserInfoList>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<UserInfoList> value) {
+                        mView.GetUserInfoPartList(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetProvinceMasterDistance() {
+        mModel.GetProvinceMasterDistance()
+                .subscribe(new BaseObserver<AddrList>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<AddrList> value) {
+                        mView.GetProvinceMasterDistance(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetProvinceMasterList(String page, String limit, String code) {
+        mModel.GetProvinceMasterList(page, limit, code)
+                .subscribe(new BaseObserver<worker>() {
+                    @Override
+                    protected void onHandleSuccess(BaseResult<worker> value) {
+                        mView.GetProvinceMasterList(value);
                     }
                 });
     }

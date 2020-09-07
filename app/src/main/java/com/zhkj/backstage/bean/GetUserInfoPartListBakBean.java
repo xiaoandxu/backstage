@@ -3,9 +3,27 @@ package com.zhkj.backstage.bean;
 import java.io.Serializable;
 
 public class GetUserInfoPartListBakBean implements Serializable {
+    private String ProvinceCode;
     private String Type;
     private String limit;
     private String page;
+    private String RoleId;
+
+    public String getRoleId() {
+        return RoleId;
+    }
+
+    public void setRoleId(String roleId) {
+        RoleId = roleId;
+    }
+
+    public String getProvinceCode() {
+        return ProvinceCode;
+    }
+
+    public void setProvinceCode(String provinceCode) {
+        ProvinceCode = provinceCode;
+    }
 
     public String getType() {
         return Type;

@@ -5,10 +5,10 @@ import com.zhkj.backstage.base.BasePresenter;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.base.BaseView;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.GetOpenOrderReceivingResult;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
+import com.zhkj.backstage.bean.OneKeyResult;
 import com.zhkj.backstage.bean.UserInfoList;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -19,6 +19,8 @@ public interface CustomerServiceContract {
         Observable<BaseResult<GetUserInfoPartListBak>> GetUserInfoPartListBak(RequestBody json);
         Observable<BaseResult<Data<String>>> SetEndOrderReceiving(String accountID);
         Observable<BaseResult<Data<String>>> SetStartOrderReceiving(String accountID);
+        Observable<GetOpenOrderReceivingResult> GetOpenOrderReceiving();
+        Observable<OneKeyResult> OnekeyDispatch();
     }
 
     interface View extends BaseView{
@@ -26,6 +28,8 @@ public interface CustomerServiceContract {
         void GetUserInfoPartListBak(BaseResult<GetUserInfoPartListBak> baseResult);
         void SetEndOrderReceiving(BaseResult<Data<String>> baseResult);
         void SetStartOrderReceiving(BaseResult<Data<String>> baseResult);
+        void GetOpenOrderReceiving(GetOpenOrderReceivingResult baseResult);
+        void OnekeyDispatch(OneKeyResult baseResult);
     }
 
     abstract class Presenter extends BasePresenter<View,Model>{
@@ -33,5 +37,7 @@ public interface CustomerServiceContract {
         public abstract void GetUserInfoPartListBak(RequestBody json);
         public abstract void SetEndOrderReceiving(String accountID);
         public abstract void SetStartOrderReceiving(String accountID);
+        public abstract void GetOpenOrderReceiving();
+        public abstract void OnekeyDispatch();
     }
 }

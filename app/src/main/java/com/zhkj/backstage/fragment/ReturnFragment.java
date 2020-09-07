@@ -92,7 +92,7 @@ public class ReturnFragment extends BaseLazyFragment<DetailPresenter, DetailMode
 
     @Override
     protected void initView() {
-        mPresenter.GetOrderInfo(mParam1);
+//        mPresenter.GetOrderInfo(mParam1);
     }
 
     @Override

@@ -20,7 +20,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.blankj.utilcode.util.ActivityUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.interfaces.HandleBackInterface;
@@ -30,8 +29,6 @@ import com.zyao89.view.zloading.ZLoadingDialog;
 import com.zyao89.view.zloading.Z_TYPE;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -200,9 +197,9 @@ public abstract class BaseLazyFragment<P extends BasePresenter, M extends BaseMo
      */
     protected abstract void initData();
 
-//    public View getEmptyView() {
-//        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data, null);
-//    }
+    public View getEmptyView() {
+        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data, null);
+    }
 //
 //    public View getEmptyMessage() {
 //        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_message, null);

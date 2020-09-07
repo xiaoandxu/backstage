@@ -1,16 +1,18 @@
 package com.zhkj.backstage.activity;
 
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,22 +20,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.gyf.barlibrary.ImmersionBar;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
-import com.zhkj.backstage.adapter.LaterorderAdapter;
+import com.zhkj.backstage.adapter.NewWorkOrderAdapter;
+import com.zhkj.backstage.adapter.Redeploy_Adapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
+import com.zhkj.backstage.bean.BackstageGetOrderNum;
 import com.zhkj.backstage.bean.Data;
-import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.mvp.contract.OrderListContract;
-import com.zhkj.backstage.mvp.model.OrderListModel;
-import com.zhkj.backstage.mvp.presenter.OrderListPresenter;
+import com.zhkj.backstage.bean.GetCustomService;
+import com.zhkj.backstage.bean.GetOderCountByCustomService;
+import com.zhkj.backstage.bean.GetOrderReq;
+import com.zhkj.backstage.bean.WorkOrderListBean;
+import com.zhkj.backstage.mvp.contract.NewWorkOrderListContract;
+import com.zhkj.backstage.mvp.model.NewWorkOrderListModel;
+import com.zhkj.backstage.mvp.presenter.NewWorkOrderListPresenter;
+import com.zhkj.backstage.weight.CustomDialog_Redeploy;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -45,40 +52,43 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /*最新工单*/
-public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, OrderListModel> implements View.OnClickListener, OrderListContract.View {
+public class WorkOrderListActivity extends BaseActivity<NewWorkOrderListPresenter, NewWorkOrderListModel> implements View.OnClickListener, NewWorkOrderListContract.View {
 
 
     @BindView(R.id.new_order)
     RecyclerView mNewOrder;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
-    @BindView(R.id.view)
-    View mView;
     @BindView(R.id.tv_title)
     TextView mTvTitle;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
-    private List<WorkOrder.DataBean> list = new ArrayList<>();
-    private LaterorderAdapter adapter;
+    @BindView(R.id.tv_save)
+    TextView mTvSave;
+    @BindView(R.id.iv_search)
+    ImageView mIvSearch;
+    private List<WorkOrderListBean.DataBeanX.DataBean> list = new ArrayList<>();
+    private List<GetCustomService> subuserlist = new ArrayList<>();
+    private NewWorkOrderAdapter adapter;
     private int page = 1;
     private String date;
     private String name;
     private ClipboardManager myClipboard;
     private ClipData myClip;
-    private View sendView;
-    private AlertDialog senddialog;
     private String phone;
-
-    @Override
-    protected void initImmersionBar() {
-        mImmersionBar = ImmersionBar.with(this);
-//        mImmersionBar.statusBarDarkFont(true, 0.2f); //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
-        mImmersionBar.statusBarView(mView);
-        mImmersionBar.keyboardEnable(true);
-        mImmersionBar.init();
-    }
+    private Gson gson;
+    private GetOrderReq req;
+    private String json;
+    private RequestBody body;
+    private WorkOrderListBean.DataBeanX.DataBean.ProductsBean orderProductModelsBean;
+    private String copyStr;
+    private String SubUserID;
 
     @Override
     protected int setLayoutId() {
@@ -87,15 +97,18 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
 
     @Override
     protected void initData() {
+        mIvSearch.setVisibility(View.VISIBLE);
+        mPresenter.GetCustomService();
         myClipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-        adapter = new LaterorderAdapter(R.layout.item_new_order, list);
+        adapter = new NewWorkOrderAdapter(R.layout.item_new_work_order, list);
         mNewOrder.setLayoutManager(new LinearLayoutManager(mActivity));
+        adapter.setEmptyView(getEmptyView());
         mNewOrder.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent=new Intent(mActivity, TopDetailsActivity.class);
-                intent.putExtra("OrderId",list.get(position).getOrderID());
+                Intent intent = new Intent(mActivity, TopDetailsActivity.class);
+                intent.putExtra("OrderId", list.get(position).getOrderID());
                 startActivity(intent);
             }
         });
@@ -105,52 +118,25 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
 
             @Override
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-                switch (view.getId()){
+                switch (view.getId()) {
+                    case R.id.ll_copy:
                     case R.id.iv_copy:
-                        String id = list.get(position).getOrderID();
-                        myClip = ClipData.newPlainText("", id);
-                        myClipboard.setPrimaryClip(myClip);
-                        ToastUtils.showShort("复制成功");
+                        copy(position);
                         break;
                     case R.id.iv_specify:
-                        intent = new Intent(mActivity,DesignatedDispatchActivity.class);
-                        intent.putExtra("orderId",list.get(position).getOrderID());
-                        intent.putExtra("typeId","1");
+                        intent = new Intent(mActivity, DesignatedDispatchActivity.class);
+                        intent.putExtra("orderId", list.get(position).getOrderID());
+                        intent.putExtra("typeId", "1");
                         startActivity(intent);
                         break;
                     case R.id.iv_transfer:
-                        intent=new Intent(mActivity,DesignatedDispatchActivity.class);
-                        intent.putExtra("orderId",list.get(position).getOrderID());
-                        intent.putExtra("typeId","2");
+                        intent = new Intent(mActivity, DesignatedDispatchActivity.class);
+                        intent.putExtra("orderId", list.get(position).getOrderID());
+                        intent.putExtra("typeId", "2");
                         startActivity(intent);
                         break;
-                    case R.id.tv_change_state:
-                        sendView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_home, null);
-                        Button btn_negtive = sendView.findViewById(R.id.negtive);
-                        Button btn_positive = sendView.findViewById(R.id.positive);
-                        TextView tv_title = sendView.findViewById(R.id.title);
-                        TextView tv_message = sendView.findViewById(R.id.message);
-                        tv_title.setText("提示");
-                        tv_message.setText("是否改变工单状态？");
-
-                        btn_negtive.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                senddialog.dismiss();
-                            }
-                        });
-                        btn_positive.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                senddialog.dismiss();
-                                mPresenter.ChangeOrderStateTwenty(list.get(position).getOrderID());
-                            }
-                        });
-
-                        senddialog = new AlertDialog.Builder(mActivity)
-                                .setView(sendView)
-                                .create();
-                        senddialog.show();
+                    case R.id.tv_customer_service:
+                        deploy(position);
                         break;
                 }
             }
@@ -161,12 +147,10 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                page=1;
-//                list.clear();
-//                showProgress();
+                page = 1;
                 getData();
+                refreshLayout.resetNoMoreData();
                 refreshLayout.finishRefresh(1000);
-//                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
             }
         });
 
@@ -175,10 +159,127 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 page++;
                 getData();
-//                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
                 refreshLayout.finishLoadMore(1000);
             }
         });
+    }
+
+    //指派客服
+    private void deploy(int position) {
+        CustomDialog_Redeploy customDialog_redeploy = new CustomDialog_Redeploy(mActivity);
+        customDialog_redeploy.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        customDialog_redeploy.show();
+        Window window = customDialog_redeploy.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        Display d = window.getWindowManager().getDefaultDisplay();
+        wlp.height = (d.getHeight());
+        wlp.width = (d.getWidth());
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+
+
+        RecyclerView recyclerView_custom_redeploy = customDialog_redeploy.findViewById(R.id.recyclerView_custom_redeploy);
+        recyclerView_custom_redeploy.setLayoutManager(new LinearLayoutManager(mActivity));
+        Redeploy_Adapter redeploy_adapter = new Redeploy_Adapter(R.layout.item_redeploy, subuserlist, mActivity);
+        recyclerView_custom_redeploy.setAdapter(redeploy_adapter);
+
+
+
+        /*选择子账号进行转派*/
+        redeploy_adapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+                switch (view.getId()) {
+                    case R.id.rl_item_redeploy:
+                        // case R.id.img_redeploy_unselect:
+                        // case R.id.img_redeploy_select:
+                        if (((GetCustomService) adapter.getData().get(position)).isSelect() == false) {//当前选中选中
+
+                            for (int i = 0; i < subuserlist.size(); i++) {
+                                subuserlist.get(i).setSelect(false);
+                            }
+                            subuserlist.get(position).setSelect(true); //点击的为选中状态
+                            SubUserID = subuserlist.get(position).getId() + "";
+//                                                Log.d("====>", SubUserID);
+                            redeploy_adapter.notifyDataSetChanged();
+
+                        } else { //点击的为已选中
+
+                            for (int i = 0; i < subuserlist.size(); i++) {
+                                subuserlist.get(i).setSelect(false);
+                            }
+                            SubUserID = null;
+                            redeploy_adapter.notifyDataSetChanged();
+                        }
+
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        customDialog_redeploy.setYesOnclickListener("转派订单", new CustomDialog_Redeploy.onYesOnclickListener() {
+            @Override
+            public void onYesClick() {
+                if (SubUserID == null) {
+                    Toast.makeText(mActivity, "您还没选择客服账号进行转派", LENGTH_SHORT).show();
+                    //  customDialog_redeploy.dismiss(); //没选择人进行选派
+                } else {
+                    //转派成功状态恢复原状
+
+                    for (int i = 0; i < subuserlist.size(); i++) {
+                        subuserlist.get(i).setSelect(false);
+                    }
+                    //转派成功 刷新当前页面
+//                            redeployposition = position;
+//                                        mPresenter.ChangeSendOrder(orderId, SubUserID);
+                    mPresenter.SetChangeGiveWay(list.get(position).getOrderID() + "", SubUserID);
+                    customDialog_redeploy.dismiss();
+                    // mRefreshLayout.autoRefresh(0,0,1);
+                    SubUserID = null;
+                }
+
+            }
+        });
+
+        customDialog_redeploy.setNoOnclickListener("取消转派", new CustomDialog_Redeploy.onNoOnclickListener() {
+            @Override
+            public void onNoOnclick() {
+                //点击了取消所谓状态恢复原状
+                SubUserID = null;
+                for (int i = 0; i < subuserlist.size(); i++) {
+                    subuserlist.get(i).setSelect(false);
+                }
+                customDialog_redeploy.dismiss();
+            }
+        });
+    }
+
+    //复制
+    private void copy(int position) {
+        String prod = "";
+        for (int i = 0; i < list.get(position).getProducts().size(); i++) {
+            orderProductModelsBean = list.get(position).getProducts().get(i);
+            prod += orderProductModelsBean.getProductContent() + ",";
+        }
+        if (prod.contains(",")) {
+            prod = prod.substring(0, prod.lastIndexOf(","));
+        }
+        copyStr = "下单厂家：" + list.get(position).getInvoiceName() + "\n"
+                + "工单号：" + list.get(position).getOrderID() + "\n"
+                + "下单时间：" + list.get(position).getCreateDate() + "\n"
+                + "用户信息：" + list.get(position).getUserName() + " " + list.get(position).getPhone() + "\n"
+                + "用户地址：" + list.get(position).getAddress() + "\n"
+                + "产品信息：" + prod + "\n"
+                + "售后类型：" + list.get(position).getGuarantee() + "\n"
+                + "服务类型：" + list.get(position).getTypeName();
+        myClip = ClipData.newPlainText("", copyStr
+        );
+        myClipboard.setPrimaryClip(myClip);
+        ToastUtils.showShort("复制成功" + "\n" + copyStr);
     }
 
     @Override
@@ -186,51 +287,26 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
         name = getIntent().getStringExtra("name");
         phone = getIntent().getStringExtra("phone");
         mTvTitle.setText(name);
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  // HH:mm:ss  HH:24小时制  hh:12小时制
         date = dateFormat.format(new Date());
         showProgress();
         getData();
-//        mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null, String.valueOf(page), "10");
     }
 
     private void getData() {
-        switch (name){
+        gson = new Gson();
+        switch (name) {
             case "最新工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, date, null, null,null,null,null,null, String.valueOf(page), "10");
-                break;
-            case "配件工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, "1", null, null,null,null,null,String.valueOf(page), "10");
-                break;
-            case "质保工单":
-                mPresenter.GetOrderInfoList(null, null, "3", null, null, null, null, null, null, null,null, null,null,null,String.valueOf(page), "10");
-                break;
-            case "远程费工单":
-                mPresenter.GetOrderInfoList(null, null, null, "9", null, null, null, null, null, null, null,null,null,null,String.valueOf(page), "10");
-                break;
-            case "留言工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, "1", null,null,null,null,String.valueOf(page), "10");
-                break;
-            case "投诉工单":
-                mPresenter.GetOrderInfoList(null, null, null, null, null, null, null, null, null, null,null,null,null,null,String.valueOf(page), "10");
-                break;
-            case "完成工单":
-                mPresenter.GetOrderInfoList(null, null, null, "7", null, null, null, null, null, null, null,null,null,null,String.valueOf(page), "10");
-                break;
-            case "已派未接单":
-                mPresenter.GetOrderInfoList(null, null, null, "1", null, null, null, null, null, null,"1", null,null,null,String.valueOf(page), "10");
-                break;
-            case "已接单待服务":
-                mPresenter.GetOrderInfoList(null,null,null,"2",null,null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
+                req = new GetOrderReq(date, "", Integer.toString(page), "10");
+                json = gson.toJson(req);
+                body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                mPresenter.GetoderInfoPartListBak(body);
                 break;
             case "昨日工单":
-                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,getStringByFormat(getYesterdaysmorning()),getStringByFormat(getTimesmorning()),null,String.valueOf(page), "10");
-                break;
-            case "个人工单":
-                mPresenter.GetOrderInfoList(null,null,null,null,null,null,null,null,null,null,null,null,null,phone,String.valueOf(page), "10");
-                break;
-            case "待完结工单":
-                mPresenter.GetOrderInfoList(null,null,null,"5",null,null,null,null,null,null,null,null,null,null,String.valueOf(page), "10");
+                req = new GetOrderReq(getStringByFormat(getYesterdaysmorning()), getStringByFormat(getTimesmorning()), Integer.toString(page), "10");
+                json = gson.toJson(req);
+                body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                mPresenter.GetoderInfoPartListBak(body);
                 break;
         }
     }
@@ -238,6 +314,7 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
     @Override
     protected void setListener() {
         mIvBack.setOnClickListener(this);
+        mIvSearch.setOnClickListener(this);
     }
 
     @Override
@@ -253,53 +330,57 @@ public class WorkOrderListActivity extends BaseActivity<OrderListPresenter, Orde
             case R.id.iv_back:
                 finish();
                 break;
+            case R.id.iv_search:
+                startActivity(new Intent(mActivity,SearchActivity.class));
+                break;
         }
     }
 
+    @Override
+    public void GetOderCountByCustomService(BaseResult<GetOderCountByCustomService> baseResult) {
+
+    }
 
     @Override
-    public void GetOrderInfoList(BaseResult<WorkOrder> baseResult) {
+    public void BackstageGetOrderNum(BaseResult<BackstageGetOrderNum> baseResult) {
+
+    }
+
+    @Override
+    public void GetOderCountByCustomService2(WorkOrderListBean baseResult) {
+
+    }
+
+    @Override
+    public void GetoderInfoPartListBak(WorkOrderListBean baseResult) {
+        hideProgress();
         switch (baseResult.getStatusCode()) {
             case 200:
-                if(page==1){
+                if (page != 1 && baseResult.getData().getData().size() == 0) {
+                    mRefreshLayout.finishLoadMoreWithNoMoreData();
+                }
+                if (page == 1) {
                     list.clear();
                 }
-                if (baseResult.getData()!=null){
-                    list.addAll(baseResult.getData().getData());
-                    adapter.setNewData(list);
-                }
-
-                mRefreshLayout.finishRefresh();
-                if (page != 1 && "0".equals(baseResult.getData().getCount())) {
-                    mRefreshLayout.finishLoadMoreWithNoMoreData();
-                } else {
-                    mRefreshLayout.finishLoadMore();
-                }
-                hideProgress();
-
-                EventBus.getDefault().post("video:www.baidu.com");
-//                content="www.baidu.com";
-//                checkPermissionAndShow();
+                list.addAll(baseResult.getData().getData());
+                adapter.setNewData(list);
                 break;
         }
     }
 
     @Override
-    public void ChangeOrderStateTwenty(BaseResult<Data<String>> baseResult) {
-        switch (baseResult.getStatusCode()){
-            case 200:
-                if (baseResult.getData().isItem1()){
-                    ToastUtils.showShort(baseResult.getData().getItem2());
-                }else {
-                    ToastUtils.showShort(baseResult.getData().getItem2());
-                }
-                break;
-        }
+    public void GetCustomService(BaseResult<List<GetCustomService>> baseResult) {
+        subuserlist = baseResult.getData();
+    }
+
+    @Override
+    public void SetChangeGiveWay(BaseResult<Data<String>> baseResult) {
+        ToastUtils.showShort("转派成功");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(String message) {
-        if ("send".equals(message)){
+        if ("send".equals(message)) {
             list.clear();
             getData();
         }

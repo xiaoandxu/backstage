@@ -1,38 +1,30 @@
 package com.zhkj.backstage.base;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.blankj.utilcode.util.ActivityUtils;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.util.HandleBackUtil;
 import com.zhkj.backstage.util.TUtil;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -55,6 +47,8 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModel>
     private RxManager mRxManage;
     // 右滑返回
     private SwipeBackLayout mSwipeBackLayout;
+    private ZLoadingDialog dialog;
+
     @Override
     public Resources getResources() {
         Resources res = super.getResources();
@@ -155,13 +149,9 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModel>
     }
 
 
-//    public View getEmptyView() {
-//        return  LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data,null);
-//    }
-//
-//    public View getEmptyRecord() {
-//        return LayoutInflater.from(mActivity).inflate(R.layout.layout_no_record, null);
-//    }
+    public View getEmptyView() {
+        return  LayoutInflater.from(mActivity).inflate(R.layout.layout_no_data,null);
+    }
 
     public void hideSoftKeyBoard() {
         View localView = getCurrentFocus();
@@ -242,12 +232,22 @@ public abstract class BaseActivity<P extends BasePresenter, M extends BaseModel>
 
     @Override
     public void showProgress() {
-
+        dialog = new ZLoadingDialog(mActivity);
+        dialog.setLoadingBuilder(Z_TYPE.ROTATE_CIRCLE)//设置类型
+                .setLoadingColor(Color.BLACK)//颜色
+                .setHintText("...")
+                .setHintTextSize(14) // 设置字体大小 dp
+                .setHintTextColor(Color.BLACK)  // 设置字体颜色
+                .setDurationTime(1) // 设置动画时间百分比 - 0.5倍
+                .setCanceledOnTouchOutside(false)//点击外部无法取消
+                .show();
     }
 
     @Override
     public void hideProgress() {
-
+        if (dialog !=null){
+            dialog.dismiss();
+        }
     }
 
 //    @Subscribe(threadMode = ThreadMode.MAIN)

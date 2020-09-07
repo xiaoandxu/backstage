@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/activity_head"/>
+    <Button
+        android:id="@+id/btn_onekey"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="一键派单"
+        android:textColor="@color/white"
+        android:layout_margin="@dimen/dp_10"
+        android:background="@drawable/blue_shape"/>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

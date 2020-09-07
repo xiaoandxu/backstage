@@ -1,5 +1,6 @@
 package com.zhkj.backstage.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,9 +18,8 @@ import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.BackstageGetOrderNum;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetCustomService;
-import com.zhkj.backstage.bean.GetOderCountByCustomService2;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
-import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.bean.WorkOrderListBean;
 import com.zhkj.backstage.fragment.NewWorkOrderListFragment;
 import com.zhkj.backstage.mvp.contract.NewWorkOrderListContract;
 import com.zhkj.backstage.mvp.model.NewWorkOrderListModel;
@@ -42,6 +42,8 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
     SlidingTabLayout mTabReceivingLayout;
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
+    @BindView(R.id.iv_search)
+    ImageView mIvSearch;
     private String[] mTitles;
     private List<Fragment> mWorkOrderFragmentList = new ArrayList<>();
     private MyPagerAdapter mAdapter;
@@ -65,7 +67,7 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
         roleId = getIntent().getStringExtra("roleId");
         mTitles = new String[]{
                 "所有工单(0)", "未指派(0)", "未预约(0)", "服务中(0)"
-                , "未支付(0)", "已完成(0)"
+                , "未支付(0)", "已完成(0)", "取消工单(0)","未接工单(0)","被催工单(0)"
         };
         for (int i = 0; i < mTitles.length; i++) {
             mWorkOrderFragmentList.add(NewWorkOrderListFragment.newInstance(mTitles[i], roleId));
@@ -76,7 +78,7 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mWorkOrderFragmentList.size());
         mTabReceivingLayout.setViewPager(mViewPager);
-        switch (type){
+        switch (type) {
             case "未指派":
                 mViewPager.setCurrentItem(1);
                 break;
@@ -95,11 +97,20 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
             case "所有工单":
                 mViewPager.setCurrentItem(0);
                 break;
+            case "取消工单":
+                mViewPager.setCurrentItem(6);
+                break;
+            case "未接工单":
+                mViewPager.setCurrentItem(7);
+                break;
+            case "被催工单":
+                mViewPager.setCurrentItem(8);
+                break;
         }
 
-        if ("22".equals(roleId)||"1".equals(roleId)||"2".equals(roleId)){
+        if ("22".equals(roleId) || "1".equals(roleId) || "2".equals(roleId)) {
             mPresenter.BackstageGetOrderNum();
-        }else {
+        } else {
             mPresenter.GetOderCountByCustomService();
         }
 
@@ -107,14 +118,19 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
 
     @Override
     protected void setListener() {
+        mIvSearch.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(this);
+        mIvSearch.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_back:
                 finish();
+                break;
+            case R.id.iv_search:
+                startActivity(new Intent(mActivity,SearchActivity.class));
                 break;
         }
     }
@@ -130,8 +146,8 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
     public void GetOderCountByCustomService(BaseResult<GetOderCountByCustomService> baseResult) {
         List<Integer> data = baseResult.getData().getData();
         mTitles = new String[]{
-                "所有工单("+data.get(5)+")", "未指派("+data.get(0)+")", "未预约("+data.get(1)+")", "服务中("+data.get(2)+")"
-                , "未支付("+data.get(3)+")", "已完成("+data.get(4)+")"
+                "所有工单(" + data.get(7) + ")", "未指派(" + data.get(0) + ")", "未预约(" + data.get(2) + ")", "服务中(" + data.get(3) + ")"
+                , "未支付(" + data.get(4) + ")", "已完成(" + data.get(5) + ")", "取消工单(" + data.get(6) + ")", "未接工单(" + data.get(1) + ")", "被催工单(" + data.get(1) + ")"
         };
         mTabReceivingLayout.notifyDataSetChanged();
     }
@@ -140,19 +156,19 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
     public void BackstageGetOrderNum(BaseResult<BackstageGetOrderNum> baseResult) {
         BackstageGetOrderNum data = baseResult.getData();
         mTitles = new String[]{
-                "所有工单("+data.getAllOrder()+")", "未指派("+data.getUnanswered()+")", "未预约("+data.getNoappointment()+")", "服务中("+data.getInservice()+")"
-                , "未支付("+data.getOutstanding()+")", "已完成("+data.getComplete()+")"
+                "所有工单(" + data.getAllOrder() + ")", "未指派(" + data.getUnanswered() + ")", "未预约(" + data.getNoappointment() + ")", "服务中(" + data.getInservice() + ")"
+                , "未支付(" + data.getOutstanding() + ")", "已完成(" + data.getComplete() + ")", "取消工单(" + data.getCancel() + ")", "未接工单(" + data.getNotAccepted() + ")", "被催工单(" + data.getReminders() + ")"
         };
         mTabReceivingLayout.notifyDataSetChanged();
     }
 
     @Override
-    public void GetOderCountByCustomService2(BaseResult<List<GetOderCountByCustomService2>> baseResult) {
+    public void GetOderCountByCustomService2(WorkOrderListBean baseResult) {
 
     }
 
     @Override
-    public void GetoderInfoPartListBak(BaseResult<WorkOrder> baseResult) {
+    public void GetoderInfoPartListBak(WorkOrderListBean baseResult) {
 
     }
 

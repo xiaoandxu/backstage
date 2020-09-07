@@ -19,6 +19,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.AddrListActivity;
 import com.zhkj.backstage.activity.CustomerServiceActivity;
 import com.zhkj.backstage.activity.NewWorkOrderListActivity;
 import com.zhkj.backstage.activity.SearchActivity;
@@ -43,6 +44,9 @@ import com.zhkj.backstage.mvp.model.HomeNewModel;
 import com.zhkj.backstage.mvp.presenter.HomeNewPresenter;
 import com.zhkj.backstage.weight.CustomFilterDrawerPopupView;
 import com.zhkj.backstage.weight.DividerItemDecoration;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,6 +131,22 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     LinearLayout mLlYesFactory;
     @BindView(R.id.ll_today_factory)
     LinearLayout mLlTodayFactory;
+    @BindView(R.id.ll_all_sf)
+    LinearLayout mLlAllSf;
+    @BindView(R.id.tv_cancel_work_orders)
+    TextView mTvCancelWorkOrders;
+    @BindView(R.id.ll_cancel_work_orders)
+    LinearLayout mLlCancelWorkOrders;
+    @BindView(R.id.ll_bottom)
+    LinearLayout mLlBottom;
+    @BindView(R.id.tv_notaccept)
+    TextView mTvNotaccept;
+    @BindView(R.id.ll_notaccept)
+    LinearLayout mLlNotaccept;
+    @BindView(R.id.tv_hurry)
+    TextView mTvHurry;
+    @BindView(R.id.ll_hurry)
+    LinearLayout mLlHurry;
     private String mParam1;
     private String mParam2;
     private Intent intent;
@@ -140,6 +160,7 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     private TreeAdapter adapter;
     private ArrayList list;
     private String roleId;
+    private boolean hidden = false;
 
     public static HomeNewFragment newInstance(String param1, String param2) {
         HomeNewFragment fragment = new HomeNewFragment();
@@ -287,11 +308,13 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mLlAllWorkOrders.setOnClickListener(this);
         mLlNewOrder.setOnClickListener(this);
         mLlNoAppointment.setOnClickListener(this);
+        mLlNotaccept.setOnClickListener(this);
         mLlServingWorkOrders.setOnClickListener(this);
         mLlUnconfirmed.setOnClickListener(this);
         mLlFinished.setOnClickListener(this);
         mTvFirst.setOnClickListener(this);
         mLlCustomerService.setOnClickListener(this);
+        mLlAllSf.setOnClickListener(this);
         mLlMaster.setOnClickListener(this);
         mLlFactory.setOnClickListener(this);
         mLlComplaint.setOnClickListener(this);
@@ -301,11 +324,36 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mLlTodayMaster.setOnClickListener(this);
         mLlYesFactory.setOnClickListener(this);
         mLlTodayFactory.setOnClickListener(this);
+        mLlCancelWorkOrders.setOnClickListener(this);
+        mLlHurry.setOnClickListener(this);
+        mLlMaster.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                hidden = !hidden;
+                if (hidden) {
+                    mLlComplaint.setVisibility(View.GONE);
+                    mLlBottom.setVisibility(View.GONE);
+                } else {
+                    mLlComplaint.setVisibility(View.VISIBLE);
+                    mLlBottom.setVisibility(View.VISIBLE);
+                }
+                return true;
+            }
+        });
+        if (hidden) {
+            mLlComplaint.setVisibility(View.GONE);
+        } else {
+            mLlComplaint.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ll_all_sf:
+                intent = new Intent(mActivity, AddrListActivity.class);
+                startActivity(intent);
+                break;
             case R.id.sosou:
                 intent = new Intent(mActivity, SearchActivity.class);
                 intent.putExtra("roleId", roleId);
@@ -344,6 +392,24 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
             case R.id.ll_finished:
                 intent = new Intent(mActivity, NewWorkOrderListActivity.class);
                 intent.putExtra("type", "已完成");
+                intent.putExtra("roleId", roleId);
+                startActivity(intent);
+                break;
+            case R.id.ll_cancel_work_orders:
+                intent = new Intent(mActivity, NewWorkOrderListActivity.class);
+                intent.putExtra("type", "取消工单");
+                intent.putExtra("roleId", roleId);
+                startActivity(intent);
+                break;
+            case R.id.ll_notaccept:
+                intent = new Intent(mActivity, NewWorkOrderListActivity.class);
+                intent.putExtra("type", "未接工单");
+                intent.putExtra("roleId", roleId);
+                startActivity(intent);
+                break;
+            case R.id.ll_hurry:
+                intent = new Intent(mActivity, NewWorkOrderListActivity.class);
+                intent.putExtra("type", "被催工单");
                 intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
@@ -408,12 +474,14 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
 
     @Override
     public void GetOderCountByCustomService(BaseResult<GetOderCountByCustomService> baseResult) {
-        mTvAllWorkOrders.setText(baseResult.getData().getData().get(5) + "");
+        mTvAllWorkOrders.setText(baseResult.getData().getData().get(7) + "");
         mTvNewOrder.setText(baseResult.getData().getData().get(0) + "");
-        mTvNoAppointment.setText(baseResult.getData().getData().get(1) + "");
-        mTvServingWorkOrders.setText(baseResult.getData().getData().get(2) + "");
-        mTvUnconfirmed.setText(baseResult.getData().getData().get(3) + "");
-        mTvFinished.setText(baseResult.getData().getData().get(4) + "");
+        mTvNoAppointment.setText(baseResult.getData().getData().get(2) + "");
+        mTvServingWorkOrders.setText(baseResult.getData().getData().get(3) + "");
+        mTvUnconfirmed.setText(baseResult.getData().getData().get(4) + "");
+        mTvFinished.setText(baseResult.getData().getData().get(5) + "");
+        mTvCancelWorkOrders.setText(baseResult.getData().getData().get(6) + "");
+        mTvNotaccept.setText(baseResult.getData().getData().get(1) + "");
     }
 
     @Override
@@ -424,6 +492,9 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mTvServingWorkOrders.setText(baseResult.getData().getInservice() + "");
         mTvUnconfirmed.setText(baseResult.getData().getOutstanding() + "");
         mTvFinished.setText(baseResult.getData().getComplete() + "");
+        mTvCancelWorkOrders.setText(baseResult.getData().getCancel() + "");
+        mTvNotaccept.setText(baseResult.getData().getNotAccepted() + "");
+        mTvHurry.setText(baseResult.getData().getReminders() + "");
     }
 
     @Override
@@ -453,8 +524,10 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
                 roleId = baseResult.getData().getData().get(0).getRoleID() + "";
                 if (baseResult.getData().getData().get(0).getRoleID() == 22 || baseResult.getData().getData().get(0).getRoleID() == 1 || baseResult.getData().getData().get(0).getRoleID() == 2) {
                     mPresenter.BackstageGetOrderNum();
+                    mLlCustomerService.setVisibility(View.VISIBLE);
                 } else {
                     mPresenter.GetOderCountByCustomService();
+                    mLlCustomerService.setVisibility(View.GONE);
                 }
 //                mPresenter.GetModuleByRoleId(baseResult.getData().getData().get(0).getRoleID()+"");
                 break;
@@ -464,5 +537,13 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     @Override
     public void GetModuleByRoleId(BaseResult<GetModuleByRoleId> baseResult) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(String message) {
+        if ("审核完成".equals(message)) {
+            mPresenter.SalesToday2();
+            mPresenter.GetUserInfo(userID, "1");
+        }
     }
 }

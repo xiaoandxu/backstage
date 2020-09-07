@@ -1,13 +1,14 @@
 package com.zhkj.backstage.mvp.presenter;
 
 import com.zhkj.backstage.base.BaseObserver;
+import com.zhkj.backstage.base.BaseObserver2;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.GetOpenOrderReceivingResult;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
+import com.zhkj.backstage.bean.OneKeyResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.CustomerServiceContract;
-
-import java.util.List;
 
 import okhttp3.RequestBody;
 
@@ -52,6 +53,28 @@ public class CustomerServicePresenter extends CustomerServiceContract.Presenter 
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<String>> value) {
                         mView.SetStartOrderReceiving(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetOpenOrderReceiving() {
+        mModel.GetOpenOrderReceiving()
+                .subscribe(new BaseObserver2<GetOpenOrderReceivingResult>() {
+                    @Override
+                    protected void onHandleSuccess(GetOpenOrderReceivingResult value) {
+                        mView.GetOpenOrderReceiving(value);
+                    }
+                });
+    }
+
+    @Override
+    public void OnekeyDispatch() {
+        mModel.OnekeyDispatch()
+                .subscribe(new BaseObserver2<OneKeyResult>() {
+                    @Override
+                    protected void onHandleSuccess(OneKeyResult value) {
+                        mView.OnekeyDispatch(value);
                     }
                 });
     }

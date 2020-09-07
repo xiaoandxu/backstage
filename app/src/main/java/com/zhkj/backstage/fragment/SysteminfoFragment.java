@@ -71,7 +71,7 @@ public class SysteminfoFragment extends BaseLazyFragment<DetailPresenter, Detail
 
     @Override
     protected void initView() {
-        mPresenter.GetOrderInfo(mParam1);
+//        mPresenter.GetOrderInfo(mParam1);
     }
 
     @Override

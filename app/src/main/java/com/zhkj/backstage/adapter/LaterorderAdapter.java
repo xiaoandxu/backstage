@@ -1,7 +1,5 @@
 package com.zhkj.backstage.adapter;
 
-import android.graphics.Color;
-
 import androidx.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -42,7 +40,7 @@ public class LaterorderAdapter extends BaseQuickAdapter<WorkOrder.DataBean, Base
 //                .setText(R.id.tv_warranty,item.getTypeName()+"/"+item.getGuarantee())
                 .setText(R.id.tv_state,item.getState())
                 .setText(R.id.tv_billing_account,"发单账号："+item.getInvoiceName())
-                .setText(R.id.tv_crate_time,"创建时间："+item.getCreateDate())
+                .setText(R.id.tv_crate_time,"发单时间："+item.getCreateDate())
                 .setText(R.id.tv_address,"地址:"+item.getAddress())
                 .addOnClickListener(R.id.iv_copy);
 

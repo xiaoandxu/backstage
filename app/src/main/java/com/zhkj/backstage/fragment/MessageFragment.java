@@ -180,7 +180,7 @@ public class MessageFragment extends BaseLazyFragment<LeaveMessagePresenter, Lea
                 }
             }
         });
-
+        piclist.clear();
         piclist.add("add");
         picAdapter = new PicAdapter(R.layout.item_picture, piclist);
         mRvIcons.setLayoutManager(new GridLayoutManager(mActivity,5));

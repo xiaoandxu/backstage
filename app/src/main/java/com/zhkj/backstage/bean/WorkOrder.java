@@ -2,6 +2,7 @@ package com.zhkj.backstage.bean;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkOrder implements Serializable {
@@ -213,6 +214,7 @@ public class WorkOrder implements Serializable {
         private String EndRemark;
         private List<LeavemessageListBean> LeavemessageList;
         private List<LeavemessageimgListBean> LeavemessageimgList;
+        private List<OrderProductModelsBean> OrderProductModels;
         private String SendAddress;
         private String AccessoryAndServiceApplyState;
         private String FStarOrder;
@@ -222,6 +224,14 @@ public class WorkOrder implements Serializable {
         private String terraceMoney;
         private String InvoiceName;
         private String TrueName;
+
+        public List<OrderProductModelsBean> getOrderProductModels() {
+            return OrderProductModels;
+        }
+
+        public void setOrderProductModels(List<OrderProductModelsBean> orderProductModels) {
+            OrderProductModels = orderProductModels;
+        }
 
         public String getTrueName() {
             return TrueName;
@@ -1322,6 +1332,446 @@ public class WorkOrder implements Serializable {
 
         public void setVersion(int Version) {
             this.Version = Version;
+        }
+    }
+
+    public static class OrderProductModelsBean implements Serializable{
+        /**
+         * Id : 7
+         * OrderProdcutID : 7
+         * OrderID : 2000010394
+         * CategoryID : 287
+         * CategoryName : 冰洗类
+         * SubCategoryID : 250
+         * SubCategoryName : 冰箱
+         * ProductTypeID : 1720
+         * ProductType : 单门容积≤250L
+         * ProdModelID : 131
+         * ProdModelName : BCD-118
+         * Memo : 测试
+         * CreateDate : 2020-07-26T12:52:40
+         * AudDate : null
+         * ReceiveOrderDate : null
+         * RepairCompleteDate : null
+         * AppraiseDate : null
+         * State : null
+         * SendUser : null
+         * OrderProdMoney : 55.0
+         * InitMoney : 0.0
+         * BeyondMoney : 0.0
+         * TechnologyServiceMoney : 45.0
+         * PostMoney : 0.0
+         * FactorySettlementMoney : 0.0
+         * AgainMoney : 0.0
+         * MasterPrice : 45.0
+         * OtherMoney : 0.0
+         * terraceMoney : 10.0
+         * MWSettlementMoney : 0.0
+         * BrandID : 712
+         * BrandName : 容声
+         * accessorys : []
+         * SizeID : 1
+         * FrozenMoney : 75.0
+         * IsUse : Y
+         * Version : 0
+         */
+
+        private int Id;
+        private int OrderProdcutID;
+        private int OrderID;
+        private int CategoryID;
+        private String CategoryName;
+        private int SubCategoryID;
+        private String SubCategoryName;
+        private int ProductTypeID;
+        private String ProductType;
+        private int ProdModelID;
+        private String ProdModelName;
+        private String Memo;
+        private String CreateDate;
+        private Object AudDate;
+        private Object ReceiveOrderDate;
+        private Object RepairCompleteDate;
+        private Object AppraiseDate;
+        private Object State;
+        private Object SendUser;
+        private double OrderProdMoney;
+        private double InitMoney;
+        private double BeyondMoney;
+        private double TechnologyServiceMoney;
+        private double PostMoney;
+        private double FactorySettlementMoney;
+        private double AgainMoney;
+        private double MasterPrice;
+        private double OtherMoney;
+        private double terraceMoney;
+        private double MWSettlementMoney;
+        private int BrandID;
+        private int ProductState;//5师傅提交完结信息
+        private String BrandName;
+        private String Explains;
+        private int SizeID;
+        private double FrozenMoney;
+        private String IsUse;
+        private String EndRemark;
+        private String BarCode;
+        private int Num;
+        private int Version;
+        private List<String> EndImgUrls;
+        private List<?> accessorys;
+        private List<accessoryDataBean> accessoryData;
+
+
+        public String getExplains() {
+            return Explains==null?"":Explains;
+        }
+
+        public void setExplains(String explains) {
+            Explains = explains;
+        }
+
+        public List<String> getEndImgUrls() {
+            return EndImgUrls==null?new ArrayList<String>() :EndImgUrls;
+        }
+
+        public void setEndImgUrls(List<String> endImgUrls) {
+            EndImgUrls = endImgUrls;
+        }
+
+        public String getEndRemark() {
+            return EndRemark;
+        }
+
+        public void setEndRemark(String endRemark) {
+            EndRemark = endRemark;
+        }
+
+        public String getBarCode() {
+            return BarCode;
+        }
+
+        public void setBarCode(String barCode) {
+            BarCode = barCode;
+        }
+
+        public int getProductState() {
+            return ProductState;
+        }
+
+        public void setProductState(int productState) {
+            ProductState = productState;
+        }
+
+        public int getNum() {
+            return Num;
+        }
+
+        public void setNum(int num) {
+            Num = num;
+        }
+
+        public int getId() {
+            return Id;
+        }
+
+        public void setId(int Id) {
+            this.Id = Id;
+        }
+
+        public int getOrderProdcutID() {
+            return OrderProdcutID;
+        }
+
+        public void setOrderProdcutID(int OrderProdcutID) {
+            this.OrderProdcutID = OrderProdcutID;
+        }
+
+        public int getOrderID() {
+            return OrderID;
+        }
+
+        public void setOrderID(int OrderID) {
+            this.OrderID = OrderID;
+        }
+
+        public int getCategoryID() {
+            return CategoryID;
+        }
+
+        public void setCategoryID(int CategoryID) {
+            this.CategoryID = CategoryID;
+        }
+
+        public String getCategoryName() {
+            return CategoryName;
+        }
+
+        public void setCategoryName(String CategoryName) {
+            this.CategoryName = CategoryName;
+        }
+
+        public int getSubCategoryID() {
+            return SubCategoryID;
+        }
+
+        public void setSubCategoryID(int SubCategoryID) {
+            this.SubCategoryID = SubCategoryID;
+        }
+
+        public String getSubCategoryName() {
+            return SubCategoryName;
+        }
+
+        public void setSubCategoryName(String SubCategoryName) {
+            this.SubCategoryName = SubCategoryName;
+        }
+
+        public int getProductTypeID() {
+            return ProductTypeID;
+        }
+
+        public void setProductTypeID(int ProductTypeID) {
+            this.ProductTypeID = ProductTypeID;
+        }
+
+        public String getProductType() {
+            return ProductType;
+        }
+
+        public void setProductType(String ProductType) {
+            this.ProductType = ProductType;
+        }
+
+        public int getProdModelID() {
+            return ProdModelID;
+        }
+
+        public void setProdModelID(int ProdModelID) {
+            this.ProdModelID = ProdModelID;
+        }
+
+        public String getProdModelName() {
+            return ProdModelName==null?"":ProdModelName;
+        }
+
+        public void setProdModelName(String ProdModelName) {
+            this.ProdModelName = ProdModelName;
+        }
+
+        public String getMemo() {
+            return Memo;
+        }
+
+        public void setMemo(String Memo) {
+            this.Memo = Memo;
+        }
+
+        public String getCreateDate() {
+            return CreateDate;
+        }
+
+        public void setCreateDate(String CreateDate) {
+            this.CreateDate = CreateDate;
+        }
+
+        public Object getAudDate() {
+            return AudDate;
+        }
+
+        public void setAudDate(Object AudDate) {
+            this.AudDate = AudDate;
+        }
+
+        public Object getReceiveOrderDate() {
+            return ReceiveOrderDate;
+        }
+
+        public void setReceiveOrderDate(Object ReceiveOrderDate) {
+            this.ReceiveOrderDate = ReceiveOrderDate;
+        }
+
+        public Object getRepairCompleteDate() {
+            return RepairCompleteDate;
+        }
+
+        public void setRepairCompleteDate(Object RepairCompleteDate) {
+            this.RepairCompleteDate = RepairCompleteDate;
+        }
+
+        public Object getAppraiseDate() {
+            return AppraiseDate;
+        }
+
+        public void setAppraiseDate(Object AppraiseDate) {
+            this.AppraiseDate = AppraiseDate;
+        }
+
+        public Object getState() {
+            return State;
+        }
+
+        public void setState(Object State) {
+            this.State = State;
+        }
+
+        public Object getSendUser() {
+            return SendUser;
+        }
+
+        public void setSendUser(Object SendUser) {
+            this.SendUser = SendUser;
+        }
+
+        public double getOrderProdMoney() {
+            return OrderProdMoney;
+        }
+
+        public void setOrderProdMoney(double OrderProdMoney) {
+            this.OrderProdMoney = OrderProdMoney;
+        }
+
+        public double getInitMoney() {
+            return InitMoney;
+        }
+
+        public void setInitMoney(double InitMoney) {
+            this.InitMoney = InitMoney;
+        }
+
+        public double getBeyondMoney() {
+            return BeyondMoney;
+        }
+
+        public void setBeyondMoney(double BeyondMoney) {
+            this.BeyondMoney = BeyondMoney;
+        }
+
+        public double getTechnologyServiceMoney() {
+            return TechnologyServiceMoney;
+        }
+
+        public void setTechnologyServiceMoney(double TechnologyServiceMoney) {
+            this.TechnologyServiceMoney = TechnologyServiceMoney;
+        }
+
+        public double getPostMoney() {
+            return PostMoney;
+        }
+
+        public void setPostMoney(double PostMoney) {
+            this.PostMoney = PostMoney;
+        }
+
+        public double getFactorySettlementMoney() {
+            return FactorySettlementMoney;
+        }
+
+        public void setFactorySettlementMoney(double FactorySettlementMoney) {
+            this.FactorySettlementMoney = FactorySettlementMoney;
+        }
+
+        public double getAgainMoney() {
+            return AgainMoney;
+        }
+
+        public void setAgainMoney(double AgainMoney) {
+            this.AgainMoney = AgainMoney;
+        }
+
+        public double getMasterPrice() {
+            return MasterPrice;
+        }
+
+        public void setMasterPrice(double MasterPrice) {
+            this.MasterPrice = MasterPrice;
+        }
+
+        public double getOtherMoney() {
+            return OtherMoney;
+        }
+
+        public void setOtherMoney(double OtherMoney) {
+            this.OtherMoney = OtherMoney;
+        }
+
+        public double getTerraceMoney() {
+            return terraceMoney;
+        }
+
+        public void setTerraceMoney(double terraceMoney) {
+            this.terraceMoney = terraceMoney;
+        }
+
+        public double getMWSettlementMoney() {
+            return MWSettlementMoney;
+        }
+
+        public void setMWSettlementMoney(double MWSettlementMoney) {
+            this.MWSettlementMoney = MWSettlementMoney;
+        }
+
+        public int getBrandID() {
+            return BrandID;
+        }
+
+        public void setBrandID(int BrandID) {
+            this.BrandID = BrandID;
+        }
+
+        public String getBrandName() {
+            return BrandName;
+        }
+
+        public void setBrandName(String BrandName) {
+            this.BrandName = BrandName;
+        }
+
+        public int getSizeID() {
+            return SizeID;
+        }
+
+        public void setSizeID(int SizeID) {
+            this.SizeID = SizeID;
+        }
+
+        public double getFrozenMoney() {
+            return FrozenMoney;
+        }
+
+        public void setFrozenMoney(double FrozenMoney) {
+            this.FrozenMoney = FrozenMoney;
+        }
+
+        public String getIsUse() {
+            return IsUse;
+        }
+
+        public void setIsUse(String IsUse) {
+            this.IsUse = IsUse;
+        }
+
+        public int getVersion() {
+            return Version;
+        }
+
+        public void setVersion(int Version) {
+            this.Version = Version;
+        }
+
+        public List<?> getAccessorys() {
+            return accessorys;
+        }
+
+        public void setAccessorys(List<?> accessorys) {
+            this.accessorys = accessorys;
+        }
+
+        public List<accessoryDataBean> getAccessoryData() {
+            return accessoryData;
+        }
+
+        public void setAccessoryData(List<accessoryDataBean> accessoryData) {
+            this.accessoryData = accessoryData;
         }
     }
 }

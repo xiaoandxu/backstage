@@ -11,6 +11,23 @@ public class GetCustomService implements Serializable {
 
     private int id;
     private String name;
+    private String trueName;
+    private boolean select;
+
+    public GetCustomService(int id, String name, String trueName, boolean select) {
+        this.id = id;
+        this.name = name;
+        this.trueName = trueName;
+        this.select = select;
+    }
+
+    public String getTrueName() {
+        return trueName;
+    }
+
+    public void setTrueName(String trueName) {
+        this.trueName = trueName;
+    }
 
     public int getId() {
         return id;
@@ -26,5 +43,13 @@ public class GetCustomService implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isSelect() {
+        return select;
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
     }
 }

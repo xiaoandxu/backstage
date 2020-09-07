@@ -78,7 +78,7 @@ public class AccessoriesFragment extends BaseLazyFragment<DetailPresenter, Detai
 
     @Override
     protected void initView() {
-        mPresenter.GetOrderInfo(mParam1);
+//        mPresenter.GetOrderInfo(mParam1);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.zhkj.backstage.adapter;
 
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,9 +19,9 @@ public class VendorListAdapter extends BaseQuickAdapter<UserInfoList.DataBean, B
     @Override
     protected void convert(BaseViewHolder helper, UserInfoList.DataBean item) {
         TextView tv_certification=helper.getView(R.id.tv_certification);
-        String time=item.getCreateDate().replace("T"," ");
-        helper.setText(R.id.tv_user,item.getUserID())
-                .setText(R.id.tv_create_time,"创建时间："+time);
+//        String time=item.getCreateDate().replace("T"," ");
+        helper.setText(R.id.tv_user,item.getNickName())
+                .setText(R.id.tv_addr,"地址："+(item.getAddress()==null?item.getProvinceName()+item.getCityName()+item.getAreaName()+item.getDistrictName():item.getAddress()));
         if ("6".equals(item.getType())){
             helper.setText(R.id.tv_type,"厂商");
             helper.setBackgroundRes(R.id.tv_type,R.drawable.red_shape);
@@ -31,13 +30,13 @@ public class VendorListAdapter extends BaseQuickAdapter<UserInfoList.DataBean, B
             helper.setBackgroundRes(R.id.tv_type,R.drawable.blue_shape);
         }
 
-        if ("1".equals(item.getIfAuth())){
-            tv_certification.setText("已实名");
-            tv_certification.setVisibility(View.VISIBLE);
-        }else {
-            tv_certification.setText("暂未实名");
-            tv_certification.setVisibility(View.GONE);
-        }
+//        if ("1".equals(item.getIfAuth())){
+//            tv_certification.setText("已实名");
+//            tv_certification.setVisibility(View.VISIBLE);
+//        }else {
+//            tv_certification.setText("暂未实名");
+//            tv_certification.setVisibility(View.GONE);
+//        }
 
     }
 }

@@ -5,11 +5,12 @@ import java.util.List;
 
 public class UserInfoList implements Serializable {
 
+
     /**
      * code : 0
      * msg : success
      * count : 1
-     * data : [{"Id":"15757964771","UserID":"15757964771","NickName":"宁波正海科技有限公司呵呵呵","Avator":"439c5e380a384efd9b24eabaf69430cb.jpg","CreateDate":"2019-10-17T16:07:27","LastLoginDate":"2019-12-03T11:12:38","LoginCount":513,"RemainMoney":0,"TotalMoney":10000,"FrozenMoney":300,"Type":"6","TopRank":"3","IsUse":"Y","PassWord":"888888","PayPassWord":"888888","RoleID":14,"RoleName":"普通用户","AccountID":336,"DistrictCode":null,"Con":600,"Longitude":null,"Dimension":null,"ServiceTotalOrderNum":"0","ServiceComplaintNum":"3","UnfinishedAmount":24924,"StartDate":null,"EndDate":null,"ProvinceCode":null,"CityCode":null,"AreaCode":null,"Address":null,"DepositMoney":500,"DepositFrozenMoney":0,"Skills":null,"IfAuth":"0","AuthMessage":"","ParentUserID":null,"TrueName":null,"IDCard":null,"Sex":null,"Phone":"15757964771","page":0,"limit":0,"Version":0}]
+     * data : [{"Id":"18888888888","UserID":"18888888888","NickName":"ss","Avator":"285d6da44ac44a609402dc76384794b9.jpg","CreateDate":"2019-09-30T15:27:00","LastLoginDate":"2020-07-01T11:58:00","LoginCount":307,"RemainMoney":0,"TotalMoney":10000,"FrozenMoney":368,"Type":"6","TopRank":"3","YnAuth":null,"barCode":"0","IsUse":"Y","PassWord":"888888","PayPassWord":"888888","RoleID":14,"RoleName":"厂商用户","AccountID":3000,"DistrictCode":"","Con":2000000000,"Longitude":"121.555227","Dimension":"29.886757","ServiceTotalOrderNum":"1","ServiceComplaintNum":"4","UnfinishedAmount":0,"ServiceTotalMoney":0,"CompanyName":"西瓜鱼","OrderFee":0,"FeeTypes":"N","DoorFee":0,"AgainMoney":0,"PlatformFee":0,"IsOnLine":0,"StartDate":null,"EndDate":null,"ProvinceCode":"330000","CityCode":"","AreaCode":"","Address":"浙江省宁波市江北区望山路715号靠近宁波企协大厦","DepositMoney":0,"DepositFrozenMoney":0,"Skills":null,"IfAuth":"0","AuthMessage":"","ParentUserID":"","TrueName":"评教","IDCard":"330682199702163029","Sex":"女","Phone":"123456","emergencyContact":null,"teamNumber":0,"IsOrNoTruck":null,"page":0,"limit":0,"Version":0}]
      */
 
     private String code;
@@ -51,47 +52,60 @@ public class UserInfoList implements Serializable {
 
     public static class DataBean {
         /**
-         * Id : 15757964771
-         * UserID : 15757964771
-         * NickName : 宁波正海科技有限公司呵呵呵
-         * Avator : 439c5e380a384efd9b24eabaf69430cb.jpg
-         * CreateDate : 2019-10-17T16:07:27
-         * LastLoginDate : 2019-12-03T11:12:38
-         * LoginCount : 513
+         * Id : 18888888888
+         * UserID : 18888888888
+         * NickName : ss
+         * Avator : 285d6da44ac44a609402dc76384794b9.jpg
+         * CreateDate : 2019-09-30T15:27:00
+         * LastLoginDate : 2020-07-01T11:58:00
+         * LoginCount : 307
          * RemainMoney : 0.0
          * TotalMoney : 10000.0
-         * FrozenMoney : 300.0
+         * FrozenMoney : 368.0
          * Type : 6
          * TopRank : 3
+         * YnAuth : null
+         * barCode : 0
          * IsUse : Y
          * PassWord : 888888
          * PayPassWord : 888888
          * RoleID : 14
-         * RoleName : 普通用户
-         * AccountID : 336
-         * DistrictCode : null
-         * Con : 600
-         * Longitude : null
-         * Dimension : null
-         * ServiceTotalOrderNum : 0
-         * ServiceComplaintNum : 3
-         * UnfinishedAmount : 24924.0
+         * RoleName : 厂商用户
+         * AccountID : 3000
+         * DistrictCode :
+         * Con : 2000000000
+         * Longitude : 121.555227
+         * Dimension : 29.886757
+         * ServiceTotalOrderNum : 1
+         * ServiceComplaintNum : 4
+         * UnfinishedAmount : 0.0
+         * ServiceTotalMoney : 0.0
+         * CompanyName : 西瓜鱼
+         * OrderFee : 0.0
+         * FeeTypes : N
+         * DoorFee : 0.0
+         * AgainMoney : 0.0
+         * PlatformFee : 0.0
+         * IsOnLine : 0
          * StartDate : null
          * EndDate : null
-         * ProvinceCode : null
-         * CityCode : null
-         * AreaCode : null
-         * Address : null
-         * DepositMoney : 500.0
+         * ProvinceCode : 330000
+         * CityCode :
+         * AreaCode :
+         * Address : 浙江省宁波市江北区望山路715号靠近宁波企协大厦
+         * DepositMoney : 0.0
          * DepositFrozenMoney : 0.0
          * Skills : null
          * IfAuth : 0
          * AuthMessage :
-         * ParentUserID : null
-         * TrueName : null
-         * IDCard : null
-         * Sex : null
-         * Phone : 15757964771
+         * ParentUserID :
+         * TrueName : 评教
+         * IDCard : 330682199702163029
+         * Sex : 女
+         * Phone : 123456
+         * emergencyContact : null
+         * teamNumber : 0
+         * IsOrNoTruck : null
          * page : 0
          * limit : 0
          * Version : 0
@@ -109,6 +123,8 @@ public class UserInfoList implements Serializable {
         private double FrozenMoney;
         private String Type;
         private String TopRank;
+        private Object YnAuth;
+        private String barCode;
         private String IsUse;
         private String PassWord;
         private String PayPassWord;
@@ -122,15 +138,27 @@ public class UserInfoList implements Serializable {
         private String ServiceTotalOrderNum;
         private String ServiceComplaintNum;
         private double UnfinishedAmount;
-        private String StartDate;
-        private String EndDate;
+        private double ServiceTotalMoney;
+        private String CompanyName;
+        private double OrderFee;
+        private String FeeTypes;
+        private double DoorFee;
+        private double AgainMoney;
+        private double PlatformFee;
+        private int IsOnLine;
+        private Object StartDate;
+        private Object EndDate;
         private String ProvinceCode;
         private String CityCode;
         private String AreaCode;
+        private String ProvinceName;
+        private String CityName;
+        private String AreaName;
+        private String DistrictName;
         private String Address;
         private double DepositMoney;
         private double DepositFrozenMoney;
-        private String Skills;
+        private Object Skills;
         private String IfAuth;
         private String AuthMessage;
         private String ParentUserID;
@@ -138,9 +166,44 @@ public class UserInfoList implements Serializable {
         private String IDCard;
         private String Sex;
         private String Phone;
+        private Object emergencyContact;
+        private int teamNumber;
+        private Object IsOrNoTruck;
         private int page;
         private int limit;
         private int Version;
+
+        public String getProvinceName() {
+            return ProvinceName;
+        }
+
+        public void setProvinceName(String provinceName) {
+            ProvinceName = provinceName;
+        }
+
+        public String getCityName() {
+            return CityName;
+        }
+
+        public void setCityName(String cityName) {
+            CityName = cityName;
+        }
+
+        public String getAreaName() {
+            return AreaName;
+        }
+
+        public void setAreaName(String areaName) {
+            AreaName = areaName;
+        }
+
+        public String getDistrictName() {
+            return DistrictName;
+        }
+
+        public void setDistrictName(String districtName) {
+            DistrictName = districtName;
+        }
 
         public String getId() {
             return Id;
@@ -236,6 +299,22 @@ public class UserInfoList implements Serializable {
 
         public void setTopRank(String TopRank) {
             this.TopRank = TopRank;
+        }
+
+        public Object getYnAuth() {
+            return YnAuth;
+        }
+
+        public void setYnAuth(Object YnAuth) {
+            this.YnAuth = YnAuth;
+        }
+
+        public String getBarCode() {
+            return barCode;
+        }
+
+        public void setBarCode(String barCode) {
+            this.barCode = barCode;
         }
 
         public String getIsUse() {
@@ -342,19 +421,83 @@ public class UserInfoList implements Serializable {
             this.UnfinishedAmount = UnfinishedAmount;
         }
 
-        public String getStartDate() {
+        public double getServiceTotalMoney() {
+            return ServiceTotalMoney;
+        }
+
+        public void setServiceTotalMoney(double ServiceTotalMoney) {
+            this.ServiceTotalMoney = ServiceTotalMoney;
+        }
+
+        public String getCompanyName() {
+            return CompanyName;
+        }
+
+        public void setCompanyName(String CompanyName) {
+            this.CompanyName = CompanyName;
+        }
+
+        public double getOrderFee() {
+            return OrderFee;
+        }
+
+        public void setOrderFee(double OrderFee) {
+            this.OrderFee = OrderFee;
+        }
+
+        public String getFeeTypes() {
+            return FeeTypes;
+        }
+
+        public void setFeeTypes(String FeeTypes) {
+            this.FeeTypes = FeeTypes;
+        }
+
+        public double getDoorFee() {
+            return DoorFee;
+        }
+
+        public void setDoorFee(double DoorFee) {
+            this.DoorFee = DoorFee;
+        }
+
+        public double getAgainMoney() {
+            return AgainMoney;
+        }
+
+        public void setAgainMoney(double AgainMoney) {
+            this.AgainMoney = AgainMoney;
+        }
+
+        public double getPlatformFee() {
+            return PlatformFee;
+        }
+
+        public void setPlatformFee(double PlatformFee) {
+            this.PlatformFee = PlatformFee;
+        }
+
+        public int getIsOnLine() {
+            return IsOnLine;
+        }
+
+        public void setIsOnLine(int IsOnLine) {
+            this.IsOnLine = IsOnLine;
+        }
+
+        public Object getStartDate() {
             return StartDate;
         }
 
-        public void setStartDate(String StartDate) {
+        public void setStartDate(Object StartDate) {
             this.StartDate = StartDate;
         }
 
-        public String getEndDate() {
+        public Object getEndDate() {
             return EndDate;
         }
 
-        public void setEndDate(String EndDate) {
+        public void setEndDate(Object EndDate) {
             this.EndDate = EndDate;
         }
 
@@ -406,11 +549,11 @@ public class UserInfoList implements Serializable {
             this.DepositFrozenMoney = DepositFrozenMoney;
         }
 
-        public String getSkills() {
+        public Object getSkills() {
             return Skills;
         }
 
-        public void setSkills(String Skills) {
+        public void setSkills(Object Skills) {
             this.Skills = Skills;
         }
 
@@ -468,6 +611,30 @@ public class UserInfoList implements Serializable {
 
         public void setPhone(String Phone) {
             this.Phone = Phone;
+        }
+
+        public Object getEmergencyContact() {
+            return emergencyContact;
+        }
+
+        public void setEmergencyContact(Object emergencyContact) {
+            this.emergencyContact = emergencyContact;
+        }
+
+        public int getTeamNumber() {
+            return teamNumber;
+        }
+
+        public void setTeamNumber(int teamNumber) {
+            this.teamNumber = teamNumber;
+        }
+
+        public Object getIsOrNoTruck() {
+            return IsOrNoTruck;
+        }
+
+        public void setIsOrNoTruck(Object IsOrNoTruck) {
+            this.IsOrNoTruck = IsOrNoTruck;
         }
 
         public int getPage() {

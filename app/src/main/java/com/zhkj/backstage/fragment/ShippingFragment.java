@@ -102,7 +102,7 @@ public class ShippingFragment extends BaseLazyFragment<ExpressInfoPresenter, Exp
         dialog = new ZLoadingDialog(mActivity);
 //        showLoading();
         orderId = mParam1;
-        mPresenter.GetOrderInfo(orderId);
+//        mPresenter.GetOrderInfo(orderId);
 
         adapter = new LogisticsAdapter(R.layout.logistics_recycle_item, list);
         mShippingRv.setLayoutManager(new LinearLayoutManager(mActivity));

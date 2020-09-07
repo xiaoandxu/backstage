@@ -8,11 +8,13 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.RequestBody;
 
 public interface PersonalInformationCotract {
     interface Model extends BaseModel{
@@ -21,6 +23,7 @@ public interface PersonalInformationCotract {
         Observable<BaseResult<List<GetIDCardImg>>> GetIDCardImg(String UserId);
         Observable<BaseResult<List<BankCard>>> GetAccountPayInfoList(String UserId);
         Observable<BaseResult<Data<String>>> ApproveAuth(String UserID, String State, String AuthMessage);
+        Observable<UpdateFactroyUserResult> UpdateFactroyUser(RequestBody json);
     }
 
     interface View extends BaseView{
@@ -29,6 +32,7 @@ public interface PersonalInformationCotract {
         void GetIDCardImg(BaseResult<List<GetIDCardImg>> baseResult);
         void GetAccountPayInfoList(BaseResult<List<BankCard>> baseResult);
         void ApproveAuth(BaseResult<Data<String>> baseResult);
+        void UpdateFactroyUser(UpdateFactroyUserResult baseResult);
     }
 
     abstract class Presenter extends BasePresenter<View,Model>{
@@ -37,5 +41,6 @@ public interface PersonalInformationCotract {
         public abstract void GetIDCardImg(String UserId);
         public abstract void GetAccountPayInfoList(String UserId);
         public abstract void ApproveAuth(String UserID, String State, String AuthMessage);
+        public abstract void UpdateFactroyUser(RequestBody json);
     }
 }

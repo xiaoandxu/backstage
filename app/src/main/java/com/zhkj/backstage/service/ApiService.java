@@ -1,12 +1,10 @@
 package com.zhkj.backstage.service;
 
 import com.zhkj.backstage.base.BaseResult;
-import com.zhkj.backstage.bean.BackstageGetOrderNum;
-import com.zhkj.backstage.bean.GetCustomService;
-import com.zhkj.backstage.bean.GetModuleByRoleId;
-import com.zhkj.backstage.bean.GetOderCountByCustomService2;
+import com.zhkj.backstage.bean.AddrList;
 import com.zhkj.backstage.bean.Address;
 import com.zhkj.backstage.bean.Area;
+import com.zhkj.backstage.bean.BackstageGetOrderNum;
 import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CategoryData;
 import com.zhkj.backstage.bean.City;
@@ -14,22 +12,29 @@ import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.ComplaintList;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.District;
+import com.zhkj.backstage.bean.GetCustomService;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetModuleByRoleId;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
+import com.zhkj.backstage.bean.GetOpenOrderReceivingResult;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
 import com.zhkj.backstage.bean.Logistics;
+import com.zhkj.backstage.bean.OneKeyResult;
 import com.zhkj.backstage.bean.PayByOrderID;
 import com.zhkj.backstage.bean.Province;
 import com.zhkj.backstage.bean.RemoteFeeAudit;
+import com.zhkj.backstage.bean.SalesToday;
 import com.zhkj.backstage.bean.SalesToday2;
 import com.zhkj.backstage.bean.SalesToday3;
 import com.zhkj.backstage.bean.Skill;
 import com.zhkj.backstage.bean.Track;
+import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.UserList;
 import com.zhkj.backstage.bean.WithDrawList;
 import com.zhkj.backstage.bean.WorkOrder;
-import com.zhkj.backstage.bean.SalesToday;
+import com.zhkj.backstage.bean.WorkOrderListBean;
+import com.zhkj.backstage.bean.worker;
 
 import java.util.List;
 
@@ -182,7 +187,12 @@ public interface ApiService {
                                                          @Field("EndDate") String EndDate,
                                                          @Field("page") String page,
                                                          @Field("limit") String limit);
-
+    /*获取待审核列表
+     *
+     * */
+//    @FormUrlEncoded
+    @POST("Account/GetUserInfoPartList")
+    Observable<BaseResult<UserInfoList>> GetUserInfoPartList(@Body RequestBody json);
     /*获取用户信息*/
     @FormUrlEncoded
     @POST("Account/GetUserInfoList")
@@ -478,19 +488,24 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("Order/GetOderListByCustomService")
-    Observable<BaseResult<List<GetOderCountByCustomService2>>> GetOderCountByCustomService2(@Field("type") String type,
+    Observable<WorkOrderListBean> GetOderCountByCustomService2(@Field("type") String type,
                                                                                             @Field("IsCall") String IsCall,
                                                                                             @Field("IsAll") String IsAll,
                                                                                             @Field("searchContent") String searchContent,
                                                                                             @Field("page") String page,
                                                                                             @Field("limit") String limit);
+    /**
+     * 工单列表
+     */
+    @POST("Order/GetoderInfoPartListBak")
+    Observable<WorkOrderListBean> GetoderInfoPartListBak(@Body RequestBody json);
 
     /**
      * 主管工单列表
      */
     @FormUrlEncoded
     @POST("Order/GetoderInfoPartListBak")
-    Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak(@Field("Type") String type,
+    Observable<WorkOrderListBean> GetoderInfoPartListBak(@Field("Type") String type,
                                                              @Field("page") String page,
                                                              @Field("limit") String limit);
 
@@ -499,12 +514,12 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("Order/GetoderInfoPartListBak")
-    Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak2(@Field("Type") String type,
-                                                             @Field("OrderID") String OrderID,
-                                                             @Field("Phone") String Phone,
-                                                             @Field("SelectCustomerUserId") String SelectCustomerUserId,
-                                                             @Field("page") String page,
-                                                             @Field("limit") String limit);
+    Observable<WorkOrderListBean> GetoderInfoPartListBak2(@Field("Type") String type,
+                                                          @Field("OrderID") String OrderID,
+                                                          @Field("Phone") String Phone,
+                                                          @Field("SelectCustomerUserId") String SelectCustomerUserId,
+                                                          @Field("page") String page,
+                                                          @Field("limit") String limit);
 
     /**
      * 侧边权限
@@ -541,6 +556,24 @@ public interface ApiService {
 
     @POST("Order/GetCustomService")
     Observable<BaseResult<List<GetCustomService>>> GetCustomService();
+    /**
+     * 获取师傅区域数量列表
+     */
+
+    @POST("Account/GetProvinceMasterDistance")
+    Observable<BaseResult<AddrList>> GetProvinceMasterDistance();
+    /**
+     * 获取目前开启的客服数量
+     */
+
+    @POST("Account/GetOpenOrderReceiving")
+    Observable<GetOpenOrderReceivingResult> GetOpenOrderReceiving();
+    /**
+     * 一键派单
+     */
+
+    @POST("Order/OnekeyDispatch")
+    Observable<OneKeyResult> OnekeyDispatch();
 
     /**
      * 指派客服
@@ -549,4 +582,17 @@ public interface ApiService {
     @POST("Order/SetChangeGiveWay")
     Observable<BaseResult<Data<String>>> SetChangeGiveWay(@Field("orderID") String orderID,
                                                           @Field("receivePersonID") String receivePersonID);
+    /**
+     * 获取区域师傅
+     */
+    @FormUrlEncoded
+    @POST("Account/GetProvinceMasterList")
+    Observable<BaseResult<worker>> GetProvinceMasterList(@Field("page") String page,
+                                                         @Field("limit") String limit,
+                                                         @Field("code") String code);
+    /**
+     * 更新工厂账号
+     */
+    @POST("Account/UpdateFactroyUser")
+    Observable<UpdateFactroyUserResult> UpdateFactroyUser(@Body RequestBody json);
 }

@@ -2,12 +2,12 @@ package com.zhkj.backstage.mvp.model;
 
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.GetOpenOrderReceivingResult;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
+import com.zhkj.backstage.bean.OneKeyResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.CustomerServiceContract;
 import com.zhkj.backstage.service.ApiRetrofit;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -38,6 +38,20 @@ public class CustomerServiceModel implements CustomerServiceContract.Model {
     @Override
     public Observable<BaseResult<Data<String>>> SetStartOrderReceiving(String accountID) {
         return ApiRetrofit.getDefault().SetStartOrderReceiving(accountID)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<GetOpenOrderReceivingResult> GetOpenOrderReceiving() {
+        return ApiRetrofit.getDefault().GetOpenOrderReceiving()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<OneKeyResult> OnekeyDispatch() {
+        return ApiRetrofit.getDefault().OnekeyDispatch()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

@@ -1,16 +1,18 @@
 package com.zhkj.backstage.mvp.presenter;
 
 import com.zhkj.backstage.base.BaseObserver;
+import com.zhkj.backstage.base.BaseObserver2;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.BackstageGetOrderNum;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetCustomService;
-import com.zhkj.backstage.bean.GetOderCountByCustomService2;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
-import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.bean.WorkOrderListBean;
 import com.zhkj.backstage.mvp.contract.NewWorkOrderListContract;
 
 import java.util.List;
+
+import okhttp3.RequestBody;
 
 public class NewWorkOrderListPresenter extends NewWorkOrderListContract.Presenter {
     @Override
@@ -38,9 +40,9 @@ public class NewWorkOrderListPresenter extends NewWorkOrderListContract.Presente
     @Override
     public void GetOderCountByCustomService2(String type, String IsCall, String IsAll, String searchContent, String page, String limit) {
         mModel.GetOderCountByCustomService2(type, IsCall, IsAll, searchContent, page, limit)
-                .subscribe(new BaseObserver<List<GetOderCountByCustomService2>>() {
+                .subscribe(new BaseObserver2<WorkOrderListBean>() {
                     @Override
-                    protected void onHandleSuccess(BaseResult<List<GetOderCountByCustomService2>> value) {
+                    protected void onHandleSuccess(WorkOrderListBean value) {
                         mView.GetOderCountByCustomService2(value);
                     }
                 });
@@ -49,9 +51,9 @@ public class NewWorkOrderListPresenter extends NewWorkOrderListContract.Presente
     @Override
     public void GetoderInfoPartListBak(String type, String page, String limit) {
         mModel.GetoderInfoPartListBak(type, page, limit)
-                .subscribe(new BaseObserver<WorkOrder>() {
+                .subscribe(new BaseObserver2<WorkOrderListBean>() {
                     @Override
-                    protected void onHandleSuccess(BaseResult<WorkOrder> value) {
+                    protected void onHandleSuccess(WorkOrderListBean value) {
                         mView.GetoderInfoPartListBak(value);
                     }
                 });
@@ -75,6 +77,17 @@ public class NewWorkOrderListPresenter extends NewWorkOrderListContract.Presente
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<String>> value) {
                         mView.SetChangeGiveWay(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetoderInfoPartListBak(RequestBody json) {
+        mModel.GetoderInfoPartListBak(json)
+                .subscribe(new BaseObserver2<WorkOrderListBean>() {
+                    @Override
+                    protected void onHandleSuccess(WorkOrderListBean value) {
+                        mView.GetoderInfoPartListBak(value);
                     }
                 });
     }

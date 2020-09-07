@@ -5,6 +5,7 @@ import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetCustomService;
 import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.bean.WorkOrderListBean;
 import com.zhkj.backstage.mvp.contract.SearchContract;
 import com.zhkj.backstage.service.ApiRetrofit;
 
@@ -44,7 +45,7 @@ public class SearchModel implements SearchContract.Model {
     }
 
     @Override
-    public Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak2(String type, String OrderID, String Phone,String SelectCustomerUserId ,String page, String limit) {
+    public Observable<WorkOrderListBean> GetoderInfoPartListBak2(String type, String OrderID, String Phone, String SelectCustomerUserId , String page, String limit) {
         return ApiRetrofit.getDefault().GetoderInfoPartListBak2(type, OrderID, Phone,SelectCustomerUserId, page, limit)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());

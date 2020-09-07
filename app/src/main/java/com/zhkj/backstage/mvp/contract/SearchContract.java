@@ -8,6 +8,7 @@ import com.zhkj.backstage.base.BaseView;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetCustomService;
 import com.zhkj.backstage.bean.WorkOrder;
+import com.zhkj.backstage.bean.WorkOrderListBean;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface SearchContract {
         Observable<BaseResult<List<GetCustomService>>> GetCustomService();
 
         Observable<BaseResult<Data<String>>> SetChangeGiveWay(String orderID, String receivePersonID);
-        Observable<BaseResult<WorkOrder>> GetoderInfoPartListBak2(String type, String OrderID, String Phone,String SelectCustomerUserId, String page, String limit);
+        Observable<WorkOrderListBean> GetoderInfoPartListBak2(String type, String OrderID, String Phone, String SelectCustomerUserId, String page, String limit);
     }
 
     interface View extends BaseView {
@@ -31,7 +32,7 @@ public interface SearchContract {
         void GetCustomService(BaseResult<List<GetCustomService>> baseResult);
 
         void SetChangeGiveWay(BaseResult<Data<String>> baseResult);
-        void GetoderInfoPartListBak2(BaseResult<WorkOrder> baseResult);
+        void GetoderInfoPartListBak2(WorkOrderListBean baseResult);
 
     }
 

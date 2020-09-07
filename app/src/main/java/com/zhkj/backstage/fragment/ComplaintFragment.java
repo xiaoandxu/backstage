@@ -87,11 +87,12 @@ public class ComplaintFragment extends BaseLazyFragment<ComplaintListPresenter, 
                 }
             }
         });
+        mPresenter.GetComplaintListByOrderId(mParam1);
     }
 
     @Override
     protected void initView() {
-        mPresenter.GetComplaintListByOrderId(mParam1);
+
     }
 
     @Override

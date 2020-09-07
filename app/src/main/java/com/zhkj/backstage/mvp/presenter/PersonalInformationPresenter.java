@@ -1,15 +1,19 @@
 package com.zhkj.backstage.mvp.presenter;
 
 import com.zhkj.backstage.base.BaseObserver;
+import com.zhkj.backstage.base.BaseObserver2;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
 
 import java.util.List;
+
+import okhttp3.RequestBody;
 
 public class PersonalInformationPresenter extends PersonalInformationCotract.Presenter {
     @Override
@@ -63,6 +67,17 @@ public class PersonalInformationPresenter extends PersonalInformationCotract.Pre
                     @Override
                     protected void onHandleSuccess(BaseResult<Data<String>> value) {
                         mView.ApproveAuth(value);
+                    }
+                });
+    }
+
+    @Override
+    public void UpdateFactroyUser(RequestBody json) {
+        mModel.UpdateFactroyUser(json)
+                .subscribe(new BaseObserver2<UpdateFactroyUserResult>() {
+                    @Override
+                    protected void onHandleSuccess(UpdateFactroyUserResult value) {
+                        mView.UpdateFactroyUser(value);
                     }
                 });
     }
