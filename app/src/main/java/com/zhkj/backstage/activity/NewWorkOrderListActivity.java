@@ -67,7 +67,7 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
         roleId = getIntent().getStringExtra("roleId");
         mTitles = new String[]{
                 "所有工单(0)", "未指派(0)", "未预约(0)", "服务中(0)"
-                , "未支付(0)", "已完成(0)", "取消工单(0)","未接工单(0)","被催工单(0)"
+                , "未支付(0)", "已完成(0)", "取消工单(0)","未接工单(0)","被催工单(0)","待审核(0)"
         };
         for (int i = 0; i < mTitles.length; i++) {
             mWorkOrderFragmentList.add(NewWorkOrderListFragment.newInstance(mTitles[i], roleId));
@@ -105,6 +105,9 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
                 break;
             case "被催工单":
                 mViewPager.setCurrentItem(8);
+                break;
+            case "待审核":
+                mViewPager.setCurrentItem(9);
                 break;
         }
 
@@ -157,7 +160,8 @@ public class NewWorkOrderListActivity extends BaseActivity<NewWorkOrderListPrese
         BackstageGetOrderNum data = baseResult.getData();
         mTitles = new String[]{
                 "所有工单(" + data.getAllOrder() + ")", "未指派(" + data.getUnanswered() + ")", "未预约(" + data.getNoappointment() + ")", "服务中(" + data.getInservice() + ")"
-                , "未支付(" + data.getOutstanding() + ")", "已完成(" + data.getComplete() + ")", "取消工单(" + data.getCancel() + ")", "未接工单(" + data.getNotAccepted() + ")", "被催工单(" + data.getReminders() + ")"
+                , "未支付(" + data.getOutstanding() + ")", "已完成(" + data.getComplete() + ")", "取消工单(" + data.getCancel() + ")", "未接工单(" + data.getNotAccepted() + ")"
+                , "被催工单(" + data.getReminders() + ")", "待审核(" + data.getExamine() + ")"
         };
         mTabReceivingLayout.notifyDataSetChanged();
     }

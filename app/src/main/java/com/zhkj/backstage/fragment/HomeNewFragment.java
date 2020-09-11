@@ -147,6 +147,10 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     TextView mTvHurry;
     @BindView(R.id.ll_hurry)
     LinearLayout mLlHurry;
+    @BindView(R.id.tv_audit)
+    TextView mTvAudit;
+    @BindView(R.id.ll_audit)
+    LinearLayout mLlAudit;
     private String mParam1;
     private String mParam2;
     private Intent intent;
@@ -326,6 +330,7 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mLlTodayFactory.setOnClickListener(this);
         mLlCancelWorkOrders.setOnClickListener(this);
         mLlHurry.setOnClickListener(this);
+        mLlAudit.setOnClickListener(this);
         mLlMaster.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -413,6 +418,12 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
                 intent.putExtra("roleId", roleId);
                 startActivity(intent);
                 break;
+            case R.id.ll_audit:
+                intent = new Intent(mActivity, NewWorkOrderListActivity.class);
+                intent.putExtra("type", "待审核");
+                intent.putExtra("roleId", roleId);
+                startActivity(intent);
+                break;
             case R.id.tv_first:
                 xPopup.show();
                 break;
@@ -495,6 +506,7 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mTvCancelWorkOrders.setText(baseResult.getData().getCancel() + "");
         mTvNotaccept.setText(baseResult.getData().getNotAccepted() + "");
         mTvHurry.setText(baseResult.getData().getReminders() + "");
+        mTvAudit.setText(baseResult.getData().getExamine() + "");
     }
 
     @Override

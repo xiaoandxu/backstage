@@ -14,6 +14,8 @@ import com.zhkj.backstage.service.ApiRetrofit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class HomeNewModel implements HomeNewContract.Model {
     @Override
@@ -25,7 +27,8 @@ public class HomeNewModel implements HomeNewContract.Model {
 
     @Override
     public Observable<BaseResult<BackstageGetOrderNum>> BackstageGetOrderNum() {
-        return ApiRetrofit.getDefault().BackstageGetOrderNum()
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{}");
+        return ApiRetrofit.getDefault().BackstageGetOrderNum(body)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

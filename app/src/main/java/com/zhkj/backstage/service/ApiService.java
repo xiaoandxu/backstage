@@ -481,7 +481,7 @@ public interface ApiService {
      */
 
     @POST("Order/BackstageGetOrderNum")
-    Observable<BaseResult<BackstageGetOrderNum>> BackstageGetOrderNum();
+    Observable<BaseResult<BackstageGetOrderNum>> BackstageGetOrderNum(@Body RequestBody json);
 
     /**
      * 工单列表

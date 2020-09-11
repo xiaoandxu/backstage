@@ -22,6 +22,15 @@ public class BackstageGetOrderNum implements Serializable {
     private int Cancel;
     private int NotAccepted;
     private int Reminders;
+    private int Examine;
+
+    public int getExamine() {
+        return Examine;
+    }
+
+    public void setExamine(int examine) {
+        Examine = examine;
+    }
 
     public int getReminders() {
         return Reminders;

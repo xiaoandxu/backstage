@@ -354,6 +354,13 @@ public class NewWorkOrderListFragment extends BaseLazyFragment<NewWorkOrderListP
                     mPresenter.GetOderCountByCustomService2("8", null, null, null, page + "", "10");
                 }
                 break;
+            case "待审核":
+                if ("22".equals(mParam2)||"1".equals(mParam2)||"2".equals(mParam2)){
+                    mPresenter.GetoderInfoPartListBak("10",page+"","10");
+                }else {
+                    mPresenter.GetOderCountByCustomService2("10", null, null, null, page + "", "10");
+                }
+                break;
         }
     }
 
