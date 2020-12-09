@@ -2,6 +2,7 @@ package com.zhkj.backstage.mvp.model;
 
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.AddrList;
+import com.zhkj.backstage.bean.GetUserInfoListForPlatformResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
@@ -22,6 +23,13 @@ public class VendorListModel implements VendorListContract.Model {
     @Override
     public Observable<BaseResult<UserInfoList>> GetUserInfoPartList(RequestBody json) {
         return ApiRetrofit.getDefault().GetUserInfoPartList(json)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<GetUserInfoListForPlatformResult> GetUserInfoListForPlatform(RequestBody json) {
+        return ApiRetrofit.getDefault().GetUserInfoListForPlatform(json)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

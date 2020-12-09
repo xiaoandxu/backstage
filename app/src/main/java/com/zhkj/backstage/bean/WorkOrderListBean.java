@@ -151,6 +151,7 @@ public class WorkOrderListBean implements Serializable {
             private String AreaCode;
             private String DistrictCode;
             private String OrderID;
+            private String OrderNumber;
             private Object AudDate;
             private Object SendUser;
             private Object LoginUser;
@@ -249,6 +250,14 @@ public class WorkOrderListBean implements Serializable {
 
             public void setOrderID(String OrderID) {
                 this.OrderID = OrderID;
+            }
+
+            public String getOrderNumber() {
+                return OrderNumber;
+            }
+
+            public void setOrderNumber(String orderNumber) {
+                OrderNumber = orderNumber;
             }
 
             public Object getAudDate() {

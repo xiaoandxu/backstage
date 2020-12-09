@@ -99,6 +99,23 @@
                         android:textSize="14sp" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/ll_all_gc"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="1"
+                        android:text="工厂管理"
+                        android:textColor="#000"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

@@ -1,17 +1,12 @@
 package com.zhkj.backstage;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.os.Environment;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -25,9 +20,6 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.UpgradeInfo;
-import com.tencent.bugly.beta.upgrade.UpgradeListener;
-import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.zhkj.backstage.activity.MainActivity;
 
 import java.io.BufferedReader;
@@ -159,7 +151,7 @@ public class MyApplication extends MultiDexApplication {
 
 
         // 安装tinker
-//        Beta.installTinker();
+        Beta.installTinker();
     }
 
     private void initUpgradeDialog() {

@@ -121,7 +121,6 @@ public class WithdrawActivity extends BaseActivity<WithdrawPresenter, WithdrawMo
                 startActivity(intent);
             }
         });
-        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

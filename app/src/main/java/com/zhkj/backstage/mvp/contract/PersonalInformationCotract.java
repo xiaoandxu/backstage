@@ -8,6 +8,7 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
 import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 
@@ -24,6 +25,7 @@ public interface PersonalInformationCotract {
         Observable<BaseResult<List<BankCard>>> GetAccountPayInfoList(String UserId);
         Observable<BaseResult<Data<String>>> ApproveAuth(String UserID, String State, String AuthMessage);
         Observable<UpdateFactroyUserResult> UpdateFactroyUser(RequestBody json);
+        Observable<GetSecondCategoryListResult> GetSecondCategoryList();
     }
 
     interface View extends BaseView{
@@ -33,6 +35,7 @@ public interface PersonalInformationCotract {
         void GetAccountPayInfoList(BaseResult<List<BankCard>> baseResult);
         void ApproveAuth(BaseResult<Data<String>> baseResult);
         void UpdateFactroyUser(UpdateFactroyUserResult baseResult);
+        void GetSecondCategoryList(GetSecondCategoryListResult baseResult);
     }
 
     abstract class Presenter extends BasePresenter<View,Model>{
@@ -42,5 +45,6 @@ public interface PersonalInformationCotract {
         public abstract void GetAccountPayInfoList(String UserId);
         public abstract void ApproveAuth(String UserID, String State, String AuthMessage);
         public abstract void UpdateFactroyUser(RequestBody json);
+        public abstract void GetSecondCategoryList();
     }
 }

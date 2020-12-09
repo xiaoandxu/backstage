@@ -1,11 +1,13 @@
 package com.zhkj.backstage.fragment.person;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -14,12 +16,15 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.zhkj.backstage.R;
+import com.zhkj.backstage.activity.CateListActivity;
 import com.zhkj.backstage.base.BaseLazyFragment;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
+import com.zhkj.backstage.bean.FactoryToll;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
 import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
@@ -100,6 +105,22 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
     Switch mSwitcherWorkOrderBarcode;
     @BindView(R.id.ll_company)
     LinearLayout mLlCompany;
+    @BindView(R.id.ll_choose)
+    LinearLayout mLlChoose;
+    @BindView(R.id.tv_choose)
+    TextView mTvChoose;
+    @BindView(R.id.iv_allprice)
+    ImageView mIvAllprice;
+    @BindView(R.id.ll_allprice_s)
+    LinearLayout mLlAllpriceS;
+    @BindView(R.id.iv_gg)
+    ImageView mIvGg;
+    @BindView(R.id.ll_gg_s)
+    LinearLayout mLlGgS;
+    @BindView(R.id.et_allprice)
+    EditText mEtAllprice;
+    @BindView(R.id.ll_allprice)
+    LinearLayout mLlAllprice;
 
     private String mParam1;
     private String mParam2;
@@ -108,6 +129,10 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
     private CompanyInfo companyDean;
     private View view;
     private AlertDialog dialog;
+    private List<GetSecondCategoryListResult.DataBeanX.DataBean> list;
+    private String names = "";
+    private String values = "";
+    private String Type="2";
 
     public static PersonalInformationFragment newInstance(String param1, String param2) {
         PersonalInformationFragment fragment = new PersonalInformationFragment();
@@ -153,14 +178,117 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
     protected void initView() {
         userId = mParam1;
         mPresenter.GetUserInfo(userId, "1");
+
+        mIvAllprice.setSelected(false);
+        mIvGg.setSelected(true);
+        mLlAllprice.setVisibility(View.GONE);
     }
 
     @Override
     protected void setListener() {
         mBtnRefuse.setOnClickListener(this);
         mBtnPass.setOnClickListener(this);
+        mLlChoose.setOnClickListener(this);
+        mLlAllpriceS.setOnClickListener(this);
+        mLlGgS.setOnClickListener(this);
     }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_allprice_s://单价格收费
+                mIvAllprice.setSelected(true);
+                mIvGg.setSelected(false);
+                mLlAllprice.setVisibility(View.VISIBLE);
+                Type ="1";
+                break;
+            case R.id.ll_gg_s://规格配置收费
+                mIvAllprice.setSelected(false);
+                mIvGg.setSelected(true);
+                mLlAllprice.setVisibility(View.GONE);
+                Type ="2";
+                break;
+            case R.id.btn_pass:
+                if ("6".equals(detail.getType())) {
+                    String DoorFee = mEtInitmoney.getText().toString();
+                    String AgainMoney = mEtAgainmoney.getText().toString();
+                    String PlatformFee = mEtPlatformmoney.getText().toString();
+                    String Allprice = mEtAllprice.getText().toString();
+                    if (DoorFee.isEmpty()) {
+                        ToastUtils.showShort("请设置上门费");
+                        return;
+                    }
+                    if (AgainMoney.isEmpty()) {
+                        ToastUtils.showShort("请设置二次上门费");
+                        return;
+                    }
+                    if (PlatformFee.isEmpty()) {
+                        ToastUtils.showShort("请设置平台费");
+                        return;
+                    }
+                    if ("1".equals(Type)){
+                        if (Allprice.isEmpty()) {
+                            ToastUtils.showShort("请设置单价格费用");
+                            return;
+                        }
+                    }else{
+                        Allprice="0";
+                    }
+                    if ("".equals(values)) {
+                        ToastUtils.showShort("请绑定产品");
+                        return;
+                    }
+                    FactoryToll fac=new FactoryToll(Type,Allprice);
+                    detail.setFactoryToll(fac);
+                    detail.setDoorFee(Double.parseDouble(DoorFee));
+                    detail.setAgainMoney(Double.parseDouble(AgainMoney));
+                    detail.setPlatformFee(Double.parseDouble(PlatformFee));
+                    detail.setSelect(values);
+                    Gson gson = new Gson();
+                    String s = gson.toJson(detail);
+                    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+                    mPresenter.UpdateFactroyUser(body);
+                } else if ("7".equals(detail.getType())) {
+                    mPresenter.ApproveAuth(userId, "1", "");
+                }
 
+                break;
+            case R.id.btn_refuse:
+                view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
+                Button btn_negtive = view.findViewById(R.id.negtive);
+                Button btn_positive = view.findViewById(R.id.positive);
+                TextView tv_title = view.findViewById(R.id.title);
+                EditText message = view.findViewById(R.id.message);
+                tv_title.setText("提示");
+                btn_negtive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                btn_positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String reason = message.getText().toString();
+                        if (reason.isEmpty()) {
+                            ToastUtils.showShort("请输入拒绝理由");
+                            return;
+                        } else {
+                            mPresenter.ApproveAuth(userId, "-1", reason);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog = new AlertDialog.Builder(mActivity)
+                        .setView(view)
+                        .create();
+                dialog.show();
+                break;
+            case R.id.ll_choose:
+                startActivityForResult(new Intent(mActivity, CateListActivity.class), 100);
+                break;
+        }
+    }
     @Override
     public void GetUserInfo(BaseResult<UserInfoList> baseResult) {
         switch (baseResult.getStatusCode()) {
@@ -244,8 +372,8 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
             case 200:
                 if (baseResult.getData().isItem1()) {
                     ToastUtils.showShort("审核完成");
-                    mPresenter.GetUserInfo(userId, "1");
                     EventBus.getDefault().post("审核完成");
+                    mActivity.finish();
                 } else {
                     ToastUtils.showShort(baseResult.getData().getItem2());
                 }
@@ -267,69 +395,34 @@ public class PersonalInformationFragment extends BaseLazyFragment<PersonalInform
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_pass:
-                if ("6".equals(detail.getType())) {
-                    String DoorFee = mEtInitmoney.getText().toString();
-                    String AgainMoney = mEtAgainmoney.getText().toString();
-                    String PlatformFee = mEtPlatformmoney.getText().toString();
-                    if (DoorFee.isEmpty()) {
-                        ToastUtils.showShort("请设置上门费");
-                        return;
+    public void GetSecondCategoryList(GetSecondCategoryListResult baseResult) {
+
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 100) {
+            if (data != null) {
+                list = (List<GetSecondCategoryListResult.DataBeanX.DataBean>) data.getSerializableExtra("list");
+                names = "";
+                values = "";
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).isCheck()) {
+                        names += list.get(i).getName() + ",";
+                        values += list.get(i).getValue() + ",";
                     }
-                    if (AgainMoney.isEmpty()) {
-                        ToastUtils.showShort("请设置二次上门费");
-                        return;
-                    }
-                    if (PlatformFee.isEmpty()) {
-                        ToastUtils.showShort("请设置平台费");
-                        return;
-                    }
-                    detail.setDoorFee(Double.parseDouble(DoorFee));
-                    detail.setAgainMoney(Double.parseDouble(AgainMoney));
-                    detail.setPlatformFee(Double.parseDouble(PlatformFee));
-                    Gson gson = new Gson();
-                    String s = gson.toJson(detail);
-                    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
-                    mPresenter.UpdateFactroyUser(body);
-                } else if ("7".equals(detail.getType())) {
-                    mPresenter.ApproveAuth(userId, "1", "");
                 }
-
-                break;
-            case R.id.btn_refuse:
-                view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_refuse, null);
-                Button btn_negtive = view.findViewById(R.id.negtive);
-                Button btn_positive = view.findViewById(R.id.positive);
-                TextView tv_title = view.findViewById(R.id.title);
-                EditText message = view.findViewById(R.id.message);
-                tv_title.setText("提示");
-                btn_negtive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                btn_positive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String reason = message.getText().toString();
-                        if (reason.isEmpty()) {
-                            ToastUtils.showShort("请输入拒绝理由");
-                            return;
-                        } else {
-                            mPresenter.ApproveAuth(userId, "-1", reason);
-                        }
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog = new AlertDialog.Builder(mActivity)
-                        .setView(view)
-                        .create();
-                dialog.show();
-                break;
+                if (names.contains(",")) {
+                    names = names.substring(0, names.lastIndexOf(","));
+                }
+                if (values.contains(",")) {
+                    values = values.substring(0, values.lastIndexOf(","));
+                }
+                mTvChoose.setText(names);
+            }
         }
     }
 }

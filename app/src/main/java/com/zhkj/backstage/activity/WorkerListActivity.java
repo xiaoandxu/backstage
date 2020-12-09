@@ -19,6 +19,7 @@ import com.zhkj.backstage.adapter.WorkerListAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.AddrList;
+import com.zhkj.backstage.bean.GetUserInfoListForPlatformResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
@@ -49,6 +50,11 @@ public class WorkerListActivity extends BaseActivity<VendorListPresenter, Vendor
     private String provinceName;
 
     @Override
+    public void GetUserInfoListForPlatform(GetUserInfoListForPlatformResult baseResult) {
+
+    }
+
+    @Override
     protected void initImmersionBar() {
         mImmersionBar = ImmersionBar.with(this);
 //        mImmersionBar.statusBarDarkFont(true, 0.2f); //原理：如果当前设备支持状态栏字体变色，会设置状态栏字体为黑色，如果当前设备不支持状态栏字体变色，会使当前状态栏加上透明度，否则不执行透明度
@@ -76,8 +82,6 @@ public class WorkerListActivity extends BaseActivity<VendorListPresenter, Vendor
 //            }
 //        });
 
-        //没满屏时禁止上拉
-        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

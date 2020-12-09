@@ -166,12 +166,30 @@ public class UserInfoList implements Serializable {
         private String IDCard;
         private String Sex;
         private String Phone;
+        private String select;
+        private FactoryToll factoryToll;
         private Object emergencyContact;
         private int teamNumber;
         private Object IsOrNoTruck;
         private int page;
         private int limit;
         private int Version;
+
+        public FactoryToll getFactoryToll() {
+            return factoryToll;
+        }
+
+        public void setFactoryToll(FactoryToll factoryToll) {
+            this.factoryToll = factoryToll;
+        }
+
+        public String getSelect() {
+            return select;
+        }
+
+        public void setSelect(String select) {
+            this.select = select;
+        }
 
         public String getProvinceName() {
             return ProvinceName;

@@ -1,13 +1,45 @@
 apply plugin: 'com.android.application'
+// 依赖插件脚本
+apply from: 'tinker-support.gradle'
 
+//获取版本名
+def verName() {
+    def versionPropsFile = file("../version.properties")
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        return versionProps['VERSION_NAME']
+    } else {
+        throw new GradleException("Could not read gradle.properties")
+    }
+}
+
+//获取版本号
+def verCode() {
+    def versionPropsFile = file("../version.properties")
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        def int verCode = versionProps['VERSION_CODE'].toInteger()
+        return verCode;
+    } else {
+        throw new GradleException("Could not read gradle.properties")
+    }
+}
+//获取构建时间
+def buildTime() {
+    return new Date().format("MMdd-HH-mm-ss", TimeZone.getTimeZone("GMT+8"))
+}
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.zhkj.backstage"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.0.7"
+        versionCode verCode()
+        versionName verName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
@@ -18,10 +50,52 @@ android {
 
         }
     }
+    // 签名配置
+    signingConfigs{
+        release{
+            storeFile file("../mykeystore.jks")
+            storePassword "xiao123456"
+            keyAlias "key0"
+            keyPassword"xiao123456"
+        }
+        debug{
+            storeFile file("../mykeystore.jks")
+            storePassword "xiao123456"
+            keyAlias "key0"
+            keyPassword"xiao123456"
+        }
+    }
     buildTypes {
-        release {
+        debug {
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            versionNameSuffix "-debug"
             minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+        }
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            // 移除无用的resource文件
+//            shrinkResources true
+            minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            applicationVariants.all { variant ->    //批量修改Apk名字
+                variant.outputs.all { output ->
+                    if (!variant.buildType.isDebuggable()) {
+                        //获取签名的名字 variant.signingConfig.name
+                        //要被替换的源字符串
+                        def sourceFile = "app-${variant.buildType.name}"
+                        //替换的字符串
+                        def replaceFile = "xgy_V${variant.versionName}_${variant.buildType.name}_${buildTime()}"
+                        outputFileName = output.outputFile.name.replace(sourceFile, replaceFile)
+                        //遗留问题：如何获取当前module的name，如CodeBooke这个名字怎么获取到
+                    }
+                }
+            }
         }
     }
 
@@ -109,6 +183,9 @@ dependencies {
     //compile 'com.tencent.bugly:crashreport:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.3.2
     implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+    // 指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
+    implementation 'com.tencent.tinker:tinker-android-lib:1.9.9'
+
     implementation files('libs\\BaiduTraceSDK_v3_1_4.jar')
     implementation files('libs\\bos-android-sdk-1.0.3.jar')
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])

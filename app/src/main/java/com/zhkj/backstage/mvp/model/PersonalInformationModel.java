@@ -5,6 +5,7 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
 import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
@@ -56,6 +57,13 @@ public class PersonalInformationModel implements PersonalInformationCotract.Mode
     @Override
     public Observable<UpdateFactroyUserResult> UpdateFactroyUser(RequestBody json) {
         return ApiRetrofit.getDefault().UpdateFactroyUser(json)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<GetSecondCategoryListResult> GetSecondCategoryList() {
+        return ApiRetrofit.getDefault().GetSecondCategoryList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }

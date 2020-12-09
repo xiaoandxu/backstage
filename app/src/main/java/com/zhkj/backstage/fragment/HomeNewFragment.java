@@ -21,6 +21,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
 import com.zhkj.backstage.activity.AddrListActivity;
 import com.zhkj.backstage.activity.CustomerServiceActivity;
+import com.zhkj.backstage.activity.FactoryListActivity;
 import com.zhkj.backstage.activity.NewWorkOrderListActivity;
 import com.zhkj.backstage.activity.SearchActivity;
 import com.zhkj.backstage.activity.VendorListActivity;
@@ -151,6 +152,8 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
     TextView mTvAudit;
     @BindView(R.id.ll_audit)
     LinearLayout mLlAudit;
+    @BindView(R.id.ll_all_gc)
+    LinearLayout mLlAllGc;
     private String mParam1;
     private String mParam2;
     private Intent intent;
@@ -319,6 +322,7 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         mTvFirst.setOnClickListener(this);
         mLlCustomerService.setOnClickListener(this);
         mLlAllSf.setOnClickListener(this);
+        mLlAllGc.setOnClickListener(this);
         mLlMaster.setOnClickListener(this);
         mLlFactory.setOnClickListener(this);
         mLlComplaint.setOnClickListener(this);
@@ -357,6 +361,10 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
         switch (v.getId()) {
             case R.id.ll_all_sf:
                 intent = new Intent(mActivity, AddrListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.ll_all_gc:
+                intent = new Intent(mActivity, FactoryListActivity.class);
                 startActivity(intent);
                 break;
             case R.id.sosou:
@@ -497,36 +505,48 @@ public class HomeNewFragment extends BaseLazyFragment<HomeNewPresenter, HomeNewM
 
     @Override
     public void BackstageGetOrderNum(BaseResult<BackstageGetOrderNum> baseResult) {
-        mTvAllWorkOrders.setText(baseResult.getData().getAllOrder() + "");
-        mTvNewOrder.setText(baseResult.getData().getUnanswered() + "");
-        mTvNoAppointment.setText(baseResult.getData().getNoappointment() + "");
-        mTvServingWorkOrders.setText(baseResult.getData().getInservice() + "");
-        mTvUnconfirmed.setText(baseResult.getData().getOutstanding() + "");
-        mTvFinished.setText(baseResult.getData().getComplete() + "");
-        mTvCancelWorkOrders.setText(baseResult.getData().getCancel() + "");
-        mTvNotaccept.setText(baseResult.getData().getNotAccepted() + "");
-        mTvHurry.setText(baseResult.getData().getReminders() + "");
-        mTvAudit.setText(baseResult.getData().getExamine() + "");
+        try {
+            mTvAllWorkOrders.setText(baseResult.getData().getAllOrder() + "");
+            mTvNewOrder.setText(baseResult.getData().getUnanswered() + "");
+            mTvNoAppointment.setText(baseResult.getData().getNoappointment() + "");
+            mTvServingWorkOrders.setText(baseResult.getData().getInservice() + "");
+            mTvUnconfirmed.setText(baseResult.getData().getOutstanding() + "");
+            mTvFinished.setText(baseResult.getData().getComplete() + "");
+            mTvCancelWorkOrders.setText(baseResult.getData().getCancel() + "");
+            mTvNotaccept.setText(baseResult.getData().getNotAccepted() + "");
+            mTvHurry.setText(baseResult.getData().getReminders() + "");
+            mTvAudit.setText(baseResult.getData().getExamine() + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void SalesToday2(BaseResult<Data<SalesToday2>> baseResult) {
-        mTvMaster.setText(baseResult.getData().getItem2().getMasterWorkerCount() + "");
-        mTvMasterToday.setText(baseResult.getData().getItem2().getTodayMasterWorkerCount() + "");
-        mTvMasterYesterday.setText(baseResult.getData().getItem2().getYesterdayMasterWorkerCount() + "");
-        mTvFactory.setText(baseResult.getData().getItem2().getFactoryExamineCount() + "");
-        mTvFactoryToday.setText(baseResult.getData().getItem2().getTodayFactoryCount() + "");
-        mTvFactoryYesterday.setText(baseResult.getData().getItem2().getYesterdayFactoryCount() + "");
+        try {
+            mTvMaster.setText(baseResult.getData().getItem2().getMasterWorkerCount() + "");
+            mTvMasterToday.setText(baseResult.getData().getItem2().getTodayMasterWorkerCount() + "");
+            mTvMasterYesterday.setText(baseResult.getData().getItem2().getYesterdayMasterWorkerCount() + "");
+            mTvFactory.setText(baseResult.getData().getItem2().getFactoryExamineCount() + "");
+            mTvFactoryToday.setText(baseResult.getData().getItem2().getTodayFactoryCount() + "");
+            mTvFactoryYesterday.setText(baseResult.getData().getItem2().getYesterdayFactoryCount() + "");
 
-        mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
-        mPresenter.SalesToday3();
+            mTvWithdraw.setText(baseResult.getData().getItem2().getWithdrawalCount() + "");
+            mPresenter.SalesToday3();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void SalesToday3(BaseResult<Data<SalesToday3>> baseResult) {
-        mTvComplaint.setText(baseResult.getData().getItem2().getNewOrder() + "");
-        mTvComplaintToday.setText(baseResult.getData().getItem2().getNewOrder() + "");
-        mTvComplaintYesterday.setText(baseResult.getData().getItem2().getYesterdayOrder() + "");
+        try {
+            mTvComplaint.setText(baseResult.getData().getItem2().getNewOrder() + "");
+            mTvComplaintToday.setText(baseResult.getData().getItem2().getNewOrder() + "");
+            mTvComplaintYesterday.setText(baseResult.getData().getItem2().getYesterdayOrder() + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

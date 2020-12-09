@@ -1,11 +1,14 @@
 package com.zhkj.backstage.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -33,6 +36,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     LinearLayout mLlPassword;
     @BindView(R.id.login)
     Button mLogin;
+    @BindView(R.id.tv_version)
+    TextView mTvVersion;
     private SPUtils spUtils;
     private String userName;
     private String passWord;
@@ -60,9 +65,20 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
         isLogin = spUtils.getBoolean("isLogin");
         mEtUsername.setText(userName);
         mEtPassword.setText(passWord);
-        if (isLogin){
+        if (isLogin) {
             mPresenter.Login(userName, passWord);
         }
+        PackageManager manager = mActivity.getPackageManager();
+
+        String name = null;
+        try {
+            PackageInfo info = manager.getPackageInfo(mActivity.getPackageName(), 0);
+            name = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        mTvVersion.setText("v" + name);
     }
 
     @Override
@@ -119,15 +135,15 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
     public void Login(BaseResult<Data<String>> baseResult) {
         switch (baseResult.getStatusCode()) {
             case 200:
-                Data<String> data=baseResult.getData();
-                if (data.isItem1()){
+                Data<String> data = baseResult.getData();
+                if (data.isItem1()) {
                     spUtils.put("adminToken", data.getItem2());
                     spUtils.put("userName", userName);
                     spUtils.put("passWord", passWord);
                     spUtils.put("isLogin", true);
 //                    mPresenter.AddAndUpdatePushAccount(XGPushConfig.getToken(this),"6",userName);
                     startActivity(new Intent(mActivity, MainActivity.class));
-                }else{
+                } else {
                     ToastUtils.showShort(data.getItem2());
                 }
                 cancleLoading();
@@ -140,7 +156,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
 
     }
 
-    public void showLoading(){
+    public void showLoading() {
         dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)//设置类型
                 .setLoadingColor(Color.BLACK)//颜色
                 .setHintText("登陆中请稍后...")
@@ -151,7 +167,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
                 .show();
     }
 
-    public void cancleLoading(){
+    public void cancleLoading() {
         dialog.dismiss();
     }
 }

@@ -46,7 +46,7 @@ public class NewWorkOrderAdapter extends BaseQuickAdapter<WorkOrderListBean.Data
             prod = prod.substring(0, prod.lastIndexOf(","));
         }
 
-        helper.setText(R.id.tv_order_num,"工单号："+item.getOrderID())
+        helper.setText(R.id.tv_order_num,"工单号："+item.getOrderNumber())
                 .setText(R.id.tv_name, prod)
                 .setText(R.id.tv_state,item.getState())
                 .setText(R.id.tv_billing_account,"发单账号："+item.getInvoiceName())

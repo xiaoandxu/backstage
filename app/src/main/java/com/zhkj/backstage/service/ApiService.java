@@ -17,6 +17,8 @@ import com.zhkj.backstage.bean.GetIDCardImg;
 import com.zhkj.backstage.bean.GetModuleByRoleId;
 import com.zhkj.backstage.bean.GetOderCountByCustomService;
 import com.zhkj.backstage.bean.GetOpenOrderReceivingResult;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
+import com.zhkj.backstage.bean.GetUserInfoListForPlatformResult;
 import com.zhkj.backstage.bean.GetUserInfoPartListBak;
 import com.zhkj.backstage.bean.Logistics;
 import com.zhkj.backstage.bean.OneKeyResult;
@@ -497,14 +499,14 @@ public interface ApiService {
     /**
      * 工单列表
      */
-    @POST("Order/GetoderInfoPartListBak")
+    @POST("Platform/GetOrderList")
     Observable<WorkOrderListBean> GetoderInfoPartListBak(@Body RequestBody json);
 
     /**
      * 主管工单列表
      */
     @FormUrlEncoded
-    @POST("Order/GetoderInfoPartListBak")
+    @POST("Platform/GetOrderList")
     Observable<WorkOrderListBean> GetoderInfoPartListBak(@Field("Type") String type,
                                                              @Field("page") String page,
                                                              @Field("limit") String limit);
@@ -513,9 +515,9 @@ public interface ApiService {
      * 主管工单搜索列表
      */
     @FormUrlEncoded
-    @POST("Order/GetoderInfoPartListBak")
+    @POST("Platform/GetOrderList")
     Observable<WorkOrderListBean> GetoderInfoPartListBak2(@Field("Type") String type,
-                                                          @Field("OrderID") String OrderID,
+                                                          @Field("OrderNumber") String OrderID,
                                                           @Field("Phone") String Phone,
                                                           @Field("SelectCustomerUserId") String SelectCustomerUserId,
                                                           @Field("page") String page,
@@ -563,6 +565,12 @@ public interface ApiService {
     @POST("Account/GetProvinceMasterDistance")
     Observable<BaseResult<AddrList>> GetProvinceMasterDistance();
     /**
+     * 获取工厂
+     */
+
+    @POST("Platform/GetUserInfoListForPlatform")
+    Observable<GetUserInfoListForPlatformResult> GetUserInfoListForPlatform(@Body RequestBody json);
+    /**
      * 获取目前开启的客服数量
      */
 
@@ -595,4 +603,10 @@ public interface ApiService {
      */
     @POST("Account/UpdateFactroyUser")
     Observable<UpdateFactroyUserResult> UpdateFactroyUser(@Body RequestBody json);
+
+    /**
+     * 获取工厂产品
+     */
+    @POST("PlatForm/GetSecondCategoryList")
+    Observable<GetSecondCategoryListResult> GetSecondCategoryList();
 }

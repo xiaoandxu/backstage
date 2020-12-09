@@ -148,8 +148,6 @@ public class SearchActivity extends BaseActivity<SearchPresenter, SearchModel> i
             }
         });
 
-        //没满屏时禁止上拉
-        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -377,7 +375,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter, SearchModel> i
             prod = prod.substring(0, prod.lastIndexOf(","));
         }
         copyStr = "下单厂家：" + list.get(position).getInvoiceName() + "\n"
-                + "工单号：" + list.get(position).getOrderID() + "\n"
+                + "工单号：" + list.get(position).getOrderNumber() + "\n"
                 + "下单时间：" + list.get(position).getCreateDate() + "\n"
                 + "用户信息：" + list.get(position).getUserName() + " " + list.get(position).getPhone() + "\n"
                 + "用户地址：" + list.get(position).getAddress() + "\n"

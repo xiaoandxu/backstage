@@ -7,6 +7,7 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
 import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
@@ -78,6 +79,17 @@ public class PersonalInformationPresenter extends PersonalInformationCotract.Pre
                     @Override
                     protected void onHandleSuccess(UpdateFactroyUserResult value) {
                         mView.UpdateFactroyUser(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetSecondCategoryList() {
+        mModel.GetSecondCategoryList()
+                .subscribe(new BaseObserver2<GetSecondCategoryListResult>() {
+                    @Override
+                    protected void onHandleSuccess(GetSecondCategoryListResult value) {
+                        mView.GetSecondCategoryList(value);
                     }
                 });
     }

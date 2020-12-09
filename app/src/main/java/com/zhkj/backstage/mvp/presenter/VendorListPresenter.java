@@ -1,8 +1,10 @@
 package com.zhkj.backstage.mvp.presenter;
 
 import com.zhkj.backstage.base.BaseObserver;
+import com.zhkj.backstage.base.BaseObserver2;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.AddrList;
+import com.zhkj.backstage.bean.GetUserInfoListForPlatformResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
@@ -27,6 +29,17 @@ public class VendorListPresenter extends VendorListContract.Presenter {
                     @Override
                     protected void onHandleSuccess(BaseResult<UserInfoList> value) {
                         mView.GetUserInfoPartList(value);
+                    }
+                });
+    }
+
+    @Override
+    public void GetUserInfoListForPlatform(RequestBody json) {
+        mModel.GetUserInfoListForPlatform(json)
+                .subscribe(new BaseObserver2<GetUserInfoListForPlatformResult>() {
+                    @Override
+                    protected void onHandleSuccess(GetUserInfoListForPlatformResult value) {
+                        mView.GetUserInfoListForPlatform(value);
                     }
                 });
     }

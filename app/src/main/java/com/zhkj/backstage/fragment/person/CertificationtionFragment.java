@@ -15,6 +15,7 @@ import com.zhkj.backstage.bean.BankCard;
 import com.zhkj.backstage.bean.CompanyInfo;
 import com.zhkj.backstage.bean.Data;
 import com.zhkj.backstage.bean.GetIDCardImg;
+import com.zhkj.backstage.bean.GetSecondCategoryListResult;
 import com.zhkj.backstage.bean.UpdateFactroyUserResult;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.mvp.contract.PersonalInformationCotract;
@@ -152,6 +153,11 @@ public class CertificationtionFragment extends BaseLazyFragment<PersonalInformat
 
     @Override
     public void UpdateFactroyUser(UpdateFactroyUserResult baseResult) {
+
+    }
+
+    @Override
+    public void GetSecondCategoryList(GetSecondCategoryListResult baseResult) {
 
     }
 

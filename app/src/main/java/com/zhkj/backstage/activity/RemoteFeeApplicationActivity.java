@@ -193,8 +193,6 @@ public class RemoteFeeApplicationActivity extends BaseActivity<RemoteFeeApplicat
                 }
             }
         });
-        //没满屏时禁止上拉
-        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

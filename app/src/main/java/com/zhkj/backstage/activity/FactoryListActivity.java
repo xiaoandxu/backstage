@@ -15,14 +15,15 @@ import com.google.gson.Gson;
 import com.gyf.barlibrary.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhkj.backstage.R;
-import com.zhkj.backstage.adapter.AddrListAdapter;
+import com.zhkj.backstage.adapter.FacListAdapter;
 import com.zhkj.backstage.base.BaseActivity;
 import com.zhkj.backstage.base.BaseResult;
 import com.zhkj.backstage.bean.AddrList;
+import com.zhkj.backstage.bean.GetUserInfoListForPlatformReq;
 import com.zhkj.backstage.bean.GetUserInfoListForPlatformResult;
-import com.zhkj.backstage.bean.GetUserInfoPartListBakBean;
 import com.zhkj.backstage.bean.UserInfoList;
 import com.zhkj.backstage.bean.worker;
 import com.zhkj.backstage.mvp.contract.VendorListContract;
@@ -37,7 +38,7 @@ import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-public class AddrListActivity extends BaseActivity<VendorListPresenter, VendorListModel> implements View.OnClickListener, VendorListContract.View {
+public class FactoryListActivity extends BaseActivity<VendorListPresenter, VendorListModel> implements View.OnClickListener, VendorListContract.View {
     @BindView(R.id.view)
     View mView;
     @BindView(R.id.iv_back)
@@ -48,9 +49,10 @@ public class AddrListActivity extends BaseActivity<VendorListPresenter, VendorLi
     RecyclerView mRvVerdor;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
-    private List<List<String>> list = new ArrayList<>();
-    private AddrListAdapter adapter;
-    private GetUserInfoPartListBakBean getUserInfoPartListBakBean;
+    private List<GetUserInfoListForPlatformResult.DataBeanX.DataBean> list = new ArrayList<>();
+    private FacListAdapter adapter;
+    private GetUserInfoListForPlatformReq getUserInfoListForPlatformReq;
+    private int page=1;
 
     @Override
     protected void initImmersionBar() {
@@ -62,26 +64,40 @@ public class AddrListActivity extends BaseActivity<VendorListPresenter, VendorLi
     }
 
     @Override
+    public void GetUserInfoListForPlatform(GetUserInfoListForPlatformResult baseResult) {
+        if (baseResult.getStatusCode()==200){
+            if (baseResult.getData().getCode()==0){
+                if (page==1){
+                    list.clear();
+                }
+                if(page!=1&&baseResult.getData().getData().size()==0){//第二页没有数据说明所有数据已全部加载
+                    mRefreshLayout.finishLoadMoreWithNoMoreData();
+                }
+                list.addAll(baseResult.getData().getData());
+                adapter.setNewData(list);
+                hideProgress();
+            }
+        }else{
+            hideProgress();
+        }
+    }
+
+    @Override
     protected int setLayoutId() {
         return R.layout.activity_vendor_list;
     }
 
     @Override
-    public void GetUserInfoListForPlatform(GetUserInfoListForPlatformResult baseResult) {
-
-    }
-
-    @Override
     protected void initData() {
-        adapter = new AddrListAdapter(R.layout.addrlist_item, list);
+        mTvTitle.setText("工厂管理");
+        adapter = new FacListAdapter(R.layout.fac_item, list);
         mRvVerdor.setLayoutManager(new LinearLayoutManager(mActivity));
         mRvVerdor.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(mActivity, WorkerListActivity.class);
-                intent.putExtra("provinceCode", list.get(position).get(0));
-                intent.putExtra("provinceName", list.get(position).get(1));
+                Intent intent = new Intent(mActivity, PersonalInformationActivity.class);
+                intent.putExtra("userId", list.get(position).getUserID());
                 startActivity(intent);
             }
         });
@@ -89,25 +105,37 @@ public class AddrListActivity extends BaseActivity<VendorListPresenter, VendorLi
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.GetProvinceMasterDistance();
+                page=1;
+                getData();
+                mRefreshLayout.resetNoMoreData();
                 mRefreshLayout.finishRefresh(1000);
             }
         });
-
-        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                page++;
+                getData();
+                mRefreshLayout.finishLoadMore(1000);
+            }
+        });
     }
 
     @Override
     protected void initView() {
-        mPresenter.GetProvinceMasterDistance();
+        showProgress();
+        getData();
+    }
+
+    private void getData() {
         Gson gson=new Gson();
-        getUserInfoPartListBakBean = new GetUserInfoPartListBakBean();
-        getUserInfoPartListBakBean.setType("7");
-        getUserInfoPartListBakBean.setPage(1+"");
-        getUserInfoPartListBakBean.setLimit("1");
-        String s = gson.toJson(getUserInfoPartListBakBean);
+        getUserInfoListForPlatformReq = new GetUserInfoListForPlatformReq();
+        getUserInfoListForPlatformReq.setType("6");
+        getUserInfoListForPlatformReq.setPage(Integer.toString(page));
+        getUserInfoListForPlatformReq.setLimit("20");
+        String s = gson.toJson(getUserInfoListForPlatformReq);
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
-        mPresenter.GetUserInfoPartList(body);
+        mPresenter.GetUserInfoListForPlatform(body);
     }
 
     @Override
@@ -138,17 +166,11 @@ public class AddrListActivity extends BaseActivity<VendorListPresenter, VendorLi
 
     @Override
     public void GetUserInfoPartList(BaseResult<UserInfoList> baseResult) {
-        mTvTitle.setText("所有师傅("+baseResult.getData().getCount()+")");
     }
 
     @Override
     public void GetProvinceMasterDistance(BaseResult<AddrList> baseResult) {
-        switch (baseResult.getStatusCode()) {
-            case 200:
-                list=baseResult.getData().getData();
-                adapter.setNewData(list);
-                break;
-        }
+
     }
 
     @Override
